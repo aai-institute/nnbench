@@ -1,3 +1,1 @@
-"""
-Utilities for collecting contextual values as useful metadata when benchmarking.
-"""
+"""Utilities for collecting context key-value pairs as metadata in benchmark runs."""

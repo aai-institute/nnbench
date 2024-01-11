@@ -1,3 +1,5 @@
+"""The definition of mlbench's benchmark data model."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,3 +1,5 @@
+"""The abstract benchmark runner interface, which can be overridden for custom benchmark workloads."""
+
 import sys
 from typing import Any
 

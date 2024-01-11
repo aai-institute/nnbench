@@ -1,4 +1,4 @@
-"""mlbench is a framework for organizing and running benchmark workloads on machine learning models."""
+"""A framework for organizing and running benchmark workloads on machine learning models."""
 
 from importlib.metadata import PackageNotFoundError, version
 
