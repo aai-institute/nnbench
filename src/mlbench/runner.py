@@ -1,14 +1,25 @@
 """The abstract benchmark runner interface, which can be overridden for custom benchmark workloads."""
+from __future__ import annotations
 
+import logging
+import os
 import sys
+from pathlib import Path
 from typing import Any
 
 from mlbench.benchmark import Benchmark
+from mlbench.util import import_file_as_module, ismodule
 
 BenchmarkResult = dict[str, Any]
 
+logger = logging.getLogger(__name__)
 
-def is_dunder(s: str) -> bool:
+
+def iscontainer(s: Any) -> bool:
+    return isinstance(s, (tuple, list))
+
+
+def isdunder(s: str) -> bool:
     return s.startswith("__") and s.endswith("__")
 
 
@@ -20,35 +31,73 @@ class AbstractBenchmarkRunner:
     def __init__(self):
         self.benchmarks: list[Benchmark] = list()
 
-    # TODO (n.junge): Add regex/tag filters (and corresponding slots on the Benchmark)
-    def discover(self, module: str = "__main__") -> None:
+    def collect(
+        self, path_or_module: str | os.PathLike[str] = "__main__", tags: tuple[str, ...] = ()
+    ) -> None:
         # TODO: functools.cache this guy
         """
         Discover benchmarks in a module and memoize them for later use.
 
         Parameters
         ----------
-        module: str
-            Name of the module to discover benchmarks in. Currently, only "__main__" (i.e. the caller module) is supported.
+        path_or_module: str | os.PathLike[str]
+            Name or path of the module to discover benchmarks in. Can also be a directory,
+            in which case benchmarks are collected from the Python files therein.
+        tags: tuple[str, ...]
+            Tags to filter for when collecting benchmarks. Only benchmarks containing either of
+            these tags are collected.
         """
-        if module != "__main__":
-            raise NotImplementedError("module discovery not implemented")
+        if ismodule(path_or_module):
+            module = sys.modules[str(path_or_module)]
+        else:
+            ppath = Path(path_or_module)
+            if ppath.is_dir():
+                pythonpaths = (p for p in ppath.iterdir() if p.suffix == ".py")
+                for py in pythonpaths:
+                    logger.debug(f"Collecting benchmarks from submodule {py.name!r}.")
+                    self.collect(py)
+                return
+            elif ppath.is_file():
+                module = import_file_as_module(path_or_module)
+            else:
+                raise ValueError(
+                    f"expected a module name, Python file, or directory, "
+                    f"got {str(path_or_module)!r}"
+                )
 
-        # __main__ is always in sys.modules.
-        for k, v in sys.modules[module].__dict__.items():
-            if is_dunder(k):
+        # iterate through the module dict members to register
+        for k, v in module.__dict__.items():
+            if isdunder(k):
                 continue
-            # memoize benchmarks.
             elif isinstance(v, self.benchmark_type):
                 self.benchmarks.append(v)
-            elif isinstance(v, list) and all(isinstance(b, self.benchmark_type) for b in v):
-                self.benchmarks.extend(v)
+            elif iscontainer(v):
+                for bm in v:
+                    if isinstance(bm, self.benchmark_type):
+                        self.benchmarks.append(bm)
 
-        return None
+        # and finally, filter by tags.
+        self.benchmarks = [b for b in self.benchmarks if set(tags) <= set(b.tags)]
 
-    def run(self) -> list[BenchmarkResult]:
+    def run(
+        self,
+        path_or_module: str | os.PathLike[str] = "__main__",
+        tags: tuple[str, ...] = (),
+        clear: bool = False,
+    ) -> list[BenchmarkResult]:
         """
         Run a previously collected benchmark workload.
+
+        Parameters
+        ----------
+        path_or_module: str | os.PathLike[str]
+            Name or path of the module to discover benchmarks in. Can also be a directory,
+            in which case benchmarks are collected from the Python files therein.
+        tags: tuple[str, ...]
+            Tags to filter for when collecting benchmarks. Only benchmarks containing either of
+            these tags are collected.
+        clear: bool
+            Unregister all available benchmarks after the run.
 
         Returns
         -------
@@ -56,18 +105,30 @@ class AbstractBenchmarkRunner:
             A list of JSON outputs representing the benchmark results.
         """
         if not self.benchmarks:
-            self.discover()
+            self.collect(path_or_module, tags)
+
+        # if we still have no benchmarks after collection, warn.
+        if not self.benchmarks:
+            logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
 
         results: list[BenchmarkResult] = []
         for benchmark in self.benchmarks:
-            # TODO (n.junge): Wrap this in execution context
-            pkwargs = benchmark.setUp(**benchmark.params)
-            res: BenchmarkResult = benchmark.fn(**pkwargs)
-            benchmark.tearDown(**benchmark.params)
-            results.append(res)
+            res: BenchmarkResult = {}
+            try:
+                benchmark.setUp(**benchmark.params)
+                res.update(benchmark.fn(**benchmark.params))
+            except Exception as e:
+                # TODO: This needs work
+                res["error_occurred"] = True
+                res["error_message"] = str(e)
+            finally:
+                benchmark.tearDown(**benchmark.params)
+                results.append(res)
 
-        # TODO: Once discovery is cached, the cache needs to be cleared here
-        self.benchmarks.clear()
+        if clear:
+            # TODO: Once discovery is cached, the cache needs to be cleared here
+            #  (for _all_ subpaths in case of a directory)
+            self.benchmarks.clear()
         return results
 
     def report(self) -> None:
