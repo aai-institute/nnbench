@@ -7,8 +7,12 @@ from pathlib import Path
 from types import ModuleType
 
 
-def ismodule(name: str) -> bool:
+def ismodule(name: str | os.PathLike[str]) -> bool:
     """Checks if the current interpreter has an available Python module named `name`."""
+    name = str(name)
+    if name in sys.modules:
+        return True
+
     root, *parts = name.split(".")
 
     for part in parts:
@@ -33,8 +37,10 @@ def modulename(file: str | os.PathLike[str]) -> str:
 def import_file_as_module(file: str | os.PathLike[str]) -> ModuleType:
     fpath = Path(file)
     if not fpath.is_file() or fpath.suffix != ".py":
-        raise ValueError(f"path {fpath} is not a Python file")
+        raise ValueError(f"path {str(file)!r} is not a Python file")
 
+    # TODO: For absolute paths, the resulting module name will be horrifying
+    #  -> find a sensible cutoff point (project root)
     modname = modulename(fpath)
     if modname in sys.modules:
         # return already loaded module
@@ -44,4 +50,7 @@ def import_file_as_module(file: str | os.PathLike[str]) -> ModuleType:
     if spec is None:
         raise RuntimeError(f"could not import module {fpath}")
 
-    return spec.loader.load_module(modname)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[modname] = module
+    spec.loader.exec_module(module)
+    return module
