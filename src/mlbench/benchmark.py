@@ -17,11 +17,11 @@ class Benchmark:
     params: dict[str, Any] = field(repr=False, default_factory=dict)
     """Default parameters to attach to a benchmark. Must match the benchmark's interface."""
     setUp: Callable | None = field(repr=False, default=None)
-    """A setup hook run before the benchmark. Takes `params` as its only input."""
+    """A setup hook run before the benchmark. Must take all members of `params` as inputs."""
     tearDown: Callable | None = field(repr=False, default=None)
-    """A teardown hook run after the benchmark. Takes `params` as its only input."""
+    """A teardown hook run after the benchmark. Must take all members of `params` as inputs."""
     tags: tuple[str, ...] = field(repr=False, default=())
-    """Additional tags to attach to the benchmark for bookkeeping and selective filtering during runs."""
+    """Additional tags to attach for bookkeeping and selective filtering during runs."""
 
     def __post_init__(self):
         if not self.name:
