@@ -7,3 +7,6 @@ try:
 except PackageNotFoundError:
     # package is not installed
     pass
+
+# TODO: This naming is unfortunate
+from .core import Benchmark, benchmark, parametrize

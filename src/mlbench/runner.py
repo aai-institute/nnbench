@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from mlbench.benchmark import Benchmark
+from mlbench.core import Benchmark
 from mlbench.util import import_file_as_module, ismodule
 
 BenchmarkResult = dict[str, Any]
@@ -30,6 +30,10 @@ class AbstractBenchmarkRunner:
 
     def __init__(self):
         self.benchmarks: list[Benchmark] = list()
+
+    def clear(self) -> None:
+        """Clear all registered benchmarks."""
+        self.benchmarks.clear()
 
     def collect(
         self, path_or_module: str | os.PathLike[str] = "__main__", tags: tuple[str, ...] = ()
