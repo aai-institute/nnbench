@@ -5,12 +5,17 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence, TypedDict
 
+from mlbench.context import ContextProvider
 from mlbench.core import Benchmark
 from mlbench.util import import_file_as_module, ismodule
 
-BenchmarkResult = dict[str, Any]
+
+class BenchmarkResult(TypedDict):
+    context: dict[str, Any]
+    benchmarks: list[dict[str, Any]]
+
 
 logger = logging.getLogger(__name__)
 
@@ -86,9 +91,10 @@ class AbstractBenchmarkRunner:
     def run(
         self,
         path_or_module: str | os.PathLike[str] = "__main__",
+        params: dict[str, Any] | None = None,
         tags: tuple[str, ...] = (),
-        clear: bool = False,
-    ) -> list[BenchmarkResult]:
+        context: Sequence[ContextProvider] = (),
+    ) -> BenchmarkResult:
         """
         Run a previously collected benchmark workload.
 
@@ -97,16 +103,23 @@ class AbstractBenchmarkRunner:
         path_or_module: str | os.PathLike[str]
             Name or path of the module to discover benchmarks in. Can also be a directory,
             in which case benchmarks are collected from the Python files therein.
+        params: dict[str, Any] | None
+            Parameters to use for the benchmark run. Names have to match positional and keyword
+            argument names of the benchmark functions.
         tags: tuple[str, ...]
             Tags to filter for when collecting benchmarks. Only benchmarks containing either of
             these tags are collected.
-        clear: bool
-            Unregister all available benchmarks after the run.
+        context: tuple[ContextProvider]
+            Additional context to log with the benchmark in the output JSON record. Useful for
+            obtaining environment information and configuration, like CPU/GPU hardware info,
+            ML model metadata, and more.
 
         Returns
         -------
-        list[BenchmarkResult]
-            A list of JSON outputs representing the benchmark results.
+        BenchmarkResult
+            A JSON output representing the benchmark results. Has two top-level keys, "context"
+            holding the context information, and "benchmarks", holding an array with the
+            benchmark results.
         """
         if not self.benchmarks:
             self.collect(path_or_module, tags)
@@ -115,25 +128,39 @@ class AbstractBenchmarkRunner:
         if not self.benchmarks:
             logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
 
-        results: list[BenchmarkResult] = []
+        dcontext: dict[str, Any] = dict()
+
+        for provider in context:
+            ctxval = provider()
+            if isinstance(ctxval, tuple):
+                key, val = ctxval
+                dcontext[key] = val
+            else:
+                # multi-value context information.
+                for v in ctxval:
+                    key, val = v
+                    dcontext[key] = val
+
+        results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
-            res: BenchmarkResult = {}
+            res: dict[str, Any] = {}
+            # TODO: Validate against interface and pass only the kwargs relevant to the benchmark
+            params |= benchmark.params
             try:
-                benchmark.setUp(**benchmark.params)
-                res.update(benchmark.fn(**benchmark.params))
+                benchmark.setUp(**params)
+                res.update(benchmark.fn(**params))
             except Exception as e:
                 # TODO: This needs work
                 res["error_occurred"] = True
                 res["error_message"] = str(e)
             finally:
-                benchmark.tearDown(**benchmark.params)
+                benchmark.tearDown(**params)
                 results.append(res)
 
-        if clear:
-            # TODO: Once discovery is cached, the cache needs to be cleared here
-            #  (for _all_ subpaths in case of a directory)
-            self.benchmarks.clear()
-        return results
+        return BenchmarkResult(
+            context=dcontext,
+            benchmarks=results,
+        )
 
     def report(self) -> None:
         """Report collected results from a previous run."""
