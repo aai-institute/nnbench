@@ -6,6 +6,10 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable
 
 
+def NoOp(**kwargs: Any) -> None:
+    pass
+
+
 @dataclass(frozen=True)
 class Benchmark:
     """
@@ -13,26 +17,26 @@ class Benchmark:
 
     Parameters
     ----------
-    fn: Callable
+    fn: Callable[..., Any]
         The function defining the benchmark.
     name: str | None
         A name to display for the given benchmark. If not given, will be constructed from the
         function name and given parameters.
     params: dict[str, Any]
         Fixed parameters to pass to the benchmark.
-    setUp: Callable
+    setUp: Callable[..., None]
         A setup hook run before the benchmark. Must take all members of `params` as inputs.
-    tearDown: Callable
+    tearDown: Callable[..., None]
         A teardown hook run after the benchmark. Must take all members of `params` as inputs.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
     """
 
-    fn: Callable
+    fn: Callable[..., Any]
     name: str | None = field(default=None)
     params: dict[str, Any] = field(repr=False, default_factory=dict)
-    setUp: Callable | None = field(repr=False, default=None)
-    tearDown: Callable | None = field(repr=False, default=None)
+    setUp: Callable[..., None] = field(repr=False, default=NoOp)
+    tearDown: Callable[..., None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
 
     def __post_init__(self):
@@ -46,10 +50,10 @@ class Benchmark:
 
 
 def benchmark(
-    func: Callable | None = None,
+    func: Callable[..., Any] | None = None,
     params: dict[str, Any] | None = None,
-    setUp: Callable | None = None,
-    tearDown: Callable | None = None,
+    setUp: Callable[..., None] = NoOp,
+    tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
 ) -> Callable:
     """
@@ -61,13 +65,13 @@ def benchmark(
 
     Parameters
     ----------
-    func: Callable | None
+    func: Callable[..., Any] | None
         The function to benchmark.
     params: dict[str, Any]
         The parameters (or a subset thereof) defining the benchmark.
-    setUp: Callable
+    setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
-    tearDown: Callable
+    tearDown: Callable[..., None]
         A teardown hook to run after each of the benchmarks.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
@@ -78,6 +82,8 @@ def benchmark(
         A decorated callable yielding the benchmark.
     """
 
+    # TODO: The above return typing is incorrect
+    #  (needs a func is None vs. func is not None overload)
     def inner(fn: Callable) -> Benchmark:
         name = fn.__name__
         if params:
@@ -91,10 +97,10 @@ def benchmark(
 
 
 def parametrize(
-    func: Callable | None = None,
+    func: Callable[..., Any] | None = None,
     parameters: Iterable[dict] | None = None,
-    setUp: Callable | None = None,
-    tearDown: Callable | None = None,
+    setUp: Callable[..., None] = None,
+    tearDown: Callable[..., None] = None,
     tags: tuple[str, ...] = (),
 ) -> Callable:
     """
@@ -106,13 +112,13 @@ def parametrize(
 
     Parameters
     ----------
-    func: Callable | None
+    func: Callable[..., Any] | None
         The function to benchmark.
     parameters: Iterable[dict]
         The different sets of parameters defining the benchmark family.
-    setUp: Callable | None
+    setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
-    tearDown: Callable | None
+    tearDown: Callable[..., None]
         A teardown hook to run after each of the benchmarks.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
@@ -123,6 +129,8 @@ def parametrize(
         A decorated callable yielding the benchmark family.
     """
 
+    # TODO: The above return typing is incorrect
+    #  (needs a func is None vs. func is not None overload)
     def inner(fn: Callable) -> list[Benchmark]:
         benchmarks = []
         for params in parameters:
