@@ -10,6 +10,20 @@ def NoOp(**kwargs: Any) -> None:
     pass
 
 
+# TODO: Should this be frozen (since the setUp and tearDown hooks are empty returns)?
+@dataclass(init=False)
+class Params:
+    """
+    A dataclass designed to hold benchmark parameters. This class is not functional
+    on its own, and needs to be subclassed according to your benchmarking workloads.
+
+    The main advantage over passing parameters as a dictionary is, of course,
+    static analysis and type safety for your benchmarking code.
+    """
+
+    pass
+
+
 @dataclass(frozen=True)
 class Benchmark:
     """
