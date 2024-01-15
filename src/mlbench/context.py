@@ -1,10 +1,10 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
 
 import platform
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Sequence, Union
 
 ContextTuple = tuple[str, Any]
-ContextProvider = Callable[[], ContextTuple | Sequence[ContextTuple]]
+ContextProvider = Callable[[], Union[ContextTuple, Sequence[ContextTuple]]]
 """A function providing a context value. Context tuple is structured as context key name and value."""
 
 
