@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence, TypedDict
 
-from mlbench.context import ContextProvider
-from mlbench.core import Benchmark
-from mlbench.util import import_file_as_module, ismodule
+from nnbench.context import ContextProvider
+from nnbench.core import Benchmark
+from nnbench.util import import_file_as_module, ismodule
 
 
 class BenchmarkResult(TypedDict):
@@ -55,6 +55,11 @@ class AbstractBenchmarkRunner:
         tags: tuple[str, ...]
             Tags to filter for when collecting benchmarks. Only benchmarks containing either of
             these tags are collected.
+
+        Raises
+        ------
+        ValueError
+            If the given path is not a Python file, directory, or module name.
         """
         if ismodule(path_or_module):
             module = sys.modules[str(path_or_module)]
@@ -109,7 +114,7 @@ class AbstractBenchmarkRunner:
         tags: tuple[str, ...]
             Tags to filter for when collecting benchmarks. Only benchmarks containing either of
             these tags are collected.
-        context: tuple[ContextProvider]
+        context: Sequence[ContextProvider]
             Additional context to log with the benchmark in the output JSON record. Useful for
             obtaining environment information and configuration, like CPU/GPU hardware info,
             ML model metadata, and more.

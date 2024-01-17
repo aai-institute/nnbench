@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up Python and dependencies
@@ -22,7 +22,12 @@ jobs:
           cache: pip
           cache-dependency-path: |
             requirements-dev.txt
+            requirements-docs.txt
             pyproject.toml
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt -r requirements-docs.txt
+          pip install -e . --no-deps
       - name: Build and check
         run: |
           python -m build
@@ -31,6 +36,11 @@ jobs:
         with:
           name: dist
           path: dist
+      - name: Publish stable documentation for nnbench
+        uses: ./.github/actions/mike-docs
+        with:
+          version: stable
+          push: true
   publish_pypi:
     name: Publish wheels to PyPI
     needs: [build]

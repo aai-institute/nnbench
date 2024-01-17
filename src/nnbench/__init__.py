@@ -3,7 +3,7 @@
 from importlib.metadata import PackageNotFoundError, version
 
 try:
-    __version__ = version("mlbench")
+    __version__ = version("nnbench")
 except PackageNotFoundError:
     # package is not installed
     pass

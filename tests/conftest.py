@@ -5,7 +5,7 @@ import pytest
 
 HERE = Path(__file__).parent
 
-logger = logging.getLogger("mlbench")
+logger = logging.getLogger("nnbench")
 logger.setLevel(logging.DEBUG)
 
 

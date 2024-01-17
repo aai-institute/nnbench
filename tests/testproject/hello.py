@@ -1,4 +1,4 @@
-from mlbench import benchmark
+from nnbench import benchmark
 
 
 @benchmark

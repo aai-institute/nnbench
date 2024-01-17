@@ -3,7 +3,7 @@ requires = ["setuptools>=45", "setuptools-scm[toml]>=7.1", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mlbench"
+name = "nnbench"
 description = "A small framework for benchmarking machine learning models."
 keywords = ["Benchmarking", "Machine Learning"]
 requires-python = ">=3.9"
@@ -36,16 +36,29 @@ dependencies = []
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/aai-institute/mlbench"
-Repository = "https://github.com/aai-institute/mlbench.git"
-Issues = "https://github.com/aai-institute/mlbench/issues"
-Discussions = "https://github.com/aai-institute/mlbench/discussions"
+Homepage = "https://github.com/aai-institute/nnbench"
+Repository = "https://github.com/aai-institute/nnbench.git"
+Issues = "https://github.com/aai-institute/nnbench/issues"
+Discussions = "https://github.com/aai-institute/nnbench/discussions"
 
 [project.optional-dependencies]
 dev = [
     "build>=1.0.0",
     "pre-commit>=3.3.3",
     "pytest>=7.4.0",
+]
+docs = [
+    "black",
+    "mike",
+    "mkdocs",
+    "mkdocs-callouts",
+    "mkdocs-gen-files",
+    "mkdocs-literate-nav",
+    "mkdocs-section-index",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-include-dir-to-nav",
+    "neoteroi-mkdocs",
 ]
 
 [tool.setuptools]
@@ -55,7 +68,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-mlbench = ["py.typed"]
+nnbench = ["py.typed"]
 
 # Automatically determine version number from Git tags
 [tool.setuptools_scm]
@@ -96,3 +109,7 @@ exclude_dirs = ["tests"]
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "DEBUG"
+
+[tool.pydoclint]
+style = 'numpy'
+exclude = '\.git|venv'

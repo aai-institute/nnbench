@@ -1,6 +1,6 @@
 import pytest
 
-from mlbench.util import ismodule, modulename
+from nnbench.util import ismodule, modulename
 
 
 @pytest.mark.parametrize("name,expected", [("sys", True), ("yaml", True), ("pipapo", False)])
