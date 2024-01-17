@@ -47,6 +47,19 @@ dev = [
     "pre-commit>=3.3.3",
     "pytest>=7.4.0",
 ]
+docs = [
+    "black",
+    "mike",
+    "mkdocs",
+    "mkdocs-callouts",
+    "mkdocs-gen-files",
+    "mkdocs-literate-nav",
+    "mkdocs-section-index",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-include-dir-to-nav",
+    "neoteroi-mkdocs",
+]
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -96,3 +109,7 @@ exclude_dirs = ["tests"]
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "DEBUG"
+
+[tool.pydoclint]
+style = 'numpy'
+exclude = '\.git|venv'

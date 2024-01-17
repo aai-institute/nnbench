@@ -28,3 +28,7 @@ repos:
     - id: bandit
       args: [-c, pyproject.toml]
       additional_dependencies: ["bandit[toml]"]
+  - repo: https://github.com/jsh9/pydoclint
+    rev: 0.3.8
+    hooks:
+      - id: pydoclint
