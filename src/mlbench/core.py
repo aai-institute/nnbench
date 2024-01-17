@@ -81,7 +81,7 @@ def benchmark(
     ----------
     func: Callable[..., Any] | None
         The function to benchmark.
-    params: dict[str, Any]
+    params: dict[str, Any] | None
         The parameters (or a subset thereof) defining the benchmark.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
@@ -113,8 +113,8 @@ def benchmark(
 def parametrize(
     func: Callable[..., Any] | None = None,
     parameters: Iterable[dict] | None = None,
-    setUp: Callable[..., None] = None,
-    tearDown: Callable[..., None] = None,
+    setUp: Callable[..., None] = NoOp,
+    tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
 ) -> Callable:
     """
@@ -128,7 +128,7 @@ def parametrize(
     ----------
     func: Callable[..., Any] | None
         The function to benchmark.
-    parameters: Iterable[dict]
+    parameters: Iterable[dict] | None
         The different sets of parameters defining the benchmark family.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
