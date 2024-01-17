@@ -22,7 +22,12 @@ jobs:
           cache: pip
           cache-dependency-path: |
             requirements-dev.txt
+            requirements-docs.txt
             pyproject.toml
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt -r requirements-docs.txt
+          pip install -e . --no-deps
       - name: Build and check
         run: |
           python -m build
