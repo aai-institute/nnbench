@@ -1,6 +1,6 @@
 # Quickstart
 
-Welcome! This quickstart guide will convey the basics needed to use mlbench.
+Welcome! This quickstart guide will convey the basics needed to use nnbench.
 You will define a benchmark, initialize a runner and reporter, and execute the benchmark, obtaining the results in the console in tabular format.
 
 TODO: Add content.

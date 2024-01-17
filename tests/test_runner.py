@@ -1,6 +1,6 @@
 import os
 
-from mlbench.runner import AbstractBenchmarkRunner
+from nnbench.runner import AbstractBenchmarkRunner
 
 
 def test_runner_discovery(testfolder: str) -> None:

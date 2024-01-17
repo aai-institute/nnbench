@@ -1,9 +1,9 @@
-# Contributing to mlbench
+# Contributing to nnbench
 
 Thank you for your interest in contributing to this project!
 
 We appreciate issue reports, pull requests for code and documentation,
-as well as any project-related communication through [GitHub Discussions](https://github.com/aai-institute/mlbench/discussions).
+as well as any project-related communication through [GitHub Discussions](https://github.com/aai-institute/nnbench/discussions).
 
 ## Getting Started
 
@@ -12,13 +12,13 @@ To get started with development, you can follow these steps:
 1. Clone this repository:
 
     ```shell
-    git clone https://github.com/aai-institute/mlbench.git
+    git clone https://github.com/aai-institute/nnbench.git
     ```
 
 2. Navigate to the directory and install the development dependencies into a virtual environment:
 
     ```shell
-    cd mlbench
+    cd nnbench
     python3 -m venv venv --system-site-packages
     source venv/bin/activate
     python -m pip install -r requirements-dev.txt

@@ -1,6 +1,6 @@
 #
 
-Welcome to mlbench, a framework for reproducibly benchmarking machine learning models.
+Welcome to nnbench, a framework for reproducibly benchmarking machine learning models.
 The main goals of this project are portable and customizable benchmarking for ML models, and easy integration into existing ML pipelines.
 
 Highlights:
@@ -17,17 +17,17 @@ Highlights:
   url: quickstart.md
 
 - title: Tutorials
-  content: In-depth tutorials on using mlbench
+  content: In-depth tutorials on using nnbench
   icon: ":octicons-repo-clone-24:{ .landing-page-icon }"
   url: tutorials/index.md
 
 - title: API Reference
   content: Full documentation of the Python API
   icon: ":octicons-file-code-24:{ .landing-page-icon }"
-  url: reference/mlbench/index.md
+  url: reference/nnbench/index.md
 
 - title: User Guide
-  content: Solving specific tasks with mlbench
+  content: Solving specific tasks with nnbench
   icon: ":octicons-tasklist-24:{ .landing-page-icon }"
   url: guides/index.md
 

@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence, TypedDict
 
-from mlbench.context import ContextProvider
-from mlbench.core import Benchmark
-from mlbench.util import import_file_as_module, ismodule
+from nnbench.context import ContextProvider
+from nnbench.core import Benchmark
+from nnbench.util import import_file_as_module, ismodule
 
 
 class BenchmarkResult(TypedDict):
