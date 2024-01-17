@@ -31,6 +31,11 @@ jobs:
         with:
           name: dist
           path: dist
+      - name: Publish stable documentation for nnbench
+        uses: ./.github/actions/mike-docs
+        with:
+          version: stable
+          push: true
   publish_pypi:
     name: Publish wheels to PyPI
     needs: [build]
