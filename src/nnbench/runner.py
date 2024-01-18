@@ -5,17 +5,11 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, Sequence, TypedDict
+from typing import Any, Sequence
 
 from nnbench.context import ContextProvider
-from nnbench.core import Benchmark
+from nnbench.types import Benchmark, BenchmarkResult
 from nnbench.util import import_file_as_module, ismodule
-
-
-class BenchmarkResult(TypedDict):
-    context: dict[str, Any]
-    benchmarks: list[dict[str, Any]]
-
 
 logger = logging.getLogger(__name__)
 
