@@ -83,7 +83,7 @@ strict_optional = false
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["yaml"]
+module = ["tabulate", "yaml"]
 ignore_missing_imports = true
 
 [tool.ruff]

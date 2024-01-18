@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from nnbench.context import ContextProvider
+from nnbench.reporter import BaseReporter, reporter_registry
 from nnbench.types import Benchmark, BenchmarkResult
 from nnbench.util import import_file_as_module, ismodule
 
@@ -161,6 +162,38 @@ class AbstractBenchmarkRunner:
             benchmarks=results,
         )
 
-    def report(self) -> None:
-        """Report collected results from a previous run."""
-        raise NotImplementedError
+    def report(
+        self, to: str | BaseReporter | Sequence[str | BaseReporter], result: BenchmarkResult
+    ) -> None:
+        """
+        Report collected results from a previous run.
+
+        Parameters
+        ----------
+        to: str | BaseReporter | Sequence[str | BaseReporter]
+            The reporter to use when reporting / streaming results. Can be either a string
+            (which prompts a lookup of all nnbench native reporters), a reporter instance,
+            or a sequence thereof, which enables streaming result data to multiple sinks.
+        result: BenchmarkResult
+            The benchmark result to report.
+        """
+
+        def load_reporter(r: str | BaseReporter) -> BaseReporter:
+            if isinstance(r, str):
+                try:
+                    return reporter_registry[r]()
+                except KeyError:
+                    # TODO: Add a note on nnbench reporter entry point once supported
+                    raise KeyError(f"unknown reporter class {r!r}")
+            else:
+                return r
+
+        dests: tuple[BaseReporter, ...] = ()
+
+        if isinstance(to, (str, BaseReporter)):
+            dests += (load_reporter(to),)
+        else:
+            dests += tuple(load_reporter(t) for t in to)
+
+        for reporter in dests:
+            reporter.report(result)

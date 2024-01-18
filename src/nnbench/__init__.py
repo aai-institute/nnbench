@@ -9,4 +9,6 @@ except PackageNotFoundError:
     pass
 
 # TODO: This naming is unfortunate
-from .core import Benchmark, Params, benchmark, parametrize
+from .core import benchmark, parametrize
+from .reporter import BaseReporter
+from .types import Benchmark, Params
