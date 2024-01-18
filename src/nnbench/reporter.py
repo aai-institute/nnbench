@@ -1,3 +1,7 @@
+"""
+A lightweight interface for refining, displaying, and streaming benchmark results to various sinks.
+"""
+
 import sys
 import types
 from typing import Any
