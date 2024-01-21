@@ -2,6 +2,7 @@
 A lightweight interface for refining, displaying, and streaming benchmark results to various sinks.
 """
 
+import importlib
 import sys
 import types
 from typing import Any
@@ -58,3 +59,19 @@ _reporter_registry: dict[str, type[BaseReporter]] = {
 reporter_registry: types.MappingProxyType[str, type[BaseReporter]] = types.MappingProxyType(
     _reporter_registry
 )
+
+
+def register_reporter(name: str) -> None:
+    """
+    Register a reporter class by its fully qualified module path.
+
+    Parameters
+    ----------
+    name: str
+        The full module path to the reporter class. For example, when registering a class
+        ``MyReporter`` located in ``my_module``, ``name`` should be ``my_module.MyReporter``.
+    """
+    modname, clsname = name.rsplit(".", 1)
+    mod = importlib.import_module(modname)
+    cls = getattr(mod, clsname)
+    _reporter_registry[name] = cls
