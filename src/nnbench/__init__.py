@@ -23,7 +23,8 @@ def add_reporters():
         reporters = eps.get("nnbench.reporters", [])  # type: ignore
 
     for rep in reporters:
-        register_reporter(rep.name)
+        key, clsname = rep.name.split("=", 1)
+        register_reporter(key, clsname)
 
 
 add_reporters()
