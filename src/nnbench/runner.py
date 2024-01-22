@@ -26,7 +26,7 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
             if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
                 orig_type = benchmark_interface[name]
                 raise TypeError(
-                    f"got non-unique types {orig_type}, {
+                    f"got non-unique types {orig_type.annotation}, {
                         param_type} for parameter {name!r}"
                 )
             benchmark_interface[name] = param
@@ -176,20 +176,20 @@ class AbstractBenchmarkRunner:
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
+            sig = inspect.signature(benchmark.fn)
+            bn_params = {k: v for k, v in params_dict.items() if k in sig.parameters}
             res: dict[str, Any] = {}
-            # TODO: Validate against interface and pass only the kwargs relevant to the benchmark
-            # params |= benchmark.params
             try:
-                benchmark.setUp(**params_dict)
+                benchmark.setUp(**bn_params)
                 # Todo: check params
                 res["name"] = benchmark.fn.__name__
-                res["value"] = benchmark.fn(**params_dict)
+                res["value"] = benchmark.fn(**bn_params)
             except Exception as e:
                 # TODO: This needs work
                 res["error_occurred"] = True
                 res["error_message"] = str(e)
             finally:
-                benchmark.tearDown(**params_dict)
+                benchmark.tearDown(**bn_params)
                 results.append(res)
 
         return BenchmarkResult(
