@@ -13,3 +13,8 @@ logger.setLevel(logging.DEBUG)
 def testfolder() -> str:
     """A test directory for benchmark collection."""
     return str(HERE / "testproject")
+
+
+@pytest.fixture(scope='session')
+def typecheckfolder() -> str:
+    return str(HERE / "typecheck_tests")
