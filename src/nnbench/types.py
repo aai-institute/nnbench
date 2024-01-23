@@ -79,8 +79,6 @@ class Benchmark:
     name: str | None
         A name to display for the given benchmark. If not given, will be constructed from the
         function name and given parameters.
-    params: dict[str, Any]
-        Fixed parameters to pass to the benchmark.
     setUp: Callable[..., None]
         A setup hook run before the benchmark. Must take all members of `params` as inputs.
     tearDown: Callable[..., None]
@@ -91,7 +89,6 @@ class Benchmark:
 
     fn: Callable[..., Any]
     name: str | None = field(default=None)
-    params: dict[str, Any] = field(repr=False, default_factory=dict)
     setUp: Callable[..., None] = field(repr=False, default=NoOp)
     tearDown: Callable[..., None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
@@ -99,8 +96,6 @@ class Benchmark:
     def __post_init__(self):
         if not self.name:
             name = self.fn.__name__
-            if self.params:
-                name += "_" + "_".join(f"{k}={v}" for k, v in self.params.items())
 
             super().__setattr__("name", name)
         # TODO: Parse interface using `inspect`, attach to the class

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from functools import partial
 from typing import Any, Callable, Iterable
 
 from nnbench.types import Benchmark
@@ -13,7 +14,6 @@ def NoOp(**kwargs: Any) -> None:
 
 def benchmark(
     func: Callable[..., Any] | None = None,
-    params: dict[str, Any] | None = None,
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -29,8 +29,6 @@ def benchmark(
     ----------
     func: Callable[..., Any] | None
         The function to benchmark.
-    params: dict[str, Any] | None
-        The parameters (or a subset thereof) defining the benchmark.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
     tearDown: Callable[..., None]
@@ -47,10 +45,7 @@ def benchmark(
     # TODO: The above return typing is incorrect
     #  (needs a func is None vs. func is not None overload)
     def inner(fn: Callable) -> Benchmark:
-        name = fn.__name__
-        if params:
-            name += "_" + "_".join(f"{k}={v}" for k, v in params.items())
-        return Benchmark(fn, name=name, params=params, setUp=setUp, tearDown=tearDown, tags=tags)
+        return Benchmark(fn, setUp=setUp, tearDown=tearDown, tags=tags)
 
     if func:
         return inner(func)  # type: ignore
@@ -99,7 +94,8 @@ def parametrize(
             name = fn.__name__
             if params:
                 name += "_" + "_".join(f"{k}={v}" for k, v in params.items())
-            bm = Benchmark(fn, name=name, params=params, setUp=setUp, tearDown=tearDown, tags=tags)
+                fn = partial(fn, **params)
+            bm = Benchmark(fn, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
         return benchmarks
 
