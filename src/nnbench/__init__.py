@@ -9,7 +9,7 @@ except PackageNotFoundError:
     pass
 
 # TODO: This naming is unfortunate
-from .core import benchmark, parametrize
+from .core import benchmark, parametrize, product
 from .reporter import BaseReporter, register_reporter
 from .types import Benchmark, Params
 
