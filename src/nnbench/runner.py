@@ -1,18 +1,42 @@
 """The abstract benchmark runner interface, which can be overridden for custom benchmark workloads."""
 from __future__ import annotations
 
+import inspect
 import logging
 import os
 import sys
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Sequence
 
 from nnbench.context import ContextProvider
 from nnbench.reporter import BaseReporter, reporter_registry
-from nnbench.types import Benchmark, BenchmarkResult
+from nnbench.types import Benchmark, BenchmarkResult, Params
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
+
+
+def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
+    param_types = {k: type(v) for k, v in params.items()}
+    benchmark_interface: dict[str, inspect.Parameter] = {}
+    for bm in benchmarks:
+        for name, param in inspect.signature(bm.fn).parameters.items():
+            param_type = param.annotation
+            if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
+                orig_type = benchmark_interface[name].annotation
+                raise TypeError(
+                    f"got non-unique types {orig_type}, {param_type} for parameter {name!r}"
+                )
+            benchmark_interface[name] = param
+    for name, param in benchmark_interface.items():
+        if name not in param_types and param.default == inspect.Parameter.empty:
+            raise ValueError(f"missing value for required parameter {name!r}")
+        if not issubclass(param_types[name], param.annotation):
+            raise TypeError(
+                f"expected type {param.annotation} for parameter {name!r}, "
+                f"got {param_types[name]!r}"
+            )
 
 
 def iscontainer(s: Any) -> bool:
@@ -90,11 +114,11 @@ class AbstractBenchmarkRunner:
 
     def run(
         self,
-        path_or_module: str | os.PathLike[str] = "__main__",
-        params: dict[str, Any] | None = None,
+        path_or_module: str | os.PathLike[str],
+        params: dict[str, Any] | Params,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
-    ) -> BenchmarkResult:
+    ) -> BenchmarkResult | None:
         """
         Run a previously collected benchmark workload.
 
@@ -103,7 +127,7 @@ class AbstractBenchmarkRunner:
         path_or_module: str | os.PathLike[str]
             Name or path of the module to discover benchmarks in. Can also be a directory,
             in which case benchmarks are collected from the Python files therein.
-        params: dict[str, Any] | None
+        params: dict[str, Any] | Params
             Parameters to use for the benchmark run. Names have to match positional and keyword
             argument names of the benchmark functions.
         tags: tuple[str, ...]
@@ -116,7 +140,7 @@ class AbstractBenchmarkRunner:
 
         Returns
         -------
-        BenchmarkResult
+        BenchmarkResult | None
             A JSON output representing the benchmark results. Has two top-level keys, "context"
             holding the context information, and "benchmarks", holding an array with the
             benchmark results.
@@ -127,6 +151,14 @@ class AbstractBenchmarkRunner:
         # if we still have no benchmarks after collection, warn.
         if not self.benchmarks:
             logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
+            return None  # TODO: Return empty result to preserve strong typing
+
+        if isinstance(params, Params):
+            dparams = asdict(params)
+        else:
+            dparams = params
+
+        _check(dparams, self.benchmarks)
 
         dcontext: dict[str, Any] = dict()
 
@@ -143,18 +175,21 @@ class AbstractBenchmarkRunner:
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
+            # TODO: Refactor once benchmark contains interface
+            sig = inspect.signature(benchmark.fn)
+            bmparams = {k: v for k, v in dparams.items() if k in sig.parameters}
             res: dict[str, Any] = {}
-            # TODO: Validate against interface and pass only the kwargs relevant to the benchmark
-            params |= benchmark.params
             try:
-                benchmark.setUp(**params)
-                res.update(benchmark.fn(**params))
+                benchmark.setUp(**bmparams)
+                # Todo: check params
+                res["name"] = benchmark.fn.__name__
+                res["value"] = benchmark.fn(**bmparams)
             except Exception as e:
                 # TODO: This needs work
                 res["error_occurred"] = True
                 res["error_message"] = str(e)
             finally:
-                benchmark.tearDown(**params)
+                benchmark.tearDown(**bmparams)
                 results.append(res)
 
         return BenchmarkResult(
