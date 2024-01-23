@@ -1,20 +1,19 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
 
 import platform
-from typing import Any, Callable, Sequence, Union
+from typing import Any, Callable
 
-ContextTuple = tuple[str, Any]
-ContextProvider = Callable[[], Union[ContextTuple, Sequence[ContextTuple]]]
-"""A function providing a context value. Context tuple is structured as context key name and value."""
-
-
-def system() -> tuple[str, str]:
-    return "system", platform.system()
+ContextProvider = Callable[[], dict[str, Any]]
+"""A function providing a dictionary of context values."""
 
 
-def cpuarch() -> tuple[str, str]:
-    return "cpuarch", platform.machine()
+def system() -> dict[str, str]:
+    return {"system": platform.system()}
 
 
-def python_version() -> tuple[str, str]:
-    return "python_version", platform.python_version()
+def cpuarch() -> dict[str, str]:
+    return {"cpuarch": platform.machine()}
+
+
+def python_version() -> dict[str, str]:
+    return {"python_version": platform.python_version()}

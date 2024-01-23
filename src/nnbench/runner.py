@@ -144,11 +144,16 @@ class AbstractBenchmarkRunner:
             A JSON output representing the benchmark results. Has two top-level keys, "context"
             holding the context information, and "benchmarks", holding an array with the
             benchmark results.
+
+        Raises
+        ------
+        ValueError
+            If any context key-value pair is provided more than once.
         """
         if not self.benchmarks:
             self.collect(path_or_module, tags)
 
-        # if we still have no benchmarks after collection, warn.
+        # if we still have no benchmarks after collection, warn and return early.
         if not self.benchmarks:
             logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
             return None  # TODO: Return empty result to preserve strong typing
@@ -160,18 +165,20 @@ class AbstractBenchmarkRunner:
 
         _check(dparams, self.benchmarks)
 
-        dcontext: dict[str, Any] = dict()
+        ctx: dict[str, Any] = dict()
+        ctxkeys = set(ctx.keys())
 
         for provider in context:
             ctxval = provider()
-            if isinstance(ctxval, tuple):
-                key, val = ctxval
-                dcontext[key] = val
-            else:
-                # multi-value context information.
-                for v in ctxval:
-                    key, val = v
-                    dcontext[key] = val
+            valkeys = set(ctxval.keys())
+            # we do not allow multiple values for a context key.
+            sec = ctxkeys & valkeys
+            if sec:
+                raise ValueError(
+                    f"got multiple values for context key(s) {', '.join(repr(s) for s in sec)}"
+                )
+            ctx |= ctxval
+            ctxkeys |= valkeys
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
@@ -193,7 +200,7 @@ class AbstractBenchmarkRunner:
                 results.append(res)
 
         return BenchmarkResult(
-            context=dcontext,
+            context=ctx,
             benchmarks=results,
         )
 

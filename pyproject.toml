@@ -105,6 +105,7 @@ ignore = [
 
 [tool.bandit]
 exclude_dirs = ["tests"]
+skips = ["B101"]
 
 [tool.pytest.ini_options]
 log_cli = true
