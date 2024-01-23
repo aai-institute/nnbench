@@ -15,6 +15,6 @@ def testfolder() -> str:
     return str(HERE / "testproject")
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def typecheckfolder() -> str:
     return str(HERE / "typecheck_tests")

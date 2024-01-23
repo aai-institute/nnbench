@@ -1,5 +1,7 @@
 import os
+
 import pytest
+
 from nnbench import runner
 
 
@@ -10,8 +12,7 @@ def test_argcheck(typecheckfolder: str) -> None:
         r.run(benchmarks, params={"x": 1, "y": "1"})
     with pytest.raises(ValueError):
         r.run(benchmarks, params={"x": 1})
-    r.run(benchmarks,
-          params={"x": 1, "y": 1})
+    r.run(benchmarks, params={"x": 1, "y": 1})
 
 
 def test_raises_erro_on_duplicate_params(typecheckfolder: str) -> None:
