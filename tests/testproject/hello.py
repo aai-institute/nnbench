@@ -1,6 +1,6 @@
-from nnbench import benchmark
+import nnbench
 
 
-@benchmark
+@nnbench.benchmark
 def double(x: int) -> int:
     return x * 2
