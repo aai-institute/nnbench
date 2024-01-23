@@ -26,8 +26,7 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
             if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
                 orig_type = benchmark_interface[name]
                 raise TypeError(
-                    f"got non-unique types {orig_type.annotation}, {
-                        param_type} for parameter {name!r}"
+                    f"got non-unique types {orig_type.annotation}, {param_type} for parameter {name!r}"
                 )
             benchmark_interface[name] = param
     for name, param in benchmark_interface.items():
@@ -35,8 +34,7 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
             raise ValueError(f"missing value for parameter {name!r}")
         if not issubclass(param_types[name], param.annotation):
             raise TypeError(
-                f"got wrong type for parameter {
-                    name!r} (expected {param_types[name]!r})"
+                f"got wrong type for parameter {name!r} (expected {param_types[name]!r})"
             )
 
 
