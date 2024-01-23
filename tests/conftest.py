@@ -15,6 +15,8 @@ def testfolder() -> str:
     return str(HERE / "testproject")
 
 
+# TODO: Consider merging all test directories into one,
+#  filtering benchmarks by testcase via tags.
 @pytest.fixture(scope="session")
 def typecheckfolder() -> str:
-    return str(HERE / "typecheck_tests")
+    return str(HERE / "typechecking")
