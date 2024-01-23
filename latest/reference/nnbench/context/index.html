@@ -490,15 +490,6 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.context.ContextTuple" class="md-nav__link">
-    <span class="md-ellipsis">
-      ContextTuple
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#nnbench.context.ContextProvider" class="md-nav__link">
     <span class="md-ellipsis">
       ContextProvider
@@ -717,15 +708,6 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.context.ContextTuple" class="md-nav__link">
-    <span class="md-ellipsis">
-      ContextTuple
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#nnbench.context.ContextProvider" class="md-nav__link">
     <span class="md-ellipsis">
       ContextProvider
@@ -809,27 +791,6 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
-<h2 id="nnbench.context.ContextTuple" class="doc doc-heading">
-          <span class="doc doc-object-name doc-attribute-name">ContextTuple</span>
-
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
-  </span>
-
-<a href="#nnbench.context.ContextTuple" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ContextTuple</span> <span class="o">=</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span>
-</span></code></pre></div>
-
-  <div class="doc doc-contents ">
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
 <h2 id="nnbench.context.ContextProvider" class="doc doc-heading">
           <span class="doc doc-object-name doc-attribute-name">ContextProvider</span>
 
@@ -839,12 +800,12 @@ released. For the most accurate information, please <strong><a href="../../../..
   </span>
 
 <a href="#nnbench.context.ContextProvider" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ContextProvider</span> <span class="o">=</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[],</span> <span class="n"><span title="typing.Union">Union</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.context.ContextTuple" href="#nnbench.context.ContextTuple">ContextTuple</a></span><span class="p">,</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.context.ContextTuple" href="#nnbench.context.ContextTuple">ContextTuple</a></span><span class="p">]]]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ContextProvider</span> <span class="o">=</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[],</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>A function providing a context value. Context tuple is structured as context key name and value.</p>
+      <p>A function providing a dictionary of context values.</p>
   </div>
 
 </div>
@@ -861,16 +822,16 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 <a href="#nnbench.context.system" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">system</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">system</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
 
           <details class="quote">
             <summary>Source code in <code>src/nnbench/context.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="k">def</span> <span class="nf">system</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="k">return</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="k">def</span> <span class="nf">system</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()}</span>
 </span></code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -887,16 +848,16 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 <a href="#nnbench.context.cpuarch" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">cpuarch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">cpuarch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
 
           <details class="quote">
             <summary>Source code in <code>src/nnbench/context.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="k">def</span> <span class="nf">cpuarch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="k">return</span> <span class="s2">&quot;cpuarch&quot;</span><span class="p">,</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="k">def</span> <span class="nf">cpuarch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cpuarch&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()}</span>
 </span></code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -913,16 +874,16 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 <a href="#nnbench.context.python_version" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">python_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">python_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
 
           <details class="quote">
             <summary>Source code in <code>src/nnbench/context.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="k">def</span> <span class="nf">python_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="k">return</span> <span class="s2">&quot;python_version&quot;</span><span class="p">,</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="k">def</span> <span class="nf">python_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;python_version&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()}</span>
 </span></code></pre></div></td></tr></table></div>
           </details>
   </div>
