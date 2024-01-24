@@ -29,7 +29,7 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
 
             param_type = param.annotation
 
-            if param.annotation == inspect.Parameter.empty:
+            if param_type == inspect.Parameter.empty:
                 logger.debug(f"Found untyped parameter {name!r} in benchmark {bm.fn.__name__!r}.")
 
             if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
