@@ -25,9 +25,7 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
             param_type = param.annotation
 
             if param.annotation == inspect.Parameter.empty:
-                logger.debug(
-                    f"Found untyped parameter {name!r} in benchmark {bm.fn.__name__!r}."
-                )
+                logger.debug(f"Found untyped parameter {name!r} in benchmark {bm.fn.__name__!r}.")
 
             if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
                 orig_type = benchmark_interface[name].annotation
@@ -40,11 +38,11 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
         if name not in param_types and param.default == inspect.Parameter.empty:
             raise ValueError(f"missing value for required parameter {name!r}")
 
-        if not param.annotation == inspect.Parameter.empty:
+        if param.annotation == inspect.Parameter.empty:
             continue
 
         # only check type match if type supplied
-        if issubclass(param_types[name], param.annotation):
+        if not issubclass(param_types[name], param.annotation):
             raise TypeError(
                 f"expected type {param.annotation} for parameter {name!r}, "
                 f"got {param_types[name]!r}"
