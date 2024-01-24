@@ -1,11 +1,13 @@
 """Useful type interfaces to override/subclass in benchmarking workflows."""
 from __future__ import annotations
 
+import inspect
 import os
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, TypedDict, TypeVar
 
 T = TypeVar("T")
+Variable = tuple[str, type]
 
 
 class BenchmarkResult(TypedDict):
@@ -85,6 +87,8 @@ class Benchmark:
         A teardown hook run after the benchmark. Must take all members of `params` as inputs.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
+    interface: Interface
+        Interface of the benchmark function
     """
 
     fn: Callable[..., Any]
@@ -92,10 +96,49 @@ class Benchmark:
     setUp: Callable[..., None] = field(repr=False, default=NoOp)
     tearDown: Callable[..., None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
+    interface: Interface = field(init=False, repr=False)
 
     def __post_init__(self):
         if not self.name:
             name = self.fn.__name__
 
             super().__setattr__("name", name)
-        # TODO: Parse interface using `inspect`, attach to the class
+            super().__setattr__("interface", Interface.from_callable(self.fn))
+
+
+@dataclass(frozen=True)
+class Interface:
+    """
+    Data model representing a function's interface. An instance of this class
+    is created using the `from_callable` class method.
+
+    Parameters:
+    ----------
+    names : tuple[str, ...]
+        Names of the function parameters.
+    types : tuple[type, ...]
+        Types of the function parameters.
+    variables : tuple[Variable, ...]
+        A tuple of tuples, where each inner tuple contains the parameter name and type.
+    defaults : dict[str, Any]
+        A dictionary mapping the parameters names to default values.
+        Only contains parameters with default values.
+    """
+
+    names: tuple[str, ...]
+    types: tuple[type, ...]
+    variables: tuple[Variable, ...]
+    defaults: dict[str, Any]
+
+    @classmethod
+    def from_callable(cls, fn: Callable) -> Interface:
+        """
+        Creates an Interface instance from a given callable.
+        """
+        sig = inspect.signature(fn)
+        return cls(
+            tuple(sig.parameters.keys()),
+            tuple(p.annotation for p in sig.parameters.values()),
+            tuple((k, v.annotation) for k, v in sig.parameters.items()),
+            {n: p.default for n, p in sig.parameters.items()},
+        )
