@@ -2,11 +2,24 @@
 
 from __future__ import annotations
 
+import inspect
 import itertools
 from functools import partial, update_wrapper
 from typing import Any, Callable, Iterable, overload
 
 from nnbench.types import Benchmark
+
+
+def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
+    sig = inspect.signature(fun)
+    fvarnames = set(sig.parameters.keys())
+    varnames = set(params.keys())
+    if not varnames <= fvarnames:
+        # never empty due to the if condition.
+        diffvar, *_ = varnames - fvarnames
+        raise TypeError(
+            f"benchmark {fun.__name__}() got an unexpected keyword argument {diffvar!r}"
+        )
 
 
 def NoOp(**kwargs: Any) -> None:
@@ -237,6 +250,7 @@ def product(
         varnames = iterables.keys()
         for values in itertools.product(*iterables.values()):
             d = dict(zip(varnames, values))
+            _check_against_interface(d, fn)
             name = fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in d.items())
             wrapper = update_wrapper(partial(fn, **d), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
