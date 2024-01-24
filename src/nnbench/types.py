@@ -4,7 +4,7 @@ from __future__ import annotations
 import inspect
 import os
 from dataclasses import dataclass, field
-from typing import Any, Callable, Generic, TypedDict, TypeVar
+from typing import Any, Callable, Generic, TypedDict, TypeVar, Tuple, Dict
 
 T = TypeVar("T")
 
@@ -97,12 +97,17 @@ class Benchmark:
     @dataclass(frozen=True)
     class Interface:
         fn: Callable[..., Any]
+        varnames: Tuple[str, ...] | None = field(default=None)
+        vartypes: Tuple[inspect.Parameter, ...] | None = field(default=None)
+        varitems: Tuple[Tuple[str, inspect.Parameter], ...] | None = field(
+            default=None)
+        defaults: Dict[str, Any] | None = field(default=None)
 
         def __post_init__(self) -> None:
             sig = inspect.signature(self.fn)
             super().__setattr__("varnames", tuple(sig.parameters.keys()))
             super().__setattr__("vartypes", tuple(sig.parameters.values()))
-            super().__setattr__("varitems", tuple(sig.parameters.values()))
+            super().__setattr__("varitems", tuple(sig.parameters.items()))
             super().__setattr__("defaults", {n: p.default for n, p in sig.parameters.items()})
 
     def __post_init__(self):
