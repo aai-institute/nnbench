@@ -8,9 +8,9 @@ def test_interface_with_no_arguments():
         pass
 
     interface = types.Interface.from_callable(empty_function)
-    assert interface.varnames == ()
-    assert interface.vartypes == ()
-    assert interface.varitems == ()
+    assert interface.names == ()
+    assert interface.types == ()
+    assert interface.variables == ()
     assert interface.defaults == {}
 
 
@@ -19,14 +19,13 @@ def test_interface_with_multiple_arguments():
         pass
 
     interface = types.Interface.from_callable(complex_function)
-    assert interface.varnames == ("a", "b", "c", "d")
-    assert interface.vartypes == (
+    assert interface.names == ("a", "b", "c", "d")
+    assert interface.types == (
         int,
         inspect._empty,
         str,
         float,
     )
 
-    varitems = [(param.name, param.annotation) for name, param in interface.varitems]
-    assert varitems == [("a", int), ("b", inspect._empty), ("c", str), ("d", float)]
+    assert interface.variables == (("a", int), ("b", inspect._empty), ("c", str), ("d", float))
     assert interface.defaults == {"a": inspect._empty, "b": inspect._empty, "c": "hello", "d": 10.0}

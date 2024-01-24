@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, TypedDict, TypeVar
 
 T = TypeVar("T")
+Variable = tuple[str, type]
 
 
 class BenchmarkResult(TypedDict):
@@ -104,9 +105,9 @@ class Benchmark:
 
 @dataclass(frozen=True)
 class Interface:
-    varnames: tuple[str, ...]
-    vartypes: tuple[type, ...]
-    varitems: tuple[tuple[str, inspect.Parameter], ...]
+    names: tuple[str, ...]
+    types: tuple[type, ...]
+    variables: tuple[Variable, ...]
     defaults: dict[str, Any]
 
     @classmethod
@@ -115,6 +116,6 @@ class Interface:
         return cls(
             tuple(sig.parameters.keys()),
             tuple(p.annotation for p in sig.parameters.values()),
-            tuple(sig.parameters.items()),
+            tuple((k, v.annotation) for k, v in sig.parameters.items()),
             {n: p.default for n, p in sig.parameters.items()},
         )
