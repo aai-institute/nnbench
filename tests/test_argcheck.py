@@ -22,3 +22,10 @@ def test_error_on_duplicate_params(typecheckfolder: str) -> None:
     with pytest.raises(TypeError, match="got non-unique types.*"):
         r = runner.AbstractBenchmarkRunner()
         r.run(benchmarks, params={"x": 1, "y": 1})
+
+
+def test_untyped_interface(typecheckfolder: str) -> None:
+    benchmarks = os.path.join(typecheckfolder, "untyped_benchmarks.py")
+
+    r = runner.AbstractBenchmarkRunner()
+    r.run(benchmarks, params={"value": 2})
