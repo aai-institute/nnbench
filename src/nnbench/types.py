@@ -108,6 +108,23 @@ class Benchmark:
 
 @dataclass(frozen=True)
 class Interface:
+    """
+    Data model representing a function's interface. An instance of this class
+    is created using the `from_callable` class method.
+
+    Parameters:
+    ----------
+    names : tuple[str, ...]
+        Names of the function parameters.
+    types : tuple[type, ...]
+        Types of the function parameters.
+    variables : tuple[Variable, ...]
+        A tuple of tuples, where each inner tuple contains the parameter name and type.
+    defaults : dict[str, Any]
+        A dictionary mapping the parameters names to default values.
+        Only contains parameters with default values.
+    """
+
     names: tuple[str, ...]
     types: tuple[type, ...]
     variables: tuple[Variable, ...]
@@ -115,6 +132,9 @@ class Interface:
 
     @classmethod
     def from_callable(cls, fn: Callable) -> Interface:
+        """
+        Creates an Interface instance from a given callable.
+        """
         sig = inspect.signature(fn)
         return cls(
             tuple(sig.parameters.keys()),
