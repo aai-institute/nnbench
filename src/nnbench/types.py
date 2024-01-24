@@ -1,9 +1,10 @@
 """Useful type interfaces to override/subclass in benchmarking workflows."""
 from __future__ import annotations
 
+import inspect
 import os
 from dataclasses import dataclass, field
-from typing import Any, Callable, Generic, TypedDict, TypeVar
+from typing import Any, Callable, Dict, Generic, Tuple, TypedDict, TypeVar
 
 T = TypeVar("T")
 
@@ -93,9 +94,34 @@ class Benchmark:
     tearDown: Callable[..., None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
 
+    @dataclass(frozen=True)
+    class Interface:
+        varnames: tuple
+        vartypes: tuple
+        varitems: tuple
+        defaults: dict
+
+        @staticmethod
+        def parse_fn(
+            fn: Callable[..., Any],
+        ) -> Tuple[
+            Tuple[str, ...],
+            Tuple[inspect.Parameter, ...],
+            Tuple[inspect.Parameter, ...],
+            Dict[str, Any],
+        ]:
+            sig = inspect.signature(fn)
+            varnames = tuple(sig.parameters.keys())
+            vartypes = tuple(sig.parameters.values())
+            varitems = tuple(sig.parameters.values())
+            defaults = {n: p.default for n, p in sig.parameters.items()}
+
+            return varnames, vartypes, varitems, defaults
+
     def __post_init__(self):
         if not self.name:
             name = self.fn.__name__
 
             super().__setattr__("name", name)
-        # TODO: Parse interface using `inspect`, attach to the class
+        varnames, vartypes, varitems, defaults = self.Interface.parse_fn(self.fn)
+        self.interface = self.Interface(varnames, vartypes, varitems, defaults)
