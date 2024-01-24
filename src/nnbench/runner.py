@@ -29,8 +29,8 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
                     f"Warning: Parameter {name!r} in benchmark '{bm.fn.__name__}' is untyped."
                 )
 
-            if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
-                orig_type = benchmark_interface[name].annotation
+            orig_type = benchmark_interface[name].annotation
+            if name in benchmark_interface and orig_type != param_type:
                 raise TypeError(
                     f"got non-unique types {orig_type}, {param_type} for parameter {name!r}"
                 )
