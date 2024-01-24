@@ -87,6 +87,8 @@ class Benchmark:
         A teardown hook run after the benchmark. Must take all members of `params` as inputs.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
+    interface: Interface
+        Interface of the benchmark function
     """
 
     fn: Callable[..., Any]
@@ -94,6 +96,7 @@ class Benchmark:
     setUp: Callable[..., None] = field(repr=False, default=NoOp)
     tearDown: Callable[..., None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
+    interface: Interface = field(init=False, repr=False)
 
     def __post_init__(self):
         if not self.name:
