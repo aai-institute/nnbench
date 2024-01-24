@@ -30,7 +30,6 @@ def test_log_warn_on_overwrite_default(
 ) -> None:
     benchmark = os.path.join(typecheckfolder, "default_benchmarks.py")
     r = runner.AbstractBenchmarkRunner()
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.DEBUG):
         r.run(benchmark, params={"a": 1})
-    print("TEXT", caplog.text)
-    assert "overwrite" in caplog.text
+    assert "using value 1 instead of default" in caplog.text
