@@ -1,4 +1,5 @@
 import inspect
+
 import nnbench
 
 
@@ -20,14 +21,12 @@ def test_interface_with_multiple_arguments():
     interface = nnbench.Benchmark.Interface(complex_function)
     assert interface.varnames == ("a", "b", "c", "d")
     assert tuple(param.annotation for param in interface.vartypes) == (
-        int, inspect._empty, str, float)
+        int,
+        inspect._empty,
+        str,
+        float,
+    )
 
     varitems = [(param.name, param.annotation) for name, param in interface.varitems]
-    assert varitems == [
-        ("a", int),
-        ("b", inspect._empty),
-        ("c", str),
-        ("d", float)
-    ]
-    assert interface.defaults == {
-        'a': inspect._empty, 'b': inspect._empty, 'c': 'hello', 'd': 10.0}
+    assert varitems == [("a", int), ("b", inspect._empty), ("c", str), ("d", float)]
+    assert interface.defaults == {"a": inspect._empty, "b": inspect._empty, "c": "hello", "d": 10.0}
