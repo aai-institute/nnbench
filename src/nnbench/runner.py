@@ -22,9 +22,9 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
     benchmark_interface: dict[str, inspect.Parameter] = {}
     for bm in benchmarks:
         for name, param in inspect.signature(bm.fn).parameters.items():
-            if not param.default == inspect.Parameter.empty and name in params:
-                logger.warning(
-                    f"received parameter {name!r}={params[name]}, overwrite the default ({name!r}={param.default}) in function '{bm.fn.__name__}'"
+            if name in params and param.default != inspect.Parameter.empty:
+                logger.debug(
+                    f"using value {params[name]} instead of default {param.default} for parameter {name!r} in function {bm.fn.__name__!r}"
                 )
 
             param_type = param.annotation
