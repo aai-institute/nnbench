@@ -104,7 +104,7 @@ def benchmark(
 @overload
 def parametrize(
     func: None = None,
-    parameters: Iterable[dict] = (),
+    parameters: Iterable[dict[str, Any]] = (),
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -119,7 +119,7 @@ def parametrize(
 @overload
 def parametrize(
     func: Callable[..., Any],
-    parameters: Iterable[dict] = (),
+    parameters: Iterable[dict[str, Any]] = (),
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -129,7 +129,7 @@ def parametrize(
 
 def parametrize(
     func: Callable[..., Any] | None = None,
-    parameters: Iterable[dict] = (),
+    parameters: Iterable[dict[str, Any]] = (),
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -146,7 +146,7 @@ def parametrize(
     func: Callable[..., Any] | None
         The function to benchmark. This slot only exists to allow application of the decorator
         without parentheses, you should never fill it explicitly.
-    parameters: Iterable[dict]
+    parameters: Iterable[dict[str, Any]]
         The different sets of parameters defining the benchmark family.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
@@ -165,6 +165,7 @@ def parametrize(
     def decorator(fn: Callable) -> list[Benchmark]:
         benchmarks = []
         for params in parameters:
+            _check_against_interface(params, fn)
             name = fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in params.items())
             wrapper = update_wrapper(partial(fn, **params), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
