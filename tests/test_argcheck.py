@@ -20,7 +20,7 @@ def test_argcheck(typecheckfolder: str) -> None:
 def test_error_on_duplicate_params(typecheckfolder: str) -> None:
     benchmarks = os.path.join(typecheckfolder, "duplicate_benchmarks.py")
 
-    with pytest.raises(TypeError, match="got non-unique types.*"):
+    with pytest.raises(TypeError, match="got incompatible types.*"):
         r = runner.AbstractBenchmarkRunner()
         r.run(benchmarks, params={"x": 1, "y": 1})
 
@@ -32,7 +32,7 @@ def test_log_warn_on_overwrite_default(
     r = runner.AbstractBenchmarkRunner()
     with caplog.at_level(logging.DEBUG):
         r.run(benchmark, params={"a": 1})
-    assert "using value 1 instead of default" in caplog.text
+    assert "using given value 1 over default value" in caplog.text
 
 
 def test_untyped_interface(typecheckfolder: str) -> None:
