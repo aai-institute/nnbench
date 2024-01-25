@@ -7,7 +7,7 @@ from nnbench import runner
 
 
 def test_argcheck(testfolder: str) -> None:
-    benchmarks = os.path.join(testfolder, "benchmarks.py")
+    benchmarks = os.path.join(testfolder, "standard_benchmarks.py")
     r = runner.AbstractBenchmarkRunner()
     with pytest.raises(TypeError, match="expected type <class 'int'>.*"):
         r.run(benchmarks, params={"x": 1, "y": "1"}, tags=("standard",))
@@ -18,7 +18,7 @@ def test_argcheck(testfolder: str) -> None:
 
 
 def test_error_on_duplicate_params(testfolder: str) -> None:
-    benchmarks = os.path.join(testfolder, "benchmarks.py")
+    benchmarks = os.path.join(testfolder, "argument_check_benchmarks.py")
 
     with pytest.raises(TypeError, match="got incompatible types.*"):
         r = runner.AbstractBenchmarkRunner()
@@ -26,7 +26,7 @@ def test_error_on_duplicate_params(testfolder: str) -> None:
 
 
 def test_log_warn_on_overwrite_default(testfolder: str, caplog: pytest.LogCaptureFixture) -> None:
-    benchmark = os.path.join(testfolder, "benchmarks.py")
+    benchmark = os.path.join(testfolder, "argument_check_benchmarks.py")
     r = runner.AbstractBenchmarkRunner()
     with caplog.at_level(logging.DEBUG):
         r.run(benchmark, params={"a": 1}, tags=("with_default",))
@@ -34,7 +34,7 @@ def test_log_warn_on_overwrite_default(testfolder: str, caplog: pytest.LogCaptur
 
 
 def test_untyped_interface(testfolder: str) -> None:
-    benchmarks = os.path.join(testfolder, "benchmarks.py")
+    benchmarks = os.path.join(testfolder, "argument_check_benchmarks.py")
 
     r = runner.AbstractBenchmarkRunner()
     r.run(benchmarks, params={"value": 2}, tags=("untyped",))

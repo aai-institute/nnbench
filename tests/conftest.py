@@ -12,4 +12,4 @@ logger.setLevel(logging.DEBUG)
 @pytest.fixture(scope="session")
 def testfolder() -> str:
     """A test directory for benchmark collection."""
-    return str(HERE / "testproject")
+    return str(HERE / "test_benchmarks")
