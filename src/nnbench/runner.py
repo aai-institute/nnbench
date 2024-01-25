@@ -19,39 +19,57 @@ logger = logging.getLogger(__name__)
 
 def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
     param_types = {k: type(v) for k, v in params.items()}
-    benchmark_interface: dict[str, inspect.Parameter] = {}
+    allvars: dict[str, tuple[type, Any]] = {}
+    empty = inspect.Parameter.empty
+
     for bm in benchmarks:
-        for name, param in inspect.signature(bm.fn).parameters.items():
-            if name in params and param.default != inspect.Parameter.empty:
+        for var in bm.interface.variables:
+            name, typ, default = var
+            if name in params and default != empty:
                 logger.debug(
-                    f"using value {params[name]} instead of default {param.default} for parameter {name!r} in function {bm.fn.__name__!r}"
+                    f"using given value {params[name]} over default value {default} "
+                    f"for parameter {name!r} in benchmark {bm.fn.__name__}()"
                 )
 
-            param_type = param.annotation
+            if typ == empty:
+                logger.debug(f"parameter {name!r} untyped in benchmark {bm.fn.__name__}().")
 
-            if param_type == inspect.Parameter.empty:
-                logger.debug(f"Found untyped parameter {name!r} in benchmark {bm.fn.__name__!r}.")
+            if name in allvars:
+                currvar = allvars[name]
+                orig_type, orig_val = new_type, new_val = currvar
+                # If a benchmark has a variable without a default value,
+                # that variable is taken into the combined interface as no-default.
+                if default == empty:
+                    new_val = default
+                # These types need not be exact matches, just compatible.
+                # Two types are compatible iff either is a subtype of the other.
+                # We only log the narrowest type for each varname in the final interface,
+                # since that determines whether an input value is admissible.
+                if issubclass(orig_type, typ):
+                    pass
+                elif issubclass(typ, orig_type):
+                    new_type = typ
+                else:
+                    raise TypeError(
+                        f"got incompatible types {orig_type}, {typ} for parameter {name!r}"
+                    )
+                newvar = (new_type, new_val)
+                if newvar != currvar:
+                    allvars[name] = newvar
+            else:
+                allvars[name] = (typ, default)
 
-            if name in benchmark_interface and benchmark_interface[name].annotation != param_type:
-                orig_type = benchmark_interface[name].annotation
-                raise TypeError(
-                    f"got non-unique types {orig_type}, {param_type} for parameter {name!r}"
-                )
-            benchmark_interface[name] = param
-
-    for name, param in benchmark_interface.items():
-        if name not in param_types and param.default == inspect.Parameter.empty:
+    for name, (typ, default) in allvars.items():
+        # check if a no-default variable has no parameter.
+        if name not in param_types and default == empty:
             raise ValueError(f"missing value for required parameter {name!r}")
 
-        if param.annotation == inspect.Parameter.empty:
+        # skip the subsequent type check if the variable is untyped.
+        if typ == empty:
             continue
-
-        # only check type match if type supplied
-        if not issubclass(param_types[name], param.annotation):
-            raise TypeError(
-                f"expected type {param.annotation} for parameter {name!r}, "
-                f"got {param_types[name]!r}"
-            )
+        # type-check parameter value against the narrowest hinted type.
+        if name in param_types and not issubclass(param_types[name], typ):
+            raise TypeError(f"expected type {typ} for parameter {name!r}, got {param_types[name]}")
 
 
 def iscontainer(s: Any) -> bool:
@@ -187,24 +205,21 @@ class AbstractBenchmarkRunner:
             ctxval = provider()
             valkeys = set(ctxval.keys())
             # we do not allow multiple values for a context key.
-            sec = ctxkeys & valkeys
-            if sec:
-                raise ValueError(
-                    f"got multiple values for context key(s) {', '.join(repr(s) for s in sec)}"
-                )
+            duplicates = ctxkeys & valkeys
+            if duplicates:
+                dupe, *_ = duplicates
+                raise ValueError(f"got multiple values for context key {dupe!r}")
             ctx |= ctxval
             ctxkeys |= valkeys
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
-            # TODO: Refactor once benchmark contains interface
-            sig = inspect.signature(benchmark.fn)
-            bmparams = {k: v for k, v in dparams.items() if k in sig.parameters}
+            bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
             res: dict[str, Any] = {}
             try:
                 benchmark.setUp(**bmparams)
                 # Todo: check params
-                res["name"] = benchmark.fn.__name__
+                res["name"] = benchmark.name
                 res["value"] = benchmark.fn(**bmparams)
             except Exception as e:
                 # TODO: This needs work
