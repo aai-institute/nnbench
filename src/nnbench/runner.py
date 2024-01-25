@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
     param_types = {k: type(v) for k, v in params.items()}
     allvars: dict[str, tuple[type, Any]] = {}
-
     empty = inspect.Parameter.empty
+
     for bm in benchmarks:
         for var in bm.interface.variables:
             name, typ, default = var
@@ -35,14 +35,14 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
                 logger.debug(f"parameter {name!r} untyped in benchmark {bm.fn.__name__}().")
 
             if name in allvars:
-                orig_type, orig_val = allvars[name]
-                new_type, new_val = orig_type, orig_val
-                # if a benchmark has a variable without a default value,
+                currvar = allvars[name]
+                orig_type, orig_val = new_type, new_val = currvar
+                # If a benchmark has a variable without a default value,
                 # that variable is taken into the combined interface as no-default.
                 if default == empty:
                     new_val = default
-                # these types need not be exact matches, just compatible.
-                # t1 and t2 are compatible <=> either one is a subtype of the other.
+                # These types need not be exact matches, just compatible.
+                # Two types are compatible iff either is a subtype of the other.
                 # We only log the narrowest type for each varname in the final interface,
                 # since that determines whether an input value is admissible.
                 if issubclass(orig_type, typ):
@@ -54,21 +54,20 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
                         f"got incompatible types {orig_type}, {typ} for parameter {name!r}"
                     )
                 newvar = (new_type, new_val)
-                if newvar != (orig_type, orig_val):
+                if newvar != currvar:
                     allvars[name] = newvar
             else:
                 allvars[name] = (typ, default)
 
     for name, (typ, default) in allvars.items():
-        # alltypes contains the union of all benchmark varnames as keys,
-        # so ``name`` is always in ``alldefaults``.
+        # check if a no-default variable has no parameter.
         if name not in param_types and default == empty:
             raise ValueError(f"missing value for required parameter {name!r}")
 
+        # skip the subsequent type check if the variable is untyped.
         if typ == empty:
             continue
-
-        # only check type match if type supplied
+        # type-check parameter value against the narrowest hinted type.
         if name in param_types and not issubclass(param_types[name], typ):
             raise TypeError(f"expected type {typ} for parameter {name!r}, got {param_types[name]}")
 
