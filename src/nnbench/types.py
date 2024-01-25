@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, TypedDict, TypeVar
 
 T = TypeVar("T")
-Variable = tuple[str, type]
+Variable = tuple[str, type, Any]
 
 
 class BenchmarkResult(TypedDict):
@@ -55,8 +55,7 @@ class Artifact(Generic[T]):
         return self._value
 
 
-# TODO: Should this be frozen (since the setUp and tearDown hooks are empty returns)?
-@dataclass(init=False)
+@dataclass(init=False, frozen=True)
 class Params:
     """
     A dataclass designed to hold benchmark parameters. This class is not functional
@@ -118,27 +117,31 @@ class Interface:
         Names of the function parameters.
     types : tuple[type, ...]
         Types of the function parameters.
+    defaults : tuple
+        A tuple of the function parameters' default values.
     variables : tuple[Variable, ...]
         A tuple of tuples, where each inner tuple contains the parameter name and type.
-    defaults : dict[str, Any]
-        A dictionary mapping the parameters names to default values.
-        Only contains parameters with default values.
+    returntype: type
+        The function's return type annotation, or NoneType if left untyped.
     """
 
     names: tuple[str, ...]
     types: tuple[type, ...]
+    defaults: tuple
     variables: tuple[Variable, ...]
-    defaults: dict[str, Any]
+    returntype: type
 
     @classmethod
     def from_callable(cls, fn: Callable) -> Interface:
         """
-        Creates an Interface instance from a given callable.
+        Creates an interface instance from the given callable.
         """
         sig = inspect.signature(fn)
+        ret = sig.return_annotation
         return cls(
             tuple(sig.parameters.keys()),
             tuple(p.annotation for p in sig.parameters.values()),
-            tuple((k, v.annotation) for k, v in sig.parameters.items()),
-            {n: p.default for n, p in sig.parameters.items()},
+            tuple(p.default for p in sig.parameters.values()),
+            tuple((k, v.annotation, v.default) for k, v in sig.parameters.items()),
+            type(ret) if ret is None else ret,
         )
