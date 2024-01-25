@@ -121,7 +121,7 @@ class AbstractBenchmarkRunner:
                 pythonpaths = (p for p in ppath.iterdir() if p.suffix == ".py")
                 for py in pythonpaths:
                     logger.debug(f"Collecting benchmarks from submodule {py.name!r}.")
-                    self.collect(py)
+                    self.collect(py, tags)
                 return
             elif ppath.is_file():
                 module = import_file_as_module(path_or_module)
