@@ -206,24 +206,21 @@ class AbstractBenchmarkRunner:
             ctxval = provider()
             valkeys = set(ctxval.keys())
             # we do not allow multiple values for a context key.
-            sec = ctxkeys & valkeys
-            if sec:
-                raise ValueError(
-                    f"got multiple values for context key(s) {', '.join(repr(s) for s in sec)}"
-                )
+            duplicates = ctxkeys & valkeys
+            if duplicates:
+                dupe, *_ = duplicates
+                raise ValueError(f"got multiple values for context key {dupe!r}")
             ctx |= ctxval
             ctxkeys |= valkeys
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
-            # TODO: Refactor once benchmark contains interface
-            sig = inspect.signature(benchmark.fn)
-            bmparams = {k: v for k, v in dparams.items() if k in sig.parameters}
+            bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
             res: dict[str, Any] = {}
             try:
                 benchmark.setUp(**bmparams)
                 # Todo: check params
-                res["name"] = benchmark.fn.__name__
+                res["name"] = benchmark.name
                 res["value"] = benchmark.fn(**bmparams)
             except Exception as e:
                 # TODO: This needs work
