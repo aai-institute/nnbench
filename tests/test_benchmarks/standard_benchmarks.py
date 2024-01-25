@@ -1,7 +1,7 @@
 import nnbench
 
 
-@nnbench.benchmark(tags=("standard",))
+@nnbench.benchmark(tags=("standard", "runner-collect"))
 def double(x: int) -> int:
     return x * 2
 
