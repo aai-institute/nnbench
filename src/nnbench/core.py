@@ -165,6 +165,7 @@ def parametrize(
     def decorator(fn: Callable) -> list[Benchmark]:
         benchmarks = []
         for params in parameters:
+            _check_against_interface(params, fn)
             name = fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in params.items())
             wrapper = update_wrapper(partial(fn, **params), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
