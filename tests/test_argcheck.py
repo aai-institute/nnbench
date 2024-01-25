@@ -25,9 +25,7 @@ def test_error_on_duplicate_params(testfolder: str) -> None:
         r.run(benchmarks, params={"x": 1, "y": 1}, tags=("duplicate",))
 
 
-def test_log_warn_on_overwrite_default(
-    testfolder: str, caplog: pytest.LogCaptureFixture
-) -> None:
+def test_log_warn_on_overwrite_default(testfolder: str, caplog: pytest.LogCaptureFixture) -> None:
     benchmark = os.path.join(testfolder, "benchmarks.py")
     r = runner.AbstractBenchmarkRunner()
     with caplog.at_level(logging.DEBUG):
