@@ -66,7 +66,7 @@ def benchmark(
 
     The resulting benchmark can either be completely (i.e., the resulting function takes no
     more arguments) or incompletely parametrized. In the latter case, the remaining free
-    parameters need to be passed in the calls to `AbstractBenchmarkRunner.run()`.
+    parameters need to be passed in the calls to `BenchmarkRunner.run()`.
 
     Parameters
     ----------
@@ -139,7 +139,7 @@ def parametrize(
 
     The resulting benchmarks can either be completely (i.e., the resulting function takes no
     more arguments) or incompletely parametrized. In the latter case, the remaining free
-    parameters need to be passed in the call to `AbstractBenchmarkRunner.run()`.
+    parameters need to be passed in the call to `BenchmarkRunner.run()`.
 
     Parameters
     ----------
@@ -223,7 +223,7 @@ def product(
 
     The resulting benchmarks can either be completely (i.e., the resulting function takes no
     more arguments) or incompletely parametrized. In the latter case, the remaining free
-    parameters need to be passed in the call to `AbstractBenchmarkRunner.run()`.
+    parameters need to be passed in the call to `BenchmarkRunner.run()`.
 
     Parameters
     ----------

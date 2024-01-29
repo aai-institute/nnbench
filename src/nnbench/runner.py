@@ -80,7 +80,7 @@ def isdunder(s: str) -> bool:
     return s.startswith("__") and s.endswith("__")
 
 
-class AbstractBenchmarkRunner:
+class BenchmarkRunner:
     """An abstract benchmark runner class."""
 
     benchmark_type = Benchmark
