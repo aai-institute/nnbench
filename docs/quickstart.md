@@ -42,7 +42,6 @@ Then, we report the resulting accuracy metric by printing it to the terminal in 
 
 ```python
 from nnbench import runner
-from training import model, X_test, y_test
 
 
 r = runner.BenchmarkRunner()
