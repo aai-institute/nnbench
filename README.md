@@ -10,6 +10,8 @@ On a high level, you can think of nnbench as "pytest for ML models" - you define
 
 What's new is that upon completion, you can stream the resulting data to any sink of your choice (including multiple at the same), which allows easy integration with experiment trackers and metadata stores.
 
+See the `quickstart.md` for usage examples.
+
 ## Installation
 
 ⚠️ nnbench is an experimental project - expect bugs and sharp edges.
@@ -23,6 +25,7 @@ poetry add git+https://github.com/aai-institute/nnbench.git
 ```
 
 A PyPI package release is planned for the future.
+
 
 ## Contributing
 
