@@ -92,9 +92,7 @@ class BenchmarkRunner:
         """Clear all registered benchmarks."""
         self.benchmarks.clear()
 
-    def collect(
-        self, path_or_module: str | os.PathLike[str] = "__main__", tags: tuple[str, ...] = ()
-    ) -> None:
+    def collect(self, path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) -> None:
         # TODO: functools.cache this guy
         """
         Discover benchmarks in a module and memoize them for later use.
@@ -136,14 +134,13 @@ class BenchmarkRunner:
             if isdunder(k):
                 continue
             elif isinstance(v, self.benchmark_type):
-                self.benchmarks.append(v)
+                if not tags or set(tags) & set(v.tags):
+                    self.benchmarks.append(v)
             elif iscontainer(v):
                 for bm in v:
                     if isinstance(bm, self.benchmark_type):
-                        self.benchmarks.append(bm)
-
-        # and finally, filter by tags.
-        self.benchmarks = [b for b in self.benchmarks if set(tags) <= set(b.tags)]
+                        if not tags or set(tags) & set(bm.tags):
+                            self.benchmarks.append(bm)
 
     def run(
         self,
