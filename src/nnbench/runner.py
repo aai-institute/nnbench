@@ -7,7 +7,7 @@ import os
 import sys
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Sequence, get_origin
 
 from nnbench.context import ContextProvider
 from nnbench.reporter import BaseReporter, reporter_registry
@@ -21,6 +21,25 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
     param_types = {k: type(v) for k, v in params.items()}
     allvars: dict[str, tuple[type, Any]] = {}
     empty = inspect.Parameter.empty
+
+    def _issubtype(t1: type, t2: type) -> bool:
+        """Small helper to make typechecks work on generics."""
+
+        def _canonicalize(t: type) -> type:
+            t_origin = get_origin(t)
+            if t_origin is not None:
+                return t_origin
+            return t
+
+        if t1 == t2:
+            return True
+
+        t1 = _canonicalize(t1)
+        t2 = _canonicalize(t2)
+        if not inspect.isclass(t1):
+            return False
+        # TODO: Extend typing checks to args.
+        return issubclass(t1, t2)
 
     for bm in benchmarks:
         for var in bm.interface.variables:
@@ -45,9 +64,9 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
                 # Two types are compatible iff either is a subtype of the other.
                 # We only log the narrowest type for each varname in the final interface,
                 # since that determines whether an input value is admissible.
-                if issubclass(orig_type, typ):
+                if _issubtype(orig_type, typ):
                     pass
-                elif issubclass(typ, orig_type):
+                elif _issubtype(typ, orig_type):
                     new_type = typ
                 else:
                     raise TypeError(
@@ -68,7 +87,7 @@ def _check(params: dict[str, Any], benchmarks: list[Benchmark]) -> None:
         if typ == empty:
             continue
         # type-check parameter value against the narrowest hinted type.
-        if name in param_types and not issubclass(param_types[name], typ):
+        if name in param_types and not _issubtype(param_types[name], typ):
             raise TypeError(f"expected type {typ} for parameter {name!r}, got {param_types[name]}")
 
 
