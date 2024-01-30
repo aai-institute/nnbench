@@ -99,10 +99,8 @@ class Benchmark:
 
     def __post_init__(self):
         if not self.name:
-            name = self.fn.__name__
-
-            super().__setattr__("name", name)
-            super().__setattr__("interface", Interface.from_callable(self.fn))
+            super().__setattr__("name", self.fn.__name__)
+        super().__setattr__("interface", Interface.from_callable(self.fn))
 
 
 @dataclass(frozen=True)

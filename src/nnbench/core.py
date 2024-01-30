@@ -34,6 +34,7 @@ def NoOp(**kwargs: Any) -> None:
 @overload
 def benchmark(
     func: None = None,
+    name: str | None = None,
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -42,12 +43,13 @@ def benchmark(
 
 
 # Case #2: Application with arguments
-# @nnbench.benchmark(tags=("hello", "world"))
+# @nnbench.benchmark(name="My foo experiment", tags=("hello", "world"))
 # def foo() -> int:
 #     return 0
 @overload
 def benchmark(
     func: Callable[..., Any],
+    name: str | None = None,
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -57,6 +59,7 @@ def benchmark(
 
 def benchmark(
     func: Callable[..., Any] | None = None,
+    name: str | None = None,
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -73,6 +76,8 @@ def benchmark(
     func: Callable[..., Any] | None
         The function to benchmark. This slot only exists to allow application of the decorator
         without parentheses, you should never fill it explicitly.
+    name: str | None
+        A display name to give to the benchmark. Useful in summaries and reports.
     setUp: Callable[..., None]
         A setup hook to run before the benchmark.
     tearDown: Callable[..., None]
@@ -88,7 +93,7 @@ def benchmark(
     """
 
     def decorator(fun: Callable) -> Benchmark:
-        return Benchmark(fun, setUp=setUp, tearDown=tearDown, tags=tags)
+        return Benchmark(fun, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
 
     if func is not None:
         return decorator(func)
