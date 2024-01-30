@@ -1,10 +1,8 @@
 import jax
 import jax.numpy as jnp
-from mnist import ConvNet
+from mnist import ArrayMapping, ConvNet
 
 import nnbench
-
-ArrayMapping = dict[str, jax.Array]
 
 
 @nnbench.benchmark
