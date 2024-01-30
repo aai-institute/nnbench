@@ -32,7 +32,8 @@ from sklearn import base, metrics
 
 
 @nnbench.benchmark()
-def accuracy(model: base.BaseEstimator, y_test: np.ndarray, y_pred: np.ndarray) -> float:
+def accuracy(model: base.BaseEstimator, X_test: np.ndarray, y_test: np.ndarray) -> float:
+    y_pred = model.predict(X_test)
     accuracy = metrics.accuracy_score(y_test, y_pred)
     return accuracy
 ```
@@ -46,10 +47,8 @@ from nnbench import runner
 
 r = runner.BenchmarkRunner()
 
-y_pred = model.predict(X_test)
-
 # To collect in the current file, pass "__main__" as module name.
-result = r.run("__main__", params={"model": model, "y_pred": y_pred, "y_test": y_test})
+result = r.run("__main__", params={"model": model, "X_test": X_test, "y_test": y_test})
 
 r.report(to='console', result=result)
 ```
