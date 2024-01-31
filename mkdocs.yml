@@ -18,7 +18,8 @@ nav:
   - quickstart.md
   - User Guide:
     - guides/index.md
-  - Examples:
+    - guides/benchmarks.md
+  - Tutorials:
     - tutorials/index.md
     - tutorials/mnist.md
   - API Reference: reference/
