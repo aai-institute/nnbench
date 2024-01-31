@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/reference/nnbench/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/mnist/">
       
       
-        <link rel="prev" href="../../tutorials/mnist/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="context/">
+        <link rel="next" href="../../reference/nnbench/">
       
       
       <link rel="icon" href="../../_images/aai-favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>nnbench - nnbench</title>
+        <title>Integrating nnbench into an existing ML pipeline - nnbench</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nnbench" class="md-skip">
+        <a href="#integrating-nnbench-into-an-existing-ml-pipeline" class="md-skip">
           Skip to content
         </a>
       
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              nnbench
+              Integrating nnbench into an existing ML pipeline
             
           </span>
         </div>
@@ -330,24 +330,26 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../tutorials/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -364,7 +366,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -375,10 +377,30 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../tutorials/mnist/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Integrating nnbench into an existing ML pipeline
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -387,6 +409,44 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-and-organizing-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Defining and organizing benchmarks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-a-benchmark-runner-and-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a benchmark runner and parameters
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -403,21 +463,19 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -431,7 +489,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -442,26 +500,24 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -472,13 +528,13 @@ released. For the most accurate information, please <strong><a href="../../..">a
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             nnbench
@@ -492,7 +548,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -513,7 +569,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -534,7 +590,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="reporter/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -555,7 +611,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -576,7 +632,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -597,7 +653,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -663,6 +719,8 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -671,18 +729,18 @@ released. For the most accurate information, please <strong><a href="../../..">a
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nnbench" class="md-nav__link">
+  <a href="#defining-and-organizing-benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
-      nnbench
+      Defining and organizing benchmarks
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.add_reporters" class="md-nav__link">
+  <a href="#setting-up-a-benchmark-runner-and-parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      add_reporters
+      Setting up a benchmark runner and parameters
     </span>
   </a>
   
@@ -703,7 +761,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/src/nnbench/__init__.py" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/mnist.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -711,80 +769,78 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
 
-  <h1>nnbench</h1>
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="nnbench"></a>
-  <div class="doc doc-contents first">
-  
-      <p>A framework for organizing and running benchmark workloads on machine learning models.</p>
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="nnbench.add_reporters" class="doc doc-heading">
-          <span class="doc doc-object-name doc-function-name">add_reporters</span>
-
-
-<a href="#nnbench.add_reporters" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">add_reporters</span><span class="p">()</span>
+<h1 id="integrating-nnbench-into-an-existing-ml-pipeline">Integrating nnbench into an existing ML pipeline<a class="headerlink" href="#integrating-nnbench-into-an-existing-ml-pipeline" title="Permanent link">&para;</a></h1>
+<p>Thanks to nnbench's modularity, we can easily integrate it into existing ML experiment code.</p>
+<p>As an example, we use an MNIST pipeline written for the popular ML framework <a href="https://jax.readthedocs.io/en/latest/">JAX</a>.
+While the actual data sourcing and training code is interesting on its own, we focus solely on the nnbench application part.
+You can find the full example code in the nnbench <a href="https://github.com/aai-institute/nnbench/tree/main/examples/mnist">repository.</a></p>
+<h2 id="defining-and-organizing-benchmarks">Defining and organizing benchmarks<a class="headerlink" href="#defining-and-organizing-benchmarks" title="Permanent link">&para;</a></h2>
+<p>To properly structure our project, we avoid mixing training pipeline code and benchmark code by placing all benchmarks in a standalone file, similarly to how you might structure unit tests for your code.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">jax</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">mnist</span> <span class="kn">import</span> <span class="n">ArrayMapping</span><span class="p">,</span> <span class="n">ConvNet</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">ArrayMapping</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ArrayMapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;x_test&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;y_test&quot;</span><span class="p">]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">cn</span> <span class="o">=</span> <span class="n">ConvNet</span><span class="p">()</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">cn</span><span class="o">.</span><span class="n">apply</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">},</span> <span class="n">x_test</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">y_test</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Model size (MB)&quot;</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="k">def</span> <span class="nf">modelsize</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">ArrayMapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">nbytes</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_leaves</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="k">return</span> <span class="n">nbytes</span> <span class="o">/</span> <span class="mf">1e6</span>
 </span></code></pre></div>
-
-  <div class="doc doc-contents ">
-
-          <details class="quote">
-            <summary>Source code in <code>src/nnbench/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span>
-<span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span>
-<span class="normal"><a href="#__codelineno-0-23">23</a></span>
-<span class="normal"><a href="#__codelineno-0-24">24</a></span>
-<span class="normal"><a href="#__codelineno-0-25">25</a></span>
-<span class="normal"><a href="#__codelineno-0-26">26</a></span>
-<span class="normal"><a href="#__codelineno-0-27">27</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="k">def</span> <span class="nf">add_reporters</span><span class="p">():</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">eps</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">()</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="s2">&quot;select&quot;</span><span class="p">):</span>  <span class="c1"># Python 3.10+ / importlib.metadata &gt;= 3.9.0</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a>        <span class="n">reporters</span> <span class="o">=</span> <span class="n">eps</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;nnbench.reporters&quot;</span><span class="p">)</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="n">reporters</span> <span class="o">=</span> <span class="n">eps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nnbench.reporters&quot;</span><span class="p">,</span> <span class="p">[])</span>  <span class="c1"># type: ignore</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a>    <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="n">reporters</span><span class="p">:</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a>        <span class="n">key</span><span class="p">,</span> <span class="n">clsname</span> <span class="o">=</span> <span class="n">rep</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a>        <span class="n">register_reporter</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">clsname</span><span class="p">)</span>
-</span></code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-
-  </div>
-
-  </div>
-
-</div>
+<p>This definition is short and sweet, and contains a few important details:</p>
+<ul>
+<li>Both functions are given the <code>@nnbench.benchmark</code> decorator - this enables our runner to find and collect them before starting the benchmark run.</li>
+<li>The <code>modelsize</code> benchmark is given a custom name (<code>"Model size (MB)"</code>), indicating that the resulting number is the combined size of the model weights in megabytes.
+This is done for display purposes, to improve interpretability when reporting results.</li>
+<li>The <code>params</code> argument is the same in both benchmarks, both in name and type. This is important, since it ensures that both benchmarks will be run with the same model weights.</li>
+</ul>
+<p>That's all - now we can shift over to our main pipeline code and see what is necessary to execute the benchmarks and visualize the results.</p>
+<h2 id="setting-up-a-benchmark-runner-and-parameters">Setting up a benchmark runner and parameters<a class="headerlink" href="#setting-up-a-benchmark-runner-and-parameters" title="Permanent link">&para;</a></h2>
+<p>After finishing the benchmark setup, we only need a few more lines to augment our pipeline.</p>
+<p>We assume that the benchmark file is located in the same folder as the training pipeline - thus, we can specify our parent directory as the place in which to search for benchmarks:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">HERE</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+</span></code></pre></div>
+<p>Next, we can define a custom subclass of <code>nnbench.Params</code> to hold our benchmark parameters.
+Benchmark parameters are a set of variables used as inputs to the benchmark functions collected during the benchmark run.</p>
+<p>Since our benchmarks above are parametrized by the model weights (named <code>params</code> in the function signatures) and the MNIST data split (called <code>data</code>), we define our parameters to take exactly these two values.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">class</span> <span class="nc">MNISTTestParameters</span><span class="p">(</span><span class="n">nnbench</span><span class="o">.</span><span class="n">Params</span><span class="p">):</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">params</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">data</span><span class="p">:</span> <span class="n">ArrayMapping</span>
+</span></code></pre></div>
+<p>And that's it! After we implement all training code, we just run nnbench directly after training in our top-level pipeline function:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span> <span class="nf">mnist_jax</span><span class="p">():</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Load MNIST data and train a simple ConvNet model.&quot;&quot;&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">mnist</span> <span class="o">=</span> <span class="n">load_mnist</span><span class="p">()</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">mnist</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">mnist</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">state</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">mnist</span><span class="p">)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="c1"># the nnbench portion.</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">runner</span> <span class="o">=</span> <span class="n">BenchmarkRunner</span><span class="p">()</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">params</span> <span class="o">=</span> <span class="n">MNISTTestParameters</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">runner</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="s2">&quot;console&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+</span></code></pre></div>
+<p>We use <code>to="console"</code> as a keyword argument to <code>BenchmarkRunner.report()</code> to print the results directly to the terminal.
+Notice how by we can reuse the training artifacts in nnbench as parameters to obtain results right after training!</p>
+<p>The output might look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>name               value
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>---------------  -------
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>accuracy         0.9712
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Model size (MB)  3.29783
+</span></code></pre></div>
+<p>This can be improved in a number of ways - for example by enriching it with metadata about the model architecture, the used GPU, etc.
+For more information on how to supply context to benchmarks, check the <a href="../../guides/">user guide</a> section.</p>
 
 
 
