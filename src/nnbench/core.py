@@ -101,40 +101,8 @@ def benchmark(
         return decorator
 
 
-# Overloads for the ``parametrize`` decorator.
-# Case #1: Bare application without parentheses (rarely used)
-# @nnbench.parametrize
-# def foo() -> int:
-#     return 0
-@overload
 def parametrize(
-    func: None = None,
-    parameters: Iterable[dict[str, Any]] = (),
-    setUp: Callable[..., None] = NoOp,
-    tearDown: Callable[..., None] = NoOp,
-    tags: tuple[str, ...] = (),
-) -> Callable[[Callable], list[Benchmark]]:
-    ...
-
-
-# Case #2: Application with arguments
-# @nnbench.parametrize(parameters=..., tags=("hello", "world"))
-# def foo() -> int:
-#     return 0
-@overload
-def parametrize(
-    func: Callable[..., Any],
-    parameters: Iterable[dict[str, Any]] = (),
-    setUp: Callable[..., None] = NoOp,
-    tearDown: Callable[..., None] = NoOp,
-    tags: tuple[str, ...] = (),
-) -> list[Benchmark]:
-    ...
-
-
-def parametrize(
-    func: Callable[..., Any] | None = None,
-    parameters: Iterable[dict[str, Any]] = (),
+    *parameters: dict[str, Any],
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -148,10 +116,7 @@ def parametrize(
 
     Parameters
     ----------
-    func: Callable[..., Any] | None
-        The function to benchmark. This slot only exists to allow application of the decorator
-        without parentheses, you should never fill it explicitly.
-    parameters: Iterable[dict[str, Any]]
+    *parameters: dict[str, Any]
         The different sets of parameters defining the benchmark family.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
@@ -177,47 +142,10 @@ def parametrize(
             benchmarks.append(bm)
         return benchmarks
 
-    if func is not None:
-        return decorator(func)
-    else:
-        return decorator
-
-
-# Overloads for the ``product`` decorator.
-# Case #1: Bare application without parentheses (rarely used)
-# @nnbench.product
-# def foo(a: int, b: int) -> int:
-#     return a * b
-@overload
-def product(
-    func: None = None,
-    setUp: Callable[..., None] = NoOp,
-    tearDown: Callable[..., None] = NoOp,
-    tags: tuple[str, ...] = (),
-    **iterables: Iterable,
-) -> Callable[[Callable], list[Benchmark]]:
-    ...
-
-
-# Case #2: Application with arguments
-# @nnbench.product(
-#     a=list(range(5)), b=list(range(5)), tags=("hello", "world")
-# )
-# def foo(a: int, b: int) -> int:
-#     return a * b
-@overload
-def product(
-    func: Callable[..., Any],
-    setUp: Callable[..., None] = NoOp,
-    tearDown: Callable[..., None] = NoOp,
-    tags: tuple[str, ...] = (),
-    **iterables: Iterable,
-) -> list[Benchmark]:
-    ...
+    return decorator
 
 
 def product(
-    func: Callable[..., Any] | None = None,
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -232,9 +160,6 @@ def product(
 
     Parameters
     ----------
-    func: Callable[..., Any] | None
-        The function to benchmark. This slot only exists to allow application of the decorator
-        without parentheses, you should never fill it explicitly.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
     tearDown: Callable[..., None]
@@ -263,7 +188,4 @@ def product(
             benchmarks.append(bm)
         return benchmarks
 
-    if func is not None:
-        return decorator(func)
-    else:
-        return decorator
+    return decorator
