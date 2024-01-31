@@ -16,8 +16,8 @@ Highlights:
   icon: ":octicons-flame-24:{ .landing-page-icon }"
   url: quickstart.md
 
-- title: Tutorials
-  content: In-depth tutorials on using nnbench
+- title: Examples
+  content: Examples on how to use nnbench
   icon: ":octicons-repo-clone-24:{ .landing-page-icon }"
   url: tutorials/index.md
 

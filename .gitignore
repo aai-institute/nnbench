@@ -121,3 +121,6 @@ syft-output.json
 
 # Generated documentation
 public/
+
+# NumPy zip archives created by the examples.
+*.npz
