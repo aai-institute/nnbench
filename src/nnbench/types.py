@@ -134,7 +134,9 @@ class Interface:
         """
         Creates an interface instance from the given callable.
         """
-        sig = inspect.signature(fn)
+        # Set follow_wrapped=False to get the partially filled interfaces.
+        # Otherwise we get missing value errors for parameters supplied in benchmark decorators.
+        sig = inspect.signature(fn, follow_wrapped=False)
         ret = sig.return_annotation
         return cls(
             tuple(sig.parameters.keys()),
