@@ -113,6 +113,8 @@ def benchmark_accuracy(n_estimators: int, max_depth: int, random_state: int) -> 
 
 Notice that the parametrization is still incomplete, as we did not supply a `random_state` argument.
 The unfilled arguments are given in `BenchmarkRunner.run()` via a dictionary passed as the `params` keyword argument.
+
+```python
 # main.py
 from nnbench import runner
 
