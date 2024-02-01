@@ -22,6 +22,10 @@ def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
         )
 
 
+def _default_namegen(fn: Callable, **kwargs: Any) -> str:
+    return fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in kwargs.items())
+
+
 def NoOp(**kwargs: Any) -> None:
     pass
 
@@ -105,6 +109,7 @@ def parametrize(
     parameters: Iterable[dict[str, Any]],
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
+    namegen: Callable[..., str] = _default_namegen,
     tags: tuple[str, ...] = (),
 ) -> Callable[[Callable], list[Benchmark]]:
     """
@@ -122,6 +127,10 @@ def parametrize(
         A setup hook to run before each of the benchmarks.
     tearDown: Callable[..., None]
         A teardown hook to run after each of the benchmarks.
+    namegen: Callable[..., str]
+        A function taking the benchmark function and given parameters that generates a unique
+        custom name for the benchmark. The default name generated is the benchmark function's name
+        followed by the keyword arguments in ``key=value`` format separated by underscores.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
 
@@ -135,7 +144,7 @@ def parametrize(
         benchmarks = []
         for params in parameters:
             _check_against_interface(params, fn)
-            name = fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in params.items())
+            name = namegen(fn, **params)
             wrapper = update_wrapper(partial(fn, **params), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
@@ -147,6 +156,7 @@ def parametrize(
 def product(
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
+    namegen: Callable[..., str] = _default_namegen,
     tags: tuple[str, ...] = (),
     **iterables: Iterable,
 ) -> Callable[[Callable], list[Benchmark]]:
@@ -163,6 +173,10 @@ def product(
         A setup hook to run before each of the benchmarks.
     tearDown: Callable[..., None]
         A teardown hook to run after each of the benchmarks.
+    namegen: Callable[..., str]
+        A function taking the benchmark function and given parameters that generates a unique
+        custom name for the benchmark. The default name generated is the benchmark function's name
+        followed by the keyword arguments in ``key=value`` format separated by underscores.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
     **iterables: Iterable
@@ -178,10 +192,10 @@ def product(
         benchmarks = []
         varnames = iterables.keys()
         for values in itertools.product(*iterables.values()):
-            d = dict(zip(varnames, values))
-            _check_against_interface(d, fn)
-            name = fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in d.items())
-            wrapper = update_wrapper(partial(fn, **d), fn)
+            params = dict(zip(varnames, values))
+            _check_against_interface(params, fn)
+            name = namegen(fn, params)
+            wrapper = update_wrapper(partial(fn, **params), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
         return benchmarks
