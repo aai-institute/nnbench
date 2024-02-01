@@ -99,9 +99,9 @@ import nnbench
 from training import prepare_data, train_rf, accuracy
 
 @nnbench.parametrize(
-    {"n_estimators": 10, "max_depth": 2},
+    ({"n_estimators": 10, "max_depth": 2},
     {"n_estimators": 50, "max_depth": 5},
-    {"n_estimators": 100, "max_depth": 10}
+    {"n_estimators": 100, "max_depth": 10})
 )
 def benchmark_accuracy(n_estimators: int, max_depth: int, random_state: int) -> float:
     X_train, X_test, y_train, y_test = prepare_data()
