@@ -719,17 +719,17 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.types.BenchmarkResult" class="md-nav__link">
+  <a href="#nnbench.types.BenchmarkRecord" class="md-nav__link">
     <span class="md-ellipsis">
-      BenchmarkResult
+      BenchmarkRecord
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="BenchmarkResult">
+    <nav class="md-nav" aria-label="BenchmarkRecord">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nnbench.types.BenchmarkResult.context" class="md-nav__link">
+  <a href="#nnbench.types.BenchmarkRecord.context" class="md-nav__link">
     <span class="md-ellipsis">
       context
     </span>
@@ -738,7 +738,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
         
           <li class="md-nav__item">
-  <a href="#nnbench.types.BenchmarkResult.benchmarks" class="md-nav__link">
+  <a href="#nnbench.types.BenchmarkRecord.benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
       benchmarks
     </span>
@@ -794,9 +794,9 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.types.Params" class="md-nav__link">
+  <a href="#nnbench.types.Parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      Params
+      Parameters
     </span>
   </a>
   
@@ -1066,17 +1066,17 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.types.BenchmarkResult" class="md-nav__link">
+  <a href="#nnbench.types.BenchmarkRecord" class="md-nav__link">
     <span class="md-ellipsis">
-      BenchmarkResult
+      BenchmarkRecord
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="BenchmarkResult">
+    <nav class="md-nav" aria-label="BenchmarkRecord">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nnbench.types.BenchmarkResult.context" class="md-nav__link">
+  <a href="#nnbench.types.BenchmarkRecord.context" class="md-nav__link">
     <span class="md-ellipsis">
       context
     </span>
@@ -1085,7 +1085,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
         
           <li class="md-nav__item">
-  <a href="#nnbench.types.BenchmarkResult.benchmarks" class="md-nav__link">
+  <a href="#nnbench.types.BenchmarkRecord.benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
       benchmarks
     </span>
@@ -1141,9 +1141,9 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.types.Params" class="md-nav__link">
+  <a href="#nnbench.types.Parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      Params
+      Parameters
     </span>
   </a>
   
@@ -1387,11 +1387,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
-<h2 id="nnbench.types.BenchmarkResult" class="doc doc-heading">
-          <span class="doc doc-object-name doc-class-name">BenchmarkResult</span>
+<h2 id="nnbench.types.BenchmarkRecord" class="doc doc-heading">
+          <span class="doc doc-object-name doc-class-name">BenchmarkRecord</span>
 
 
-<a href="#nnbench.types.BenchmarkResult" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#nnbench.types.BenchmarkRecord" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1403,7 +1403,7 @@ released. For the most accurate information, please <strong><a href="../../../..
               <summary>Source code in <code>src/nnbench/types.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-13">13</a></span>
 <span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="k">class</span> <span class="nc">BenchmarkResult</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="k">class</span> <span class="nc">BenchmarkRecord</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="n">benchmarks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
 </span></code></pre></div></td></tr></table></div>
@@ -1423,7 +1423,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
-<h3 id="nnbench.types.BenchmarkResult.context" class="doc doc-heading">
+<h3 id="nnbench.types.BenchmarkRecord.context" class="doc doc-heading">
           <span class="doc doc-object-name doc-attribute-name">context</span>
 
   
@@ -1431,7 +1431,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
-<a href="#nnbench.types.BenchmarkResult.context" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.types.BenchmarkRecord.context" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">context</span><span class="p">:</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span>
 </span></code></pre></div>
 
@@ -1444,7 +1444,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
-<h3 id="nnbench.types.BenchmarkResult.benchmarks" class="doc doc-heading">
+<h3 id="nnbench.types.BenchmarkRecord.benchmarks" class="doc doc-heading">
           <span class="doc doc-object-name doc-attribute-name">benchmarks</span>
 
   
@@ -1452,7 +1452,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
-<a href="#nnbench.types.BenchmarkResult.benchmarks" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.types.BenchmarkRecord.benchmarks" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">benchmarks</span><span class="p">:</span> <span class="n">list</span><span class="p">[</span><span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]]</span>
 </span></code></pre></div>
 
@@ -1712,15 +1712,15 @@ load the desired artifact from a path.</p>
 
 
 
-<h2 id="nnbench.types.Params" class="doc doc-heading">
-          <span class="doc doc-object-name doc-class-name">Params</span>
+<h2 id="nnbench.types.Parameters" class="doc doc-heading">
+          <span class="doc doc-object-name doc-class-name">Parameters</span>
 
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
   </span>
 
-<a href="#nnbench.types.Params" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#nnbench.types.Parameters" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1744,7 +1744,7 @@ static analysis and type safety for your benchmarking code.</p>
 <span class="normal"><a href="#__codelineno-0-66">66</a></span>
 <span class="normal"><a href="#__codelineno-0-67">67</a></span>
 <span class="normal"><a href="#__codelineno-0-68">68</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="k">class</span> <span class="nc">Params</span><span class="p">:</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
 </span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">    A dataclass designed to hold benchmark parameters. This class is not functional</span>
 </span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">    on its own, and needs to be subclassed according to your benchmarking workloads.</span>

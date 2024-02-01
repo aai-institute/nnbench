@@ -884,11 +884,11 @@ This is done for display purposes, to improve interpretability when reporting re
 <p>We assume that the benchmark file is located in the same folder as the training pipeline - thus, we can specify our parent directory as the place in which to search for benchmarks:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>
 </span></code></pre></div>
-<p>Next, we can define a custom subclass of <code>nnbench.Params</code> to hold our benchmark parameters.
+<p>Next, we can define a custom subclass of <code>nnbench.Parameters</code> to hold our benchmark parameters.
 Benchmark parameters are a set of variables used as inputs to the benchmark functions collected during the benchmark run.</p>
 <p>Since our benchmarks above are parametrized by the model weights (named <code>params</code> in the function signatures) and the MNIST data split (called <code>data</code>), we define our parameters to take exactly these two values.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">class</span> <span class="nc">MNISTTestParameters</span><span class="p">(</span><span class="n">nnbench</span><span class="o">.</span><span class="n">Params</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">class</span> <span class="nc">MNISTTestParameters</span><span class="p">(</span><span class="n">nnbench</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">params</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span>
 </span></code></pre></div>
 <p>And that's it! After we implement all training code, we just run nnbench directly after training in our top-level pipeline function:</p>
