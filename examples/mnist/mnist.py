@@ -37,7 +37,7 @@ MOMENTUM = 0.9
 
 
 @dataclass(frozen=True)
-class MNISTTestParameters(nnbench.Params):
+class MNISTTestParameters(nnbench.Parameters):
     params: Mapping[str, jax.Array]
     data: ArrayMapping
 

@@ -11,7 +11,7 @@ except PackageNotFoundError:
 # TODO: This naming is unfortunate
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter, register_reporter
-from .types import Benchmark, Params
+from .types import Benchmark, Parameters
 
 
 def add_reporters():

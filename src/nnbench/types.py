@@ -56,7 +56,7 @@ class Artifact(Generic[T]):
 
 
 @dataclass(init=False, frozen=True)
-class Params:
+class Parameters:
     """
     A dataclass designed to hold benchmark parameters. This class is not functional
     on its own, and needs to be subclassed according to your benchmarking workloads.

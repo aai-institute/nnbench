@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Sequence, get_origin
 
 from nnbench.context import ContextProvider
-from nnbench.types import Benchmark, BenchmarkResult, Params
+from nnbench.types import Benchmark, BenchmarkResult, Parameters
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
@@ -163,7 +163,7 @@ class BenchmarkRunner:
     def run(
         self,
         path_or_module: str | os.PathLike[str],
-        params: dict[str, Any] | Params,
+        params: dict[str, Any] | Parameters,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
     ) -> BenchmarkResult | None:
@@ -175,7 +175,7 @@ class BenchmarkRunner:
         path_or_module: str | os.PathLike[str]
             Name or path of the module to discover benchmarks in. Can also be a directory,
             in which case benchmarks are collected from the Python files therein.
-        params: dict[str, Any] | Params
+        params: dict[str, Any] | Parameters
             Parameters to use for the benchmark run. Names have to match positional and keyword
             argument names of the benchmark functions.
         tags: tuple[str, ...]
@@ -206,7 +206,7 @@ class BenchmarkRunner:
             logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
             return None  # TODO: Return empty result to preserve strong typing
 
-        if isinstance(params, Params):
+        if isinstance(params, Parameters):
             dparams = asdict(params)
         else:
             dparams = params
