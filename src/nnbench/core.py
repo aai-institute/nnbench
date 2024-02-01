@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import inspect
 import itertools
+import warnings
 from functools import partial, update_wrapper
 from typing import Any, Callable, Iterable, overload
 
@@ -142,9 +143,18 @@ def parametrize(
 
     def decorator(fn: Callable) -> list[Benchmark]:
         benchmarks = []
+        names = set()
         for params in parameters:
             _check_against_interface(params, fn)
+
             name = namegen(fn, **params)
+            if name in names:
+                warnings.warn(
+                    f"Got duplicate name {name!r} for benchmark {fn.__name__}(). "
+                    f"Perhaps you specified a parameter configuration twice?"
+                )
+            names.add(name)
+
             wrapper = update_wrapper(partial(fn, **params), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
@@ -190,11 +200,20 @@ def product(
 
     def decorator(fn: Callable) -> list[Benchmark]:
         benchmarks = []
+        names = set()
         varnames = iterables.keys()
         for values in itertools.product(*iterables.values()):
             params = dict(zip(varnames, values))
             _check_against_interface(params, fn)
-            name = namegen(fn, params)
+
+            name = namegen(fn, **params)
+            if name in names:
+                warnings.warn(
+                    f"Got duplicate name {name!r} for benchmark {fn.__name__}(). "
+                    f"Perhaps you specified a parameter configuration twice?"
+                )
+            names.add(name)
+
             wrapper = update_wrapper(partial(fn, **params), fn)
             bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
