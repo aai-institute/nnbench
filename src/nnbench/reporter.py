@@ -7,7 +7,7 @@ import importlib
 import sys
 import types
 
-from nnbench.types import BenchmarkResult
+from nnbench.types import BenchmarkRecord
 
 
 # TODO: Add IO mixins for database, file, and HTTP IO
@@ -25,21 +25,21 @@ class BenchmarkReporter:
     """
 
     merge: bool = False
-    """Whether to merge multiple records before reporting."""
+    """Whether to merge multiple BenchmarkRecords before reporting."""
 
-    def report_result(self, result: BenchmarkResult) -> None:
+    def report_result(self, record: BenchmarkRecord) -> None:
         raise NotImplementedError
 
-    def report(self, *results: BenchmarkResult) -> None:
+    def report(self, *records: BenchmarkRecord) -> None:
         if self.merge:
             raise NotImplementedError
-        for res in results:
-            self.report_result(res)
+        for record in records:
+            self.report_result(record)
 
 
 class ConsoleReporter(BenchmarkReporter):
     # TODO: Implement regex filters, context values, display options, ... (__init__)
-    def report_result(self, result: BenchmarkResult) -> None:
+    def report_result(self, record: BenchmarkRecord) -> None:
         try:
             from tabulate import tabulate
         except ModuleNotFoundError:
@@ -48,7 +48,7 @@ class ConsoleReporter(BenchmarkReporter):
                 f"To install, run `{sys.executable} -m pip install --upgrade tabulate`."
             )
 
-        benchmarks = result["benchmarks"]
+        benchmarks = record["benchmarks"]
         print(tabulate(benchmarks, headers="keys"))
 
 
