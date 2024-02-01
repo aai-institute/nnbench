@@ -26,6 +26,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://nnbench.github.io/latest/guides/organization/</loc>
+         <lastmod>2024-02-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://nnbench.github.io/latest/reference/SUMMARY/</loc>
          <lastmod>2024-02-01</lastmod>
          <changefreq>daily</changefreq>
