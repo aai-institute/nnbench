@@ -102,11 +102,11 @@ def benchmark(
 
 
 def parametrize(
-    *parameters: dict[str, Any],
+    parameters: Iterable[dict[str, Any]],
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
-) -> list[Benchmark] | Callable[[Callable], list[Benchmark]]:
+) -> Callable[[Callable], list[Benchmark]]:
     """
     Define a family of benchmarks over a function with varying parameters.
 
@@ -116,7 +116,7 @@ def parametrize(
 
     Parameters
     ----------
-    *parameters: dict[str, Any]
+    parameters: Iterable[dict[str, Any]]
         The different sets of parameters defining the benchmark family.
     setUp: Callable[..., None]
         A setup hook to run before each of the benchmarks.
@@ -127,9 +127,8 @@ def parametrize(
 
     Returns
     -------
-    list[Benchmark] | Callable[[Callable], list[Benchmark]]
-        The resulting benchmark family (if no arguments were given), or a parametrized decorator
-        returning the benchmark family.
+    Callable[[Callable], list[Benchmark]]
+        A parametrized decorator returning the benchmark family.
     """
 
     def decorator(fn: Callable) -> list[Benchmark]:
@@ -150,7 +149,7 @@ def product(
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
     **iterables: Iterable,
-) -> list[Benchmark] | Callable[[Callable], list[Benchmark]]:
+) -> Callable[[Callable], list[Benchmark]]:
     """
     Define a family of benchmarks over a cartesian product of one or more iterables.
 
@@ -171,9 +170,8 @@ def product(
 
     Returns
     -------
-    list[Benchmark] | Callable[[Callable], list[Benchmark]]
-        The resulting benchmark family (if no arguments were given), or a parametrized decorator
-        returning the benchmark family.
+    Callable[[Callable], list[Benchmark]]
+        A parametrized decorator returning the benchmark family.
     """
 
     def decorator(fn: Callable) -> list[Benchmark]:
