@@ -20,6 +20,8 @@ nav:
     - guides/index.md
     - guides/benchmarks.md
   - Tutorials:
+    - guides/organization.md
+  - Examples:
     - tutorials/index.md
     - tutorials/mnist.md
   - API Reference: reference/
