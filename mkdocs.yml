@@ -20,6 +20,7 @@ nav:
     - guides/index.md
     - guides/benchmarks.md
     - guides/organization.md
+    - guides/runners.md
   - Examples:
     - tutorials/index.md
     - tutorials/mnist.md
