@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Sequence, get_origin
 
 from nnbench.context import ContextProvider
-from nnbench.types import Benchmark, BenchmarkResult, Parameters
+from nnbench.types import Benchmark, BenchmarkRecord, Parameters
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
@@ -166,7 +166,7 @@ class BenchmarkRunner:
         params: dict[str, Any] | Parameters,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
-    ) -> BenchmarkResult | None:
+    ) -> BenchmarkRecord | None:
         """
         Run a previously collected benchmark workload.
 
@@ -188,7 +188,7 @@ class BenchmarkRunner:
 
         Returns
         -------
-        BenchmarkResult | None
+        BenchmarkRecord | None
             A JSON output representing the benchmark results. Has two top-level keys, "context"
             holding the context information, and "benchmarks", holding an array with the
             benchmark results.
@@ -244,7 +244,7 @@ class BenchmarkRunner:
                 benchmark.tearDown(**bmparams)
                 results.append(res)
 
-        return BenchmarkResult(
+        return BenchmarkRecord(
             context=ctx,
             benchmarks=results,
         )

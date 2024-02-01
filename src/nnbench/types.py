@@ -10,7 +10,7 @@ T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
 
-class BenchmarkResult(TypedDict):
+class BenchmarkRecord(TypedDict):
     context: dict[str, Any]
     benchmarks: list[dict[str, Any]]
 
