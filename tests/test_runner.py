@@ -66,7 +66,7 @@ def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
 
     context_providers = [system, duplicate_context_provider]
 
-    with pytest.raises(ValueError, match="got multiple values for context key 'system'") as e:
+    with pytest.raises(ValueError, match="got multiple values for context key 'system'"):
         r.run(
             testfolder,
             tags=("standard",),
