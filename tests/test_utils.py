@@ -1,3 +1,5 @@
+import inspect
+
 import pytest
 
 from nnbench.util import ismodule, modulename
@@ -16,3 +18,9 @@ def test_ismodule(name: str, expected: bool) -> None:
 def test_modulename(name: str, expected: str) -> None:
     actual = modulename(name)
     assert expected == actual
+
+
+def has_expected_args(fn, expected_args):
+    signature = inspect.signature(fn)
+    params = signature.parameters
+    return all(param in params for param in expected_args)
