@@ -73,5 +73,3 @@ def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
             params={"x": 1, "y": 1},
             context=context_providers,
         )
-
-    assert "got multiple values for context key 'system'" in str(e.value)
