@@ -5,6 +5,7 @@ import inspect
 import logging
 import os
 import sys
+import warnings
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Sequence, get_origin
@@ -166,7 +167,7 @@ class BenchmarkRunner:
         params: dict[str, Any] | Parameters,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
-    ) -> BenchmarkRecord | None:
+    ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
 
@@ -188,7 +189,7 @@ class BenchmarkRunner:
 
         Returns
         -------
-        BenchmarkRecord | None
+        BenchmarkRecord
             A JSON output representing the benchmark results. Has two top-level keys, "context"
             holding the context information, and "benchmarks", holding an array with the
             benchmark results.
@@ -201,10 +202,10 @@ class BenchmarkRunner:
         if not self.benchmarks:
             self.collect(path_or_module, tags)
 
-        # if we still have no benchmarks after collection, warn and return early.
+        # if we still have no benchmarks after collection, warn and return an empty record.
         if not self.benchmarks:
-            logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
-            return None  # TODO: Return empty result to preserve strong typing
+            warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
+            return BenchmarkRecord(context={}, benchmarks=[])
 
         if isinstance(params, Parameters):
             dparams = asdict(params)

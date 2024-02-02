@@ -22,7 +22,6 @@ from flax.training.train_state import TrainState
 
 import nnbench
 from nnbench.reporter import ConsoleReporter
-from nnbench.runner import BenchmarkRunner
 
 HERE = Path(__file__).parent
 
@@ -218,7 +217,7 @@ def mnist_jax():
     state, data = train(mnist)
 
     # the nnbench portion.
-    runner = BenchmarkRunner()
+    runner = nnbench.BenchmarkRunner()
     reporter = ConsoleReporter()
     params = MNISTTestParameters(params=state.params, data=data)
     result = runner.run(HERE, params=params)

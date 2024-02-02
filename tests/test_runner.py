@@ -1,10 +1,10 @@
 import os
 
-from nnbench.runner import BenchmarkRunner
+import nnbench
 
 
 def test_runner_discovery(testfolder: str) -> None:
-    r = BenchmarkRunner()
+    r = nnbench.BenchmarkRunner()
 
     r.collect(os.path.join(testfolder, "standard_benchmarks.py"), tags=("runner-collect",))
     assert len(r.benchmarks) == 1
@@ -18,7 +18,7 @@ def test_runner_discovery(testfolder: str) -> None:
 def test_tag_selection(testfolder: str) -> None:
     PATH = os.path.join(testfolder, "tag_selection_benchmark.py")
 
-    r = BenchmarkRunner()
+    r = nnbench.BenchmarkRunner()
 
     r.collect(PATH, tags=())
     assert len(r.benchmarks) == 3
