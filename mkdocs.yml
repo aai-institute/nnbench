@@ -21,6 +21,7 @@ nav:
     - guides/benchmarks.md
     - guides/customization.md
     - guides/organization.md
+    - guides/runners.md
   - Examples:
     - tutorials/index.md
     - tutorials/mnist.md
