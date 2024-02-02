@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import inspect
 import itertools
+import sys
 import types
 import warnings
 from functools import partial, update_wrapper
-from typing import Any, Callable, Iterable, get_args, get_origin, overload
+from typing import Any, Callable, Iterable, Union, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
 
@@ -32,12 +33,13 @@ def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
         # to unwrap generic containers like list[str].
         expected_type = get_origin(fvtype) or fvtype
         # in case of a union like str | int, check args instead.
-        if expected_type is types.UnionType:
+        union_type = Union if sys.version_info < (3, 10) else types.UnionType
+        if expected_type is union_type:
             expected_type = get_args(fvtype)
         if not isinstance(v, expected_type):
             raise TypeError(
-                f"expected type {fvtype}, got type {type(v)} "
-                f"for parametrized argument {k!r} of benchmark {fun.__name__}()"
+                f"benchmark {fun.__name__}(): expected type {fvtype}, "
+                f"got type {type(v)} for parametrized argument {k!r}"
             )
 
 
