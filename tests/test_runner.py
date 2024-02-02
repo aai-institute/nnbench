@@ -13,16 +13,13 @@ def test_runner_discovery(testfolder: str, another_testfolder: str) -> None:
     assert len(r.benchmarks) == 1
     r.clear()
 
-    r.collect(testfolder, tags=("runner-collect",))
-    assert len(r.benchmarks) == 1
-    r.clear()
-
     r.collect(testfolder, tags=("non-existing-tag",))
     assert len(r.benchmarks) == 0
     r.clear()
 
-    r.collect(os.path.join(testfolder), tags=("runner-collect",))
-    r.collect(os.path.join(another_testfolder), tags=("runner-collect",))
+    r.collect(testfolder, tags=("runner-collect",))
+    assert len(r.benchmarks) == 1
+    r.collect(another_testfolder, tags=("runner-collect",))
     assert len(r.benchmarks) == 2
 
 
@@ -49,7 +46,7 @@ def test_context_collection_in_runner(testfolder: str) -> None:
 
     context_providers = [system, cpuarch, python_version]
     result = r.run(
-        os.path.join(testfolder),
+        testfolder,
         tags=("standard",),
         params={"x": 1, "y": 1},
         context=context_providers,
@@ -69,9 +66,9 @@ def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
 
     context_providers = [system, duplicate_context_provider]
 
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError, match="got multiple values for context key 'system'") as e:
         r.run(
-            os.path.join(testfolder),
+            testfolder,
             tags=("standard",),
             params={"x": 1, "y": 1},
             context=context_providers,
