@@ -1,6 +1,6 @@
 # Running benchmarks with the benchmark runner
 
-The `BecnhmarkRunner` is `nnbench`'s abstract interface to collect and execute benchmarks.
+nnbench provides the `BenchmarkRunner` as a compact interface to collect and run benchmarks selectively.
 You can either use it directly or instantiate a derivative class to override selected methods and implement you own logic.
 
 
