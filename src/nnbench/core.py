@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import inspect
 import itertools
+import types
 import warnings
 from functools import partial, update_wrapper
-from typing import Any, Callable, Iterable, overload
+from typing import Any, Callable, Iterable, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
 
@@ -14,6 +15,7 @@ from nnbench.types import Benchmark
 def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
     sig = inspect.signature(fun)
     fvarnames = set(sig.parameters.keys())
+    fvartypes = {k: v.annotation for k, v in sig.parameters.items()}
     varnames = set(params.keys())
     if not varnames <= fvarnames:
         # never empty due to the if condition.
@@ -21,6 +23,22 @@ def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
         raise TypeError(
             f"benchmark {fun.__name__}() got an unexpected keyword argument {diffvar!r}"
         )
+    # at this point, params.keys() <= argnames.
+    for k, v in params.items():
+        fvtype = fvartypes[k]
+        # if no type annotation is given, everything is allowed.
+        if fvtype == inspect.Parameter.empty:
+            continue
+        # to unwrap generic containers like list[str].
+        expected_type = get_origin(fvtype) or fvtype
+        # in case of a union like str | int, check args instead.
+        if expected_type is types.UnionType:
+            expected_type = get_args(fvtype)
+        if not isinstance(v, expected_type):
+            raise TypeError(
+                f"expected type {fvtype}, got type {type(v)} "
+                f"for parametrized argument {k!r} of benchmark {fun.__name__}()"
+            )
 
 
 def _default_namegen(fn: Callable, **kwargs: Any) -> str:
