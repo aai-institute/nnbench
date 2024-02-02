@@ -11,6 +11,7 @@ except PackageNotFoundError:
 # TODO: This naming is unfortunate
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter, register_reporter
+from .runner import BenchmarkRunner
 from .types import Parameters
 
 

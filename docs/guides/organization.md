@@ -38,9 +38,9 @@ benchmarks/
 This is helpful when running multiple benchmark workloads separately, as you can just point your benchmark runner to each of these separate files:
 
 ```python
-from nnbench.runner import BenchmarkRunner
+import nnbench
 
-runner = BenchmarkRunner()
+runner = nnbench.BenchmarkRunner()
 data_metrics = runner.run("benchmarks/data_quality.py", params=...)
 # same for model metrics, where instead you pass benchmarks/model_perf.py.
 model_metrics = runner.run("benchmarks/model_perf.py", params=...)
@@ -73,9 +73,9 @@ def bar(data) -> int:
 Now, to only run data quality benchmarks marked "foo", pass the corresponding tag to `BenchmarkRunner.run()`:
 
 ```python
-from nnbench.runner import BenchmarkRunner
+import nnbench
 
-runner = BenchmarkRunner()
+runner = nnbench.BenchmarkRunner()
 foo_data_metrics = runner.run("benchmarks/data_quality.py", params=..., tags=("foo",))
 ```
 
