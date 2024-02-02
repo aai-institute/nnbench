@@ -5,12 +5,13 @@ import inspect
 import logging
 import os
 import sys
+import warnings
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Sequence, get_origin
 
 from nnbench.context import ContextProvider
-from nnbench.types import Benchmark, BenchmarkResult, Params
+from nnbench.types import Benchmark, BenchmarkRecord, Parameters
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
@@ -163,10 +164,10 @@ class BenchmarkRunner:
     def run(
         self,
         path_or_module: str | os.PathLike[str],
-        params: dict[str, Any] | Params,
+        params: dict[str, Any] | Parameters,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
-    ) -> BenchmarkResult | None:
+    ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
 
@@ -175,7 +176,7 @@ class BenchmarkRunner:
         path_or_module: str | os.PathLike[str]
             Name or path of the module to discover benchmarks in. Can also be a directory,
             in which case benchmarks are collected from the Python files therein.
-        params: dict[str, Any] | Params
+        params: dict[str, Any] | Parameters
             Parameters to use for the benchmark run. Names have to match positional and keyword
             argument names of the benchmark functions.
         tags: tuple[str, ...]
@@ -188,7 +189,7 @@ class BenchmarkRunner:
 
         Returns
         -------
-        BenchmarkResult | None
+        BenchmarkRecord
             A JSON output representing the benchmark results. Has two top-level keys, "context"
             holding the context information, and "benchmarks", holding an array with the
             benchmark results.
@@ -201,12 +202,12 @@ class BenchmarkRunner:
         if not self.benchmarks:
             self.collect(path_or_module, tags)
 
-        # if we still have no benchmarks after collection, warn and return early.
+        # if we still have no benchmarks after collection, warn and return an empty record.
         if not self.benchmarks:
-            logger.warning(f"No benchmarks found in path/module {str(path_or_module)!r}.")
-            return None  # TODO: Return empty result to preserve strong typing
+            warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
+            return BenchmarkRecord(context={}, benchmarks=[])
 
-        if isinstance(params, Params):
+        if isinstance(params, Parameters):
             dparams = asdict(params)
         else:
             dparams = params
@@ -244,7 +245,7 @@ class BenchmarkRunner:
                 benchmark.tearDown(**bmparams)
                 results.append(res)
 
-        return BenchmarkResult(
+        return BenchmarkRecord(
             context=ctx,
             benchmarks=results,
         )

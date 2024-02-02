@@ -2,12 +2,12 @@ import os
 
 import pytest
 
+import nnbench
 from nnbench.context import cpuarch, python_version, system
-from nnbench.runner import BenchmarkRunner
 
 
 def test_runner_discovery(testfolder: str, another_testfolder: str) -> None:
-    r = BenchmarkRunner()
+    r = nnbench.BenchmarkRunner()
 
     r.collect(os.path.join(testfolder, "standard_benchmarks.py"), tags=("runner-collect",))
     assert len(r.benchmarks) == 1
@@ -26,7 +26,7 @@ def test_runner_discovery(testfolder: str, another_testfolder: str) -> None:
 def test_tag_selection(testfolder: str) -> None:
     PATH = os.path.join(testfolder, "tag_selection_benchmark.py")
 
-    r = BenchmarkRunner()
+    r = nnbench.BenchmarkRunner()
 
     r.collect(PATH, tags=())
     assert len(r.benchmarks) == 3
@@ -42,7 +42,7 @@ def test_tag_selection(testfolder: str) -> None:
 
 
 def test_context_collection_in_runner(testfolder: str) -> None:
-    r = BenchmarkRunner()
+    r = nnbench.BenchmarkRunner()
 
     context_providers = [system, cpuarch, python_version]
     result = r.run(
@@ -59,7 +59,7 @@ def test_context_collection_in_runner(testfolder: str) -> None:
 
 
 def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
-    r = BenchmarkRunner()
+    r = nnbench.BenchmarkRunner()
 
     def duplicate_context_provider() -> dict[str, str]:
         return {"system": "DuplicateSystem"}

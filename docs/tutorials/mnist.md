@@ -33,7 +33,7 @@ We assume that the benchmark file is located in the same folder as the training 
 --8<-- "examples/mnist/mnist.py:26:26"
 ```
 
-Next, we can define a custom subclass of `nnbench.Params` to hold our benchmark parameters.
+Next, we can define a custom subclass of `nnbench.Parameters` to hold our benchmark parameters.
 Benchmark parameters are a set of variables used as inputs to the benchmark functions collected during the benchmark run.
 
 Since our benchmarks above are parametrized by the model weights (named `params` in the function signatures) and the MNIST data split (called `data`), we define our parameters to take exactly these two values.

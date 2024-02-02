@@ -10,7 +10,7 @@ T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
 
-class BenchmarkResult(TypedDict):
+class BenchmarkRecord(TypedDict):
     context: dict[str, Any]
     benchmarks: list[dict[str, Any]]
 
@@ -56,7 +56,7 @@ class Artifact(Generic[T]):
 
 
 @dataclass(init=False, frozen=True)
-class Params:
+class Parameters:
     """
     A dataclass designed to hold benchmark parameters. This class is not functional
     on its own, and needs to be subclassed according to your benchmarking workloads.

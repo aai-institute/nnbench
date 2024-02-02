@@ -68,11 +68,11 @@ Lastly, we set up a benchmark runner in the `main.py`. There, we supply the para
 
 ```python
 # main.py
-from nnbench import runner
+import nnbench
 from nnbench.reporter import ConsoleReporter
 
 
-r = runner.BenchmarkRunner()
+r = nnbench.BenchmarkRunner()
 reporter = ConsoleReporter()
 
 result = r.run("./benchmarks.py", params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
@@ -120,14 +120,13 @@ The unfilled arguments are given in `BenchmarkRunner.run()` via a dictionary pas
 
 ```python
 # main.py
-from nnbench import runner
+import nnbench
 from nnbench.reporter import ConsoleReporter
 
 
-r = runner.BenchmarkRunner()
+r = nnbench.BenchmarkRunner()
 reporter = ConsoleReporter()
 
-r = runner.BenchmarkRunner()
 result = r.run("./benchmarks.py", params={"random_state": 42})
 reporter.report(result)
 ```
@@ -169,7 +168,6 @@ It looks similar to this:
 
 ```bash
 python main.py  
-
 
 name                                                 value
 ------------------------------------------------  --------
