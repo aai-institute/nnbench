@@ -1,9 +1,9 @@
-# Running benchmarks with the benchmark runner
+# Collecting and running benchmarks
 
 nnbench provides the `BenchmarkRunner` as a compact interface to collect and run benchmarks selectively.
 
 ##  The abstract `BenchmarkRunner`  class
-Let's first instantiate and then walk through the abstract class.
+Let's first instantiate and then walk through the base class.
 
 ```python
 from nnbench import BenchmarkRunner
@@ -11,7 +11,7 @@ from nnbench import BenchmarkRunner
 runner = BenchmarkRunner()
 ```
 
-Use the `BenchmarkRunner.collect` method to collect benchmarks from files or directories.  
+Use the `BenchmarkRunner.collect()` method to collect benchmarks from files or directories.  
 Assume we have the following benchmark setup:
 ```python
 # dir_a/bm1.py
@@ -58,12 +58,11 @@ This collection can happen iteratively. So, after executing the two collections 
 
 To remove the collected benchmarks again, use the `BenchmarkRunner.clear()` method.
 You can also supply tags to the runner to selectively collect only benchmarks with the appropriate tag.
-For example, after clearing the runner again, you can collect all benchmarks with the "tag" tag as such:
+For example, after clearing the runner again, you can collect all benchmarks with the `"tag"` tag as such:
 
 ```python
 runner.collect('dir_b', tags=("tag",))
 ```
-Note the trailing comma which is necessary for single entires in parenthesis to be interpreted as a tuple, the proper datatypes for tags.
 
 To run the benchmarks, call the `BenchmarkRunner.run()` method and supply the necessary parameters required by the collected benchmarks.
 
