@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/guides/customization/">
       
       
+        <link rel="prev" href="../benchmarks/">
       
-        <link rel="next" href="quickstart/">
+      
+        <link rel="next" href="../organization/">
       
       
-      <link rel="icon" href="_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
     
     
       
-        <title>nnbench</title>
+        <title>Defining setup/teardown tasks, context, and nnbench.Parameters - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -41,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#defining-setupteardown-tasks-context-and-nnbenchparameters" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://nnbench.github.io" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -119,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Defining setup/teardown tasks, context, and nnbench.Parameters
             
           </span>
         </div>
@@ -234,7 +236,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="https://nnbench.github.io" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -258,19 +260,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -279,7 +272,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -291,7 +283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -308,24 +300,26 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="guides/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -342,7 +336,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             User Guide
@@ -356,7 +350,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/benchmarks/" class="md-nav__link">
+      <a href="../benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -374,10 +368,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="guides/customization/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Defining setup/teardown tasks, context, and nnbench.Parameters
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -386,6 +400,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-setup-and-teardown-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Defining setup and teardown tasks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enriching-benchmark-metadata-with-context-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enriching benchmark metadata with context values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#being-type-safe-by-using-nnbenchparameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Being type safe by using nnbench.Parameters
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -398,7 +459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/organization/" class="md-nav__link">
+      <a href="../organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -419,7 +480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="guides/runners/" class="md-nav__link">
+      <a href="../runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -461,7 +522,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="tutorials/" class="md-nav__link ">
+            <a href="../../tutorials/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -492,7 +553,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tutorials/mnist/" class="md-nav__link">
+      <a href="../../tutorials/mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -571,7 +632,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="reference/nnbench/" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -602,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nnbench/context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -623,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nnbench/core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -644,7 +705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nnbench/reporter/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -665,7 +726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nnbench/runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -686,7 +747,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nnbench/types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -707,7 +768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nnbench/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -743,7 +804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -776,6 +837,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-setup-and-teardown-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Defining setup and teardown tasks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enriching-benchmark-metadata-with-context-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enriching benchmark metadata with context values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#being-type-safe-by-using-nnbenchparameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Being type safe by using nnbench.Parameters
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -789,7 +885,7 @@
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/index.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/guides/customization.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -797,22 +893,95 @@
   
 
 
-<h1 id="_1"><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Welcome to nnbench, a framework for reproducibly benchmarking machine learning models.
-The main goals of this project are portable and customizable benchmarking for ML models, and easy integration into existing ML pipelines.</p>
-<p>Highlights:</p>
-<ul>
-<li>Easy definition, bookkeeping and organization of machine learning benchmarks,</li>
-<li>Enriching benchmark results with context to properly track and annotate results,</li>
-<li>Streaming results to a variety of data sinks.</li>
-</ul>
-<div class="nt-cards nt-grid cols-3">
-<div class="nt-card"><a href="quickstart/"><div><div class="nt-card-icon"><span class="icon"><span class="twemoji landing-page-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.265 1.627c0 3.545 1.869 5.327 3.479 7.021 1.54 1.62 3.006 3.163 3.006 6.102 0 4.812-3.753 8.25-8.565 8.25-4.813 0-8.935-3.421-8.935-8.25 0-2.039.962-4.011 2.509-4.899.305-.175.672.007.803.334C7.563 12.684 8.797 12.64 9.437 12c.388-.387.47-1.116-.004-2.062-2.405-4.812 1.863-8.279 4.2-8.854.336-.082.615.198.632.543ZM12.185 21.5c4.059 0 7.065-2.84 7.065-6.75 0-2.337-1.093-3.489-2.678-5.158l-.021-.023c-1.44-1.517-3.139-3.351-3.649-6.557a6.148 6.148 0 0 0-1.911 1.76c-.787 1.144-1.147 2.633-.216 4.495.603 1.205.777 2.74-.277 3.794-.657.657-1.762 1.1-2.956.586-.752-.324-1.353-.955-1.838-1.79-.567.706-.954 1.74-.954 2.893 0 3.847 3.288 6.75 7.435 6.75Z"/></svg></span></span></div><div class="nt-card-content"><p class="nt-card-title">Quickstart</p><p class="nt-card-text">Step-by-step installation and first operations</p></div></div></a></div>
-<div class="nt-card"><a href="tutorials/"><div><div class="nt-card-icon"><span class="icon"><span class="twemoji landing-page-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4.375.375a2.5 2.5 0 0 0-2.5 2.5v15.25a2.5 2.5 0 0 0 2.5 2.5h5.187a.75.75 0 1 0 0-1.5H4.375a1 1 0 0 1-1-1v-1.75a1 1 0 0 1 1-1h5.687a.75.75 0 1 0 0-1.5H4.375c-.356 0-.694.074-1 .208V2.875a1 1 0 0 1 1-1h13.25v5.25a.75.75 0 0 0 1.5 0v-6a.75.75 0 0 0-.75-.75h-14Z"/><path d="M12.375 12.087c0-1.396 1.005-2.712 2.456-2.712h8.044a.75.75 0 0 1 .75.75v12.75a.75.75 0 0 1-.75.75h-7.5a3 3 0 0 1-3-3Zm9.75 5.538v-6.75h-7.294c-.433 0-.956.441-.956 1.212v5.939a2.989 2.989 0 0 1 1.5-.401Zm-8.25 3a1.5 1.5 0 0 0 1.5 1.5h6.75v-3h-6.75a1.5 1.5 0 0 0-1.5 1.5Z"/></svg></span></span></div><div class="nt-card-content"><p class="nt-card-title">Examples</p><p class="nt-card-text">Examples on how to use nnbench</p></div></div></a></div>
-<div class="nt-card"><a href="reference/nnbench/"><div><div class="nt-card-icon"><span class="icon"><span class="twemoji landing-page-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"/></svg></span></span></div><div class="nt-card-content"><p class="nt-card-title">API Reference</p><p class="nt-card-text">Full documentation of the Python API</p></div></div></a></div>
-<div class="nt-card"><a href="guides/"><div><div class="nt-card-icon"><span class="icon"><span class="twemoji landing-page-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm1.5 4.5h4v-4h-4Zm8.25-5a.75.75 0 0 0 0 1.5h7.5a.75.75 0 0 0 0-1.5h-7.5Zm0 6a.75.75 0 0 0 0 1.5h7.5a.75.75 0 0 0 0-1.5h-7.5Zm0 6a.75.75 0 0 0 0 1.5h7.5a.75.75 0 0 0 0-1.5h-7.5Zm-2.97-2.53a.75.75 0 0 1 0 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47 2.97-2.97a.75.75 0 0 1 1.06 0Z"/></svg></span></span></div><div class="nt-card-content"><p class="nt-card-title">User Guide</p><p class="nt-card-text">Solving specific tasks with nnbench</p></div></div></a></div>
-<div class="nt-card"><a href="CONTRIBUTING/"><div><div class="nt-card-icon"><span class="icon"><span class="twemoji landing-page-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.828 4.328C5.26 1.896 9.5 1.881 11.935 4.317c.024.024.046.05.067.076 1.391-1.078 2.993-1.886 4.777-1.89a6.22 6.22 0 0 1 4.424 1.825c.559.56 1.023 1.165 1.34 1.922.318.756.47 1.617.468 2.663 0 2.972-2.047 5.808-4.269 8.074-2.098 2.14-4.507 3.924-5.974 5.009l-.311.23a.752.752 0 0 1-.897 0l-.312-.23c-1.466-1.085-3.875-2.869-5.973-5.009-2.22-2.263-4.264-5.095-4.27-8.063a6.216 6.216 0 0 1 1.823-4.596Zm8.033 1.042c-1.846-1.834-5.124-1.823-6.969.022a4.712 4.712 0 0 0-1.382 3.52c0 2.332 1.65 4.79 3.839 7.022 1.947 1.986 4.184 3.66 5.66 4.752a78.214 78.214 0 0 0 2.159-1.645l-2.14-1.974a.752.752 0 0 1 1.02-1.106l2.295 2.118c.616-.52 1.242-1.08 1.85-1.672l-2.16-1.992a.753.753 0 0 1 1.021-1.106l2.188 2.02a18.963 18.963 0 0 0 1.528-1.877l-.585-.586-1.651-1.652c-1.078-1.074-2.837-1.055-3.935.043-.379.38-.76.758-1.132 1.126-1.14 1.124-2.96 1.077-4.07-.043-.489-.495-.98-.988-1.475-1.482a.752.752 0 0 1-.04-1.019c.234-.276.483-.576.745-.893.928-1.12 2.023-2.442 3.234-3.576Zm9.725 6.77c.579-1.08.92-2.167.92-3.228.002-.899-.128-1.552-.35-2.08-.22-.526-.551-.974-1.017-1.44a4.71 4.71 0 0 0-3.356-1.384c-1.66.004-3.25.951-4.77 2.346-1.18 1.084-2.233 2.353-3.188 3.506l-.351.423c.331.332.663.664.993.998a1.375 1.375 0 0 0 1.943.03c.37-.365.748-.74 1.125-1.118 1.662-1.663 4.373-1.726 6.06-.045.56.558 1.12 1.12 1.658 1.658Z"/></svg></span></span></div><div class="nt-card-content"><p class="nt-card-title">Contributing</p><p class="nt-card-text">How to contribute to the project</p></div></div></a></div>
+<h1 id="defining-setupteardown-tasks-context-and-nnbenchparameters">Defining setup/teardown tasks, context, and <code>nnbench.Parameters</code><a class="headerlink" href="#defining-setupteardown-tasks-context-and-nnbenchparameters" title="Permanent link">&para;</a></h1>
+<p>This page introduces some customization options for benchmark runs.
+These options can be helpful for tasks surrounding benchmark state management, such as automatic setup and cleanup, contextualizing results with context values, and defining typed parameters with the <code>nnbench.Parameters</code> class.</p>
+<h2 id="defining-setup-and-teardown-tasks">Defining setup and teardown tasks<a class="headerlink" href="#defining-setup-and-teardown-tasks" title="Permanent link">&para;</a></h2>
+<p>For some benchmarks, it is important to set certain configuration values and prepare the execution environment before running.
+To do this, you can pass a setup task to all of the nnbench decorators via the <code>setUp</code> keyword:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">os</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">def</span> <span class="nf">set_envvar</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">):</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MY_ENV&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;MY_VALUE&quot;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">setUp</span><span class="o">=</span><span class="n">set_envvar</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</span></code></pre></div>
+<p>Similarly, to revert the environment state back to its previous form (or clean up any created resources), you can supply a finalization task with the <code>tearDown</code> keyword:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">os</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">def</span> <span class="nf">set_envvar</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">):</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MY_ENV&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;MY_VALUE&quot;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">def</span> <span class="nf">pop_envvar</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">):</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;MY_ENV&quot;</span><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">setUp</span><span class="o">=</span><span class="n">set_envvar</span><span class="p">,</span> <span class="n">tearDown</span><span class="o">=</span><span class="n">pop_envvar</span><span class="p">)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</span></code></pre></div>
+<p>Both the setup and teardown task must take the exact same set of parameters as the benchmark function. To simplify function declaration, it is easiest to use a variadic keyword-only interface, i.e. <code>setup(**kwargs)</code>, as shown.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This facility works exactly the same for the <code>@nnbench.parametrize</code> and <code>@nnbench.product</code> decorators.
+There, the specified setup and teardown tasks are run once before or after each of the resulting benchmarks respectively.</p>
 </div>
+<h2 id="enriching-benchmark-metadata-with-context-values">Enriching benchmark metadata with context values<a class="headerlink" href="#enriching-benchmark-metadata-with-context-values" title="Permanent link">&para;</a></h2>
+<p>It is often useful to log specific environment metadata in addition to the benchmark's target metrics.
+Such metadata can give a clearer picture of how certain models perform on a given hardware, how model architectures compare in performance, and much more.
+In <code>nnbench</code>, you can give additional metadata to your benchmarks as <strong>context values</strong>.</p>
+<p>A <em>context value</em> is defined here as a key-value pair where <code>key</code> is a string, and <code>value</code> is any valid JSON value holding the desired information.
+As an example, the context value <code>{"cpuarch": "arm64"}</code> gives information about the CPU architecture of the host machine running the benchmark.</p>
+<p>A <em>context provider</em> is a function taking no arguments and returning a Python dictionary of context values. The following is a basic example of a context provider:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">platform</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">def</span> <span class="nf">platinfo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns CPU arch, system name (Windows/Linux/Darwin), and Python version.&quot;&quot;&quot;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="k">return</span> <span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="s2">&quot;cpuarch&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">(),</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="s2">&quot;python_version&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="p">}</span>
+</span></code></pre></div>
+<p>To supply context to your benchmarks, you can give a sequence of context providers to <code>BenchmarkRunner.run()</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># uses the `platinfo` context provider from above to log platform metadata.</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{},</span> <span class="n">context</span><span class="o">=</span><span class="p">[</span><span class="n">platinfo</span><span class="p">])</span>
+</span></code></pre></div>
+<h2 id="being-type-safe-by-using-nnbenchparameters">Being type safe by using <code>nnbench.Parameters</code><a class="headerlink" href="#being-type-safe-by-using-nnbenchparameters" title="Permanent link">&para;</a></h2>
+<p>Instead of specifying your benchmark's parameters by using a raw Python dictionary, you can define a custom subclass of <code>nnbench.Parameters</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">class</span> <span class="nc">MyParams</span><span class="p">(</span><span class="n">nnbench</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">b</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="n">params</span> <span class="o">=</span> <span class="n">MyParams</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</span></code></pre></div>
+<p>While this does not have a concrete advantage in terms of type safety over a raw dictionary (all inputs will be checked against the types expected from the benchmark interfaces), it guards against accidental modification of parameters breaking reproducibility.</p>
 
 
 
@@ -905,10 +1074,10 @@ The main goals of this project are portable and customizable benchmarking for ML
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.7389ff0e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7389ff0e.min.js"></script>
       
     
   </body>
