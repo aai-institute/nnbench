@@ -16,7 +16,7 @@ maintainers = [
     { name = "Adrian Rumpold", email = "a.rumpold@appliedai-institute.de" },
 ]
 classifiers = [
-    "Development Status :: 3 - Beta",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: Apache Software License",
