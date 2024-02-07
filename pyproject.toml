@@ -45,7 +45,9 @@ Discussions = "https://github.com/aai-institute/nnbench/discussions"
 dev = [
     "build>=1.0.0",
     "pre-commit>=3.3.3",
+    "psutil",
     "pytest>=7.4.0",
+    "tabulate",
 ]
 docs = [
     "black",
