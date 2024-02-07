@@ -1,7 +1,8 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
 
 import platform
-from typing import Any, Callable
+import sys
+from typing import Any, Callable, Literal
 
 ContextProvider = Callable[[], dict[str, Any]]
 """A function providing a dictionary of context values."""
@@ -17,3 +18,147 @@ def cpuarch() -> dict[str, str]:
 
 def python_version() -> dict[str, str]:
     return {"python_version": platform.python_version()}
+
+
+class PythonPackageInfo:
+    """
+    A context helper returning version info for requested installed packages.
+
+    If a requested package is not installed, an empty string is returned instead.
+
+    Parameters
+    ----------
+    *packages: str
+        Names of the requested packages under which they exist in the current environment.
+        For packages installed through ``pip``, this equals the PyPI package name.
+    """
+
+    def __init__(self, *packages: str):
+        self.packages = packages
+
+    def __call__(self) -> dict[str, str]:
+        from importlib.metadata import PackageNotFoundError, version
+
+        result: dict[str, str] = {}
+        for pkg in self.packages:
+            try:
+                result[pkg] = version(pkg)
+            except PackageNotFoundError:
+                result[pkg] = ""
+        return result
+
+
+class GitEnvironmentInfo:
+    """
+    A context helper providing the current git commit, latest tag, and upstream repository name.
+
+    Parameters
+    ----------
+    remote: str
+        Remote name for which to provide info, by default ``"origin"``.
+    """
+
+    def __init__(self, remote: str = "origin"):
+        self.remote = remote
+
+    def __call__(self) -> dict[str, str]:
+        import subprocess
+
+        def git_subprocess(args: list[str]) -> subprocess.CompletedProcess:
+            if platform.system() == "Windows":
+                git = "git.exe"
+            else:
+                git = "git"
+
+            return subprocess.run(  # nosec: B603
+                [git, *args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
+            )
+
+        result: dict[str, str] = {
+            "commit": "",
+            "provider": "",
+            "repository": "",
+            "tag": "",
+        }
+
+        # first, check if inside a repo.
+        p = git_subprocess(["rev-parse", "--is-inside-work-tree"])
+        # if not, return empty info.
+        if p.returncode:
+            return result
+
+        # secondly: get the current commit.
+        p = git_subprocess(["rev-parse", "HEAD"])
+        if not p.returncode:
+            result["commit"] = p.stdout.strip()
+
+        # thirdly, get the latest tag, without a short commit SHA attached.
+        p = git_subprocess(["describe", "--tags", "--abbrev=0"])
+        if not p.returncode:
+            result["tag"] = p.stdout.strip()
+
+        # and finally, get the remote repo name pointed to by the given remote.
+        p = git_subprocess(["remote", "get-url", self.remote])
+        if not p.returncode:
+            remotename: str = p.stdout.strip()
+            # it's an SSH remote.
+            if "@" in remotename:
+                prefix, sep = "git@", ":"
+            else:
+                # it is HTTPS.
+                prefix, sep = "https://", "/"
+
+            remotename = remotename.removeprefix(prefix)
+            provider, reponame = remotename.split(sep, 1)
+
+            result["provider"] = provider
+            result["repository"] = reponame.removesuffix(".git")
+
+        return result
+
+
+class CPUInfo:
+    def __init__(
+        self,
+        memunit: Literal["kB", "MB", "GB"] = "MB",
+        frequnit: Literal["kHz", "MHz", "GHz"] = "MHz",
+    ):
+        self.memunit = memunit
+        self.frequnit = frequnit
+        self.conversion_table: dict[str, float] = {"k": 1e3, "M": 1e6, "G": 1e9}
+
+    def __call__(self) -> dict[str, Any]:
+        try:
+            import psutil
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                f"context provider {self.__class__.__name__}() needs `psutil` installed. "
+                f"To install, run `{sys.executable} -m pip install --upgrade psutil`."
+            )
+
+        result: dict[str, Any] = dict()
+
+        # first, the platform info.
+        result["architecture"] = platform.machine()
+        result["bitness"] = platform.architecture()[0]
+        result["processor"] = platform.processor()
+        result["system"] = platform.system()
+        result["system-version"] = platform.release()
+
+        freq_struct = psutil.cpu_freq()
+        freq_conversion = self.conversion_table[self.frequnit[0]]
+        # result is in MHz, so we convert to Hz and apply the conversion factor.
+        result["frequency"] = freq_struct.current * 1e6 / freq_conversion
+        result["frequency_unit"] = self.frequnit
+        result["min_frequency"] = freq_struct.min
+        result["max_frequency"] = freq_struct.max
+        result["num_cpus"] = psutil.cpu_count(logical=False)
+        result["num_logical_cpus"] = psutil.cpu_count()
+
+        mem_struct = psutil.virtual_memory()
+        mem_conversion = self.conversion_table[self.memunit[0]]
+        # result is in bytes, so no need for base conversion.
+        result["total_memory"] = mem_struct.total / mem_conversion
+        result["memory_unit"] = self.memunit
+        # TODO: Lacks CPU cache info, which requires a solution other than psutil.
+        return result
