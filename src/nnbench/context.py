@@ -20,7 +20,7 @@ def python_version() -> dict[str, str]:
     return {"python_version": platform.python_version()}
 
 
-class PythonPackageInfo:
+class PythonInfo:
     """
     A context helper returning version info for requested installed packages.
 
@@ -33,19 +33,29 @@ class PythonPackageInfo:
         For packages installed through ``pip``, this equals the PyPI package name.
     """
 
+    key = "python"
+
     def __init__(self, *packages: str):
         self.packages = packages
 
-    def __call__(self) -> dict[str, str]:
+    def __call__(self) -> dict[str, Any]:
         from importlib.metadata import PackageNotFoundError, version
 
-        result: dict[str, str] = {}
+        result: dict[str, Any] = dict()
+
+        result["version"] = platform.python_version()
+        result["implementation"] = platform.python_implementation()
+        result[""] = platform.python_build()
+
+        dependencies: dict[str, str] = {}
         for pkg in self.packages:
             try:
-                result[pkg] = version(pkg)
+                dependencies[pkg] = version(pkg)
             except PackageNotFoundError:
-                result[pkg] = ""
-        return result
+                dependencies[pkg] = ""
+
+        result["dependencies"] = dependencies
+        return {self.key: result}
 
 
 class GitEnvironmentInfo:
@@ -58,10 +68,12 @@ class GitEnvironmentInfo:
         Remote name for which to provide info, by default ``"origin"``.
     """
 
+    key = "git"
+
     def __init__(self, remote: str = "origin"):
         self.remote = remote
 
-    def __call__(self) -> dict[str, str]:
+    def __call__(self) -> dict[str, dict[str, str]]:
         import subprocess
 
         def git_subprocess(args: list[str]) -> subprocess.CompletedProcess:
@@ -85,7 +97,7 @@ class GitEnvironmentInfo:
         p = git_subprocess(["rev-parse", "--is-inside-work-tree"])
         # if not, return empty info.
         if p.returncode:
-            return result
+            return {"git": result}
 
         # secondly: get the current commit.
         p = git_subprocess(["rev-parse", "HEAD"])
@@ -114,10 +126,12 @@ class GitEnvironmentInfo:
             result["provider"] = provider
             result["repository"] = reponame.removesuffix(".git")
 
-        return result
+        return {"git": result}
 
 
 class CPUInfo:
+    key = "cpu"
+
     def __init__(
         self,
         memunit: Literal["kB", "MB", "GB"] = "MB",
@@ -161,4 +175,4 @@ class CPUInfo:
         result["total_memory"] = mem_struct.total / mem_conversion
         result["memory_unit"] = self.memunit
         # TODO: Lacks CPU cache info, which requires a solution other than psutil.
-        return result
+        return {self.key: result}
