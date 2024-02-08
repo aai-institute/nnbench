@@ -144,23 +144,22 @@ class BenchmarkRunner:
         ValueError
             If the given path is not a Python file, directory, or module name.
         """
-        if ismodule(path_or_module):
+        ppath = Path(path_or_module)
+        if ppath.is_dir():
+            pythonpaths = (p for p in ppath.iterdir() if p.suffix == ".py")
+            for py in pythonpaths:
+                logger.debug(f"Collecting benchmarks from submodule {py.name!r}.")
+                self.collect(py, tags)
+            return
+        elif ppath.is_file():
+            module = import_file_as_module(path_or_module)
+        elif ismodule(path_or_module):
             module = sys.modules[str(path_or_module)]
         else:
-            ppath = Path(path_or_module)
-            if ppath.is_dir():
-                pythonpaths = (p for p in ppath.iterdir() if p.suffix == ".py")
-                for py in pythonpaths:
-                    logger.debug(f"Collecting benchmarks from submodule {py.name!r}.")
-                    self.collect(py, tags)
-                return
-            elif ppath.is_file():
-                module = import_file_as_module(path_or_module)
-            else:
-                raise ValueError(
-                    f"expected a module name, Python file, or directory, "
-                    f"got {str(path_or_module)!r}"
-                )
+            raise ValueError(
+                f"expected a module name, Python file, or directory, "
+                f"got {str(path_or_module)!r}"
+            )
 
         # iterate through the module dict members to register
         for k, v in module.__dict__.items():
