@@ -4,7 +4,6 @@ A lightweight interface for refining, displaying, and streaming benchmark result
 from __future__ import annotations
 
 import collections
-import copy
 import importlib
 import re
 import sys
@@ -127,12 +126,13 @@ class ConsoleReporter(BenchmarkReporter):
         for bm in benchmarks:
             if regex is not None and regex.search(bm["name"]) is None:
                 continue
-            bm_new = copy.copy(bm)
             ctx = flatten(ctx)
-            bm_new.update({k: v for k, v in ctx.items() if k in include_context})
-            for nc in nulls:
-                bm_new.pop(nc)
-            filtered.append(bm_new)
+            filteredctx = {
+                k: v for k, v in ctx.items() if any(k.startswith(i) for i in include_context)
+            }
+            filteredbm = {k: v for k, v in bm.items() if k not in nulls}
+            filteredbm.update(filteredctx)
+            filtered.append(filteredbm)
 
         # TODO: Add support for custom formatters
         print(tabulate(filtered, headers="keys", tablefmt=self.tablefmt))
