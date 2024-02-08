@@ -3,43 +3,68 @@ A lightweight interface for refining, displaying, and streaming benchmark result
 """
 from __future__ import annotations
 
-import copy
+import collections
 import importlib
 import re
 import sys
 import types
-from typing import Any
+from typing import Any, Callable
 
 from nnbench.types import BenchmarkRecord
 
 
-def nullcols(_benchmarks: list[dict[str, Any]]) -> set[str]:
-    nulls = set()
-    for i, bm in enumerate(_benchmarks):
-        bm_nulls = set(k for k, v in bm.items() if not v)
+def nullcols(_benchmarks: list[dict[str, Any]]) -> tuple[str, ...]:
+    """
+    Extracts columns that only contain false-ish data from a list of benchmarks.
 
-        if i == 0:
-            # NB: This breaks if the schema is unstable.
-            nulls = bm_nulls
+    Since this data is most often not interesting, the result of this
+    can be used to filter out these columns from the benchmark dictionaries.
+
+    Parameters
+    ----------
+    _benchmarks: list[dict[str, Any]]
+        The benchmarks to filter.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Tuple of the columns (key names) that only contain false-ish values
+        across all benchmarks.
+    """
+    nulls: dict[str, bool] = collections.defaultdict(bool)
+    for bm in _benchmarks:
+        for k, v in bm.items():
+            nulls[k] = nulls[k] or bool(v)
+    return tuple(k for k, v in nulls.items() if not v)
+
+
+def flatten(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
+    """
+    Turn a nested dictionary into a flattened dictionary.
+
+    Parameters
+    ----------
+    d: dict[str, Any]
+        (Possibly) nested dictionary to flatten.
+    prefix: str
+        Key prefix to apply at the top-level (nesting level 0).
+    sep: str
+        Separator on which to join keys, "." by default.
+
+    Returns
+    -------
+    dict[str, Any]
+        The flattened dictionary.
+    """
+
+    items: list[tuple[str, Any]] = []
+    for key, value in d.items():
+        new_key = prefix + sep + key if prefix else key
+        if isinstance(value, dict):
+            items.extend(flatten(value, new_key, sep).items())
         else:
-            # intersection to drop nulls that are populated in later benchmarks.
-            nulls &= bm_nulls
-    return nulls
-
-
-def nested_getitem(obj: dict[str, Any], item: str) -> Any:
-    items = item.split(".")
-    for n, it in enumerate(items):
-        try:
-            obj = obj[it]
-        except KeyError:
-            if n == 0:
-                msg = f"context has no member {item!r}"
-            else:
-                val = ".".join(items[: n + 1])
-                msg = f"nested context value {val!r} has no member {it!r}"
-            raise KeyError(msg) from None
-    return obj
+            items.append((new_key, value))
+    return dict(items)
 
 
 # TODO: Add IO mixins for database, file, and HTTP IO
@@ -70,8 +95,13 @@ class BenchmarkReporter:
 
 
 class ConsoleReporter(BenchmarkReporter):
-    def __init__(self, tablefmt: str = "simple"):
+    def __init__(
+        self,
+        tablefmt: str = "simple",
+        custom_formatters: dict[str, Callable[[Any], Any]] | None = None,
+    ):
         self.tablefmt = tablefmt
+        self.custom_formatters: dict[str, Callable[[Any], Any]] = custom_formatters or {}
 
     def report_result(
         self,
@@ -101,14 +131,20 @@ class ConsoleReporter(BenchmarkReporter):
         for bm in benchmarks:
             if regex is not None and regex.search(bm["name"]) is None:
                 continue
-            bm_new = copy.copy(bm)
-            filteredctx = {k: nested_getitem(ctx, k) for k in include_context}
-            bm_new.update(filteredctx)
-            for nc in nulls:
-                bm_new.pop(nc)
-            filtered.append(bm_new)
+            filteredctx = {
+                k: v
+                for k, v in flatten(ctx).items()
+                if any(k.startswith(i) for i in include_context)
+            }
+            filteredbm = {k: v for k, v in bm.items() if k not in nulls}
+            filteredbm.update(filteredctx)
+            # only apply custom formatters after context merge
+            #  to allow custom formatting of context values.
+            filteredbm = {
+                k: self.custom_formatters.get(k, lambda x: x)(v) for k, v in filteredbm.items()
+            }
+            filtered.append(filteredbm)
 
-        # TODO: Add support for custom formatters
         print(tabulate(filtered, headers="keys", tablefmt=self.tablefmt))
 
 

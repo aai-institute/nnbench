@@ -45,7 +45,9 @@ class PythonInfo:
 
         result["version"] = platform.python_version()
         result["implementation"] = platform.python_implementation()
-        result[""] = platform.python_build()
+        buildno, buildtime = platform.python_build()
+        result["buildno"] = buildno
+        result["buildtime"] = buildtime
 
         dependencies: dict[str, str] = {}
         for pkg in self.packages:
@@ -73,7 +75,7 @@ class GitEnvironmentInfo:
     def __init__(self, remote: str = "origin"):
         self.remote = remote
 
-    def __call__(self) -> dict[str, dict[str, str]]:
+    def __call__(self) -> dict[str, dict[str, Any]]:
         import subprocess
 
         def git_subprocess(args: list[str]) -> subprocess.CompletedProcess:
@@ -86,11 +88,12 @@ class GitEnvironmentInfo:
                 [git, *args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
             )
 
-        result: dict[str, str] = {
+        result: dict[str, Any] = {
             "commit": "",
             "provider": "",
             "repository": "",
             "tag": "",
+            "dirty": None,
         }
 
         # first, check if inside a repo.
@@ -125,6 +128,10 @@ class GitEnvironmentInfo:
 
             result["provider"] = provider
             result["repository"] = reponame.removesuffix(".git")
+
+        p = git_subprocess(["status", "--porcelain"])
+        if not p.returncode:
+            result["dirty"] = bool(p.stdout.strip())
 
         return {"git": result}
 
