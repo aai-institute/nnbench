@@ -8,7 +8,7 @@ import importlib
 import re
 import sys
 import types
-from typing import Any
+from typing import Any, Callable
 
 from nnbench.types import BenchmarkRecord
 
@@ -95,8 +95,13 @@ class BenchmarkReporter:
 
 
 class ConsoleReporter(BenchmarkReporter):
-    def __init__(self, tablefmt: str = "simple"):
+    def __init__(
+        self,
+        tablefmt: str = "simple",
+        custom_formatters: dict[str, Callable[[Any], Any]] | None = None,
+    ):
         self.tablefmt = tablefmt
+        self.custom_formatters: dict[str, Callable[[Any], Any]] = custom_formatters or {}
 
     def report_result(
         self,
@@ -126,15 +131,20 @@ class ConsoleReporter(BenchmarkReporter):
         for bm in benchmarks:
             if regex is not None and regex.search(bm["name"]) is None:
                 continue
-            ctx = flatten(ctx)
             filteredctx = {
-                k: v for k, v in ctx.items() if any(k.startswith(i) for i in include_context)
+                k: v
+                for k, v in flatten(ctx).items()
+                if any(k.startswith(i) for i in include_context)
             }
             filteredbm = {k: v for k, v in bm.items() if k not in nulls}
             filteredbm.update(filteredctx)
+            # only apply custom formatters after context merge
+            #  to allow custom formatting of context values.
+            filteredbm = {
+                k: self.custom_formatters.get(k, lambda x: x)(v) for k, v in filteredbm.items()
+            }
             filtered.append(filteredbm)
 
-        # TODO: Add support for custom formatters
         print(tabulate(filtered, headers="keys", tablefmt=self.tablefmt))
 
 
