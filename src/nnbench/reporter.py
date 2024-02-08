@@ -3,6 +3,7 @@ A lightweight interface for refining, displaying, and streaming benchmark result
 """
 from __future__ import annotations
 
+import collections
 import copy
 import importlib
 import re
@@ -13,33 +14,41 @@ from typing import Any
 from nnbench.types import BenchmarkRecord
 
 
-def nullcols(_benchmarks: list[dict[str, Any]]) -> set[str]:
-    nulls = set()
-    for i, bm in enumerate(_benchmarks):
-        bm_nulls = set(k for k, v in bm.items() if not v)
+def nullcols(_benchmarks: list[dict[str, Any]]) -> tuple[str, ...]:
+    nulls: dict[str, bool] = collections.defaultdict(bool)
+    for bm in _benchmarks:
+        for k, v in bm.items():
+            nulls[k] = nulls[k] or bool(v)
+    return tuple(k for k, v in nulls.items() if v)
 
-        if i == 0:
-            # NB: This breaks if the schema is unstable.
-            nulls = bm_nulls
+
+def flatten(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
+    """
+    Turn a nested dictionary into a flattened dictionary.
+
+    Parameters
+    ----------
+    d: dict[str, Any]
+        (Possibly) nested dictionary to flatten.
+    prefix: str
+        Key prefix to apply at the top-level (nesting level 0).
+    sep: str
+        Separator on which to join keys, "." by default.
+
+    Returns
+    -------
+    dict[str, Any]
+        The flattened dictionary.
+    """
+
+    items: list[tuple[str, Any]] = []
+    for key, value in d.items():
+        new_key = prefix + sep + key if prefix else key
+        if isinstance(value, dict):
+            items.extend(flatten(value, new_key, sep).items())
         else:
-            # intersection to drop nulls that are populated in later benchmarks.
-            nulls &= bm_nulls
-    return nulls
-
-
-def nested_getitem(obj: dict[str, Any], item: str) -> Any:
-    items = item.split(".")
-    for n, it in enumerate(items):
-        try:
-            obj = obj[it]
-        except KeyError:
-            if n == 0:
-                msg = f"context has no member {item!r}"
-            else:
-                val = ".".join(items[: n + 1])
-                msg = f"nested context value {val!r} has no member {it!r}"
-            raise KeyError(msg) from None
-    return obj
+            items.append((new_key, value))
+    return dict(items)
 
 
 # TODO: Add IO mixins for database, file, and HTTP IO
@@ -102,8 +111,8 @@ class ConsoleReporter(BenchmarkReporter):
             if regex is not None and regex.search(bm["name"]) is None:
                 continue
             bm_new = copy.copy(bm)
-            filteredctx = {k: nested_getitem(ctx, k) for k in include_context}
-            bm_new.update(filteredctx)
+            ctx = flatten(ctx)
+            bm_new.update({k: v for k, v in ctx.items() if k in include_context})
             for nc in nulls:
                 bm_new.pop(nc)
             filtered.append(bm_new)
