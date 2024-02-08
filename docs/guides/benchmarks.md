@@ -75,7 +75,7 @@ from nnbench.reporter import ConsoleReporter
 r = nnbench.BenchmarkRunner()
 reporter = ConsoleReporter()
 
-result = r.run("./benchmarks.py", params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
+result = r.run("benchmarks.py", params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
 reporter.report(result)
 ```
 
@@ -127,7 +127,7 @@ from nnbench.reporter import ConsoleReporter
 r = nnbench.BenchmarkRunner()
 reporter = ConsoleReporter()
 
-result = r.run("./benchmarks.py", params={"random_state": 42})
+result = r.run("benchmarks.py", params={"random_state": 42})
 reporter.report(result)
 ```
 
