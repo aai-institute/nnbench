@@ -221,7 +221,7 @@ def mnist_jax():
     reporter = ConsoleReporter()
     params = MNISTTestParameters(params=state.params, data=data)
     result = runner.run(HERE, params=params)
-    reporter.report(result)
+    reporter.write(result)
 
 
 if __name__ == "__main__":

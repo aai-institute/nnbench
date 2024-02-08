@@ -8,7 +8,6 @@ except PackageNotFoundError:
     # package is not installed
     pass
 
-# TODO: This naming is unfortunate
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter, register_reporter
 from .runner import BenchmarkRunner

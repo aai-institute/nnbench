@@ -51,7 +51,7 @@ reporter = ConsoleReporter()
 
 # To collect in the current file, pass "__main__" as module name.
 result = r.run("__main__", params={"model": model, "X_test": X_test, "y_test": y_test})
-reporter.report(result)
+reporter.write(result)
 ```
 
 The resulting output might look like this:
