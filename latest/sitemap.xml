@@ -100,4 +100,9 @@
          <lastmod>2024-02-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
+    <url>
+         <loc>https://nnbench.github.io/latest/tutorials/prefect/</loc>
+         <lastmod>2024-02-12</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
 </urlset>
