@@ -1,5 +1,9 @@
-from typing import Sequence
+import re
+from typing import Any, Callable, Sequence
 
+from tabulate import tabulate
+
+from nnbench.reporter.util import flatten, nullcols
 from nnbench.types import BenchmarkRecord
 
 
@@ -52,6 +56,14 @@ class BenchmarkReporter:
     merge: bool = False
     """Whether to merge multiple BenchmarkRecords before reporting."""
 
+    def __init__(
+        self,
+        tablefmt: str = "simple",
+        custom_formatters: dict[str, Callable[[Any], Any]] | None = None,
+    ):
+        self.tablefmt = tablefmt
+        self.custom_formatters: dict[str, Callable[[Any], Any]] = custom_formatters or {}
+
     def initialize(self):
         """
         Initialize the reporter's state.
@@ -72,6 +84,42 @@ class BenchmarkReporter:
 
     merge_records = staticmethod(default_merge)
 
+    def display(
+        self,
+        record: BenchmarkRecord,
+        benchmark_filter: str | None = None,
+        include_context: tuple[str, ...] = (),
+        exclude_empty: bool = True,
+    ) -> None:
+        ctx, benchmarks = record["context"], record["benchmarks"]
+
+        nulls = set() if not exclude_empty else nullcols(benchmarks)
+
+        if benchmark_filter is not None:
+            regex = re.compile(benchmark_filter, flags=re.IGNORECASE)
+        else:
+            regex = None
+
+        filtered = []
+        for bm in benchmarks:
+            if regex is not None and regex.search(bm["name"]) is None:
+                continue
+            filteredctx = {
+                k: v
+                for k, v in flatten(ctx).items()
+                if any(k.startswith(i) for i in include_context)
+            }
+            filteredbm = {k: v for k, v in bm.items() if k not in nulls}
+            filteredbm.update(filteredctx)
+            # only apply custom formatters after context merge
+            #  to allow custom formatting of context values.
+            filteredbm = {
+                k: self.custom_formatters.get(k, lambda x: x)(v) for k, v in filteredbm.items()
+            }
+            filtered.append(filteredbm)
+
+        print(tabulate(filtered, headers="keys", tablefmt=self.tablefmt))
+
     def read(self) -> BenchmarkRecord:
         raise NotImplementedError
 
@@ -82,11 +130,6 @@ class BenchmarkReporter:
         raise NotImplementedError
 
     def write_batched(self, records: Sequence[BenchmarkRecord]) -> None:
-        # by default, merge first and then write.
-        if self.merge:
-            merged = self.merge_records(records)
-            self.write(merged)
-        else:
-            # write everything in a loop.
-            for record in records:
-                self.write(record)
+        # By default, just loop over the records and write() everything.
+        for record in records:
+            self.write(record)
