@@ -21,7 +21,6 @@ import optax
 from flax.training.train_state import TrainState
 
 import nnbench
-from nnbench.reporter import ConsoleReporter
 
 HERE = Path(__file__).parent
 
@@ -218,7 +217,7 @@ def mnist_jax():
 
     # the nnbench portion.
     runner = nnbench.BenchmarkRunner()
-    reporter = ConsoleReporter()
+    reporter = nnbench.BenchmarkReporter()
     params = MNISTTestParameters(params=state.params, data=data)
     result = runner.run(HERE, params=params)
     reporter.write(result)

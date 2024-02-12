@@ -25,6 +25,7 @@ nav:
   - Examples:
     - tutorials/index.md
     - tutorials/mnist.md
+    - tutorials/prefect.md
   - API Reference: reference/
   - Contributing: CONTRIBUTING.md
 

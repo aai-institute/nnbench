@@ -7,12 +7,10 @@ import importlib
 import types
 
 from .base import BenchmarkReporter
-from .console import ConsoleReporter
 from .file import FileReporter
 
 # internal, mutable
 _reporter_registry: dict[str, type[BenchmarkReporter]] = {
-    "console": ConsoleReporter,
     "file": FileReporter,
 }
 

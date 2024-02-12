@@ -48,7 +48,7 @@ And that's it! After we implement all training code, we just run nnbench directl
 --8<-- "examples/mnist/mnist.py:213:223"
 ```
 
-We use the `ConsoleReporter` to print the results directly to the terminal in a table.
+We use the `BenchmarkReporter` to print the results directly to the terminal in a table.
 Notice how by we can reuse the training artifacts in nnbench as parameters to obtain results right after training!
 
 The output might look like this:
