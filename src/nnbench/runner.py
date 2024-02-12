@@ -11,7 +11,7 @@ import warnings
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Generator, Sequence, get_origin
+from typing import Any, Callable, Generator, Sequence, get_origin
 
 from nnbench.context import ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters
@@ -26,6 +26,14 @@ def iscontainer(s: Any) -> bool:
 
 def isdunder(s: str) -> bool:
     return s.startswith("__") and s.endswith("__")
+
+
+def qualname(fn: Callable) -> str:
+    fnname = fn.__name__
+    fnqualname = fn.__qualname__
+    if fnname == fnqualname:
+        return fnname
+    return f"{fnqualname}.{fnname}"
 
 
 @contextlib.contextmanager
@@ -248,8 +256,8 @@ class BenchmarkRunner:
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
-                "function": f"{benchmark.fn.__qualname__}.{benchmark.fn.__name__}",
-                "description": benchmark.fn.__doc__,
+                "function": qualname(benchmark.fn),
+                "description": benchmark.fn.__doc__ or "",
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
