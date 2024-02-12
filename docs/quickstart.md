@@ -39,25 +39,24 @@ def accuracy(model: base.BaseEstimator, X_test: np.ndarray, y_test: np.ndarray) 
 ```
 
 Now we can instantiate a benchmark runner to collect and run the accuracy benchmark.
-Then, using the `ConsoleReporter` we report the resulting accuracy metric by printing it to the terminal in a table.
+Then, using the `BenchmarkReporter` we report the resulting accuracy metric by printing it to the terminal in a table.
 
 ```python
 import nnbench
-from nnbench.reporter import ConsoleReporter
 
 
 r = nnbench.BenchmarkRunner()
-reporter = ConsoleReporter()
+reporter = nnbench.BenchmarkReporter()
 
 # To collect in the current file, pass "__main__" as module name.
 result = r.run("__main__", params={"model": model, "X_test": X_test, "y_test": y_test})
-reporter.write(result)
+reporter.display(result)
 ```
 
 The resulting output might look like this:
 
 ```bash
-python benchmarks.py  
+python benchmarks.py
 
 name         value
 --------  --------
