@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from typing import Any, Callable, Sequence
 
@@ -5,38 +7,6 @@ from tabulate import tabulate
 
 from nnbench.reporter.util import flatten, nullcols
 from nnbench.types import BenchmarkRecord
-
-
-def default_merge(records: Sequence[BenchmarkRecord]) -> BenchmarkRecord:
-    """
-    Merges a number of benchmark records into one.
-
-    The resulting record has an empty top-level context, since the context
-    values might be different in all respective records.
-
-    TODO: Think about merging contexts here to preserve the record model,
-     padding missing values with a placeholder if not present.
-     -> Might be easier with an OOP Context class.
-
-    Parameters
-    ----------
-    records: Sequence[BenchmarkRecord]
-        The records to merge.
-
-    Returns
-    -------
-    BenchmarkRecord
-        The merged record, with all benchmark contexts inlined into their
-        respective benchmarks.
-
-    """
-    merged = BenchmarkRecord(context=dict(), benchmarks=[])
-    for record in records:
-        ctx, benchmarks = record["context"], record["benchmarks"]
-        for bm in benchmarks:
-            bm["context"] = ctx
-        merged["benchmarks"].extend(benchmarks)
-    return merged
 
 
 # TODO: Add IO mixins for database, file, and HTTP IO
@@ -81,8 +51,6 @@ class BenchmarkReporter:
         acquired in ``initialize()``.
         """
         pass
-
-    merge_records = staticmethod(default_merge)
 
     def display(
         self,

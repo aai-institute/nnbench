@@ -7,12 +7,9 @@ import importlib
 import types
 
 from .base import BenchmarkReporter
-from .console import ConsoleReporter
 
 # internal, mutable
-_reporter_registry: dict[str, type[BenchmarkReporter]] = {
-    "console": ConsoleReporter,
-}
+_reporter_registry: dict[str, type[BenchmarkReporter]] = {}
 
 # external, immutable
 reporter_registry: types.MappingProxyType[str, type[BenchmarkReporter]] = types.MappingProxyType(
