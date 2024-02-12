@@ -1,11 +1,14 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
+from __future__ import annotations
 
 import platform
 import sys
-from typing import Any, Callable, Literal
+from typing import Any, Callable, Iterable, Literal
 
 ContextProvider = Callable[[], dict[str, Any]]
 """A function providing a dictionary of context values."""
+
+ContextElement = dict[str, Any] | ContextProvider
 
 
 def system() -> dict[str, str]:
@@ -183,3 +186,106 @@ class CPUInfo:
         result["memory_unit"] = self.memunit
         # TODO: Lacks CPU cache info, which requires a solution other than psutil.
         return {self.key: result}
+
+
+class BenchmarkContext:
+    def __init__(
+        self,
+        context: ContextElement | Iterable[dict | ContextProvider] | None = None,
+        name: str | None = None,
+    ) -> None:
+        self.context: dict[str, Any] = {}
+        if context:
+            self.insert(context)
+        self.name = name or f"BenchmarkContext_{id(self)}"
+
+    @property
+    def context_keys(self) -> set:
+        return set(self.context)
+
+    @staticmethod
+    def _duplicate_keys(this: dict[str, Any], other: dict[str, Any]) -> set:
+        this_keys = set(this.keys())
+        other_keys = set(other.keys())
+        return this_keys & other_keys
+
+    def insert_dict(self, context: dict) -> BenchmarkContext:
+        for key in self._duplicate_keys(self.context, context):
+            if self.context[key] != context[key]:
+                raise ValueError(f"got multiple values for context key {key!r}")
+        self.context |= context
+        return self
+
+    def insert_provider(self, provider: ContextProvider) -> BenchmarkContext:
+        context = provider()
+        if not isinstance(context, dict):
+            raise ValueError(f"Provider {provider} did not return a context dict. Got {context}")
+        return self.insert_dict(context)
+
+    def insert_single(self, context: ContextElement) -> BenchmarkContext:
+        if callable(context):
+            self.insert_provider(context)
+        elif isinstance(context, dict):
+            self.insert_dict(context)
+        else:
+            raise ValueError(f"Unknown context type {context}.")
+        return self
+
+    def insert(self, contexts: ContextElement | Iterable[ContextElement]) -> BenchmarkContext:
+        if isinstance(contexts, Iterable) and not isinstance(contexts, dict):
+            for context in contexts:
+                self.insert_single(context)
+        else:
+            self.insert_single(contexts)
+        return self
+
+    def __getitem__(self, key: str) -> Any:
+        return self.context[key]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.context[key] = value
+
+    def merge(
+        self, other: BenchmarkContext, inplace: bool = False, placeholder: str = "<MISSING>"
+    ) -> BenchmarkContext:
+        duplicate_keys = self._duplicate_keys(self.context, other.context)
+        left_only_keys = self.context_keys ^ other.context_keys
+        right_only_keys = other.context_keys ^ self.context_keys
+        union_keys = duplicate_keys | left_only_keys | right_only_keys
+        merged = {}
+        for key in union_keys:
+            if key in duplicate_keys and self.context[key] == other.context[key]:
+                merged[key] = self.context[key]
+            elif key in duplicate_keys:
+                if self.name == other.name:
+                    raise ValueError(
+                        "Cannot merge BenchmarkContext with same name but deviating values for keys of same name."
+                    )
+                merged[f"{self.name}_{key}"] = self.context[key]
+                merged[f"{other.name}_{key}"] = other.context[key]
+            elif key in left_only_keys:
+                merged[f"{self.name}_{key}"] = self.context[key]
+                merged[f"{other.name}_{key}"] = placeholder
+            elif key in right_only_keys:
+                merged[f"{self.name}_{key}"] = placeholder
+                merged[f"{other.name}_{key}"] = other.context[key]
+        merged_name = f"merged_{self.name}_{other.name}"
+        if inplace:
+            self.context = merged
+            self.name = merged_name
+            return self
+        else:
+            return BenchmarkContext(context=merged, name=merged_name)
+
+    def copy(self) -> BenchmarkContext:
+        new = BenchmarkContext(context=self.context, name=self.name)
+        return new
+
+    def __add__(
+        self, other: BenchmarkContext | ContextElement | Iterable[ContextElement]
+    ) -> BenchmarkContext:
+        new_instance = self.copy()
+        if isinstance(other, BenchmarkContext):
+            return new_instance.merge(other, inplace=False)
+        else:
+            return self.copy().insert(other)
