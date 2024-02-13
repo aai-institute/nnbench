@@ -1,205 +1,138 @@
 from __future__ import annotations
 
+import json
 import os
-from typing import Any, List
+from typing import IO, Any, Callable, List
 
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 
+ser = Callable[[IO, List[BenchmarkRecord], Any], None]
+de = Callable[[IO, dict[str, Any]], List[BenchmarkRecord]]
 
-class Parser:
-    """The base interface for parsing records form file.
+# A registry of supported file loaders
+_file_loaders: dict[str, tuple[ser, de]] = {}
 
-    Usage:
-    ------
-    ```
-    class MyCustomParser(Parser):
-        def parse_file(self, records):
-            # Implement your custom parsing logic here
-            ...
-        def write_records(self, records):
-            # Implement your custom file writing logic here
-            ...
-    # Register your custom parser with a distinct file type
-    MyCustomParser.register("my_custom_format")
-    # Usage:
-    new_record = ...  # Load records in your custom format
-    append_record_to_records(records, new_record, "my_custom_format")
-    ```
+
+# Register file loaders
+def register_file_io(serializer: Callable, deserializer: Callable, file_type: str) -> None:
     """
-
-    def parse_file(self, records: str) -> Any:
-        """Parses records and returns a list of parsed data.
-
-        Args:
-        -----
-            `records:` A list or iterator of record strings.
-
-        Returns:
-        --------
-            A list of parsed records.
-        """
-        raise NotImplementedError
-
-    def write_records(self, records: Any[BenchmarkRecord], record: BenchmarkRecord) -> str:
-        """Appends a record to the existing records based on the file type.
-
-        Args:
-        -----
-            `records:` A list of parsed records.
-            `record:` The record string to append.
-            `file_type:` The file type (string).
-
-        Returns:
-        --------
-            A string form of the content to be written in a file.
-        """
-        raise NotImplementedError
-
-    @classmethod
-    def register(cls, file_type: str) -> None:
-        """Registers a parser for a specific file type.
-
-        Args:
-            `file_type:` The file type (string)
-        """
-        parsers[file_type] = cls
-
-    @staticmethod
-    def get_parser(file_type: str):
-        """Gets the registered parser for a file type.
-
-        Args:
-            `file_type:` The file type (string)
-
-        Returns:
-        --------
-            The registered RecordParser, or None if not found.
-        """
-        return parsers.get(file_type)
-
-
-class JsonParser(Parser):
-    def parse_file(self, records: str) -> List[dict]:
-        import json
-
-        try:
-            return json.loads(records if records else "[]")
-        except json.JSONDecodeError:
-            raise ValueError("Unexpected records passed")
-
-    def write_records(
-        self, parsed_records: Any[BenchmarkRecord] | None, record: BenchmarkRecord
-    ) -> str:
-        import json
-
-        parsed_records.append(record)
-        return json.dumps(parsed_records)
-
-
-class YamlParser(Parser):
-    def parse_file(self, records: str) -> List[dict]:
-        import yaml
-
-        return yaml.safe_load(records) if records else []
-
-    def write_records(
-        self, parsed_records: Any[BenchmarkRecord] | None, record: BenchmarkRecord
-    ) -> str:
-        import yaml
-
-        parsed_records.append(record)
-        for element in record["benchmarks"]:
-            element["value"] = float(element["value"])
-        return yaml.dump(parsed_records)
-
-
-# Register custom parsers here
-parsers = {"json": JsonParser, "yaml": YamlParser}
-
-
-def parse_records(records: str, file_type: str) -> Any:
-    """Parses records based on the specified file type.
-
-    This function retrieves and calls the registered parser for
-    the given file type.
+    Registers a serializer and deserializer for a file type.
 
     Args:
-        `records:` A list or iterator of record strings.
-        `file_type:` The file type (string).
-
-    Returns:
-        A list of parsed records.
+    -----
+        `serializer (Callable):` Defines how records are written to a file.
+        `deserializer (Callable):` Defines how file contents are converted to `BenchmarkRecord`.
+        `file_type (str):` File type extension (e.g., ".json", ".yaml").
     """
-
-    parser = Parser.get_parser(file_type)
-    if parser is None:
-        raise ValueError(f"Unsupported file type: {file_type}")
-
-    return parser().parse_file(records)
+    _file_loaders[file_type] = (serializer, deserializer)
 
 
-def append_record_to_records(parsed_records: Any, record: BenchmarkRecord, file_type: str) -> str:
-    """Appends a record to the list based on the file type.
+def _get_file_loader(file_type: str) -> tuple[ser, de]:
+    """Helps retrieve registered file loaders of the given file_type with error handling"""
+    file_loaders = _file_loaders.get(file_type)
+    if not file_loaders:
+        raise ValueError(f"File loaders for `{file_type}` files does not exist")
+    return file_loaders
 
-    This function first parses the record using the appropriate parser
-    and then appends it to the `parsed_records`.
 
-    Args:
-        `records:` A list of parsed records.
-        `record:` The record to append.
-        `file_type:` The file type (string).
-    """
+# json file loader:
+def json_load(fp: IO, options: Any = None) -> List[BenchmarkRecord] | None:
+    file_content = fp.read()
+    if file_content:
+        objs = [
+            BenchmarkRecord(context=obj["context"], benchmarks=obj["benchmarks"])
+            for obj in json.loads(file_content)
+        ]
+        return objs
+    return None
 
-    parser = Parser.get_parser(file_type)
-    if parser is None:
-        raise ValueError(f"Unsupported file type: {file_type}")
 
-    return parser().write_records(parsed_records, record)
+def json_save(fp: IO, records: List[BenchmarkRecord], options: Any = None) -> None:
+    fp.write(json.dumps(records))
+
+
+# yaml file loader:
+def yaml_load(fp: IO, options: Any = None) -> List[BenchmarkRecord] | None:
+    try:
+        import yaml
+    except ImportError:
+        raise ModuleNotFoundError("`pyyaml` is not installed")
+
+    file_content = fp.read()
+    if file_content:
+        objs = [
+            BenchmarkRecord(context=obj["context"], benchmarks=obj["benchmarks"])
+            for obj in yaml.safe_load(file_content)
+        ]
+        return objs
+    return None
+
+
+def yaml_save(fp: IO, records: List[BenchmarkRecord], options: dict[str, Any] = None) -> None:
+    try:
+        import yaml
+    except ImportError:
+        raise ModuleNotFoundError("`pyyaml` is not installed")
+
+    # To avoid `yaml.safe_dump()` error when trying to write numpy array
+    for element in records[-1]["benchmarks"]:
+        element["value"] = float(element["value"])
+    yaml.safe_dump(records, fp, **(options or {}))
+
+
+# Register json and yaml file loaders
+register_file_io(json_save, json_load, file_type="json")
+register_file_io(yaml_save, yaml_load, file_type="yaml")
 
 
 class FileReporter(BenchmarkReporter):
-    def __init__(self, dir: str):
-        self.dir = dir
-        if not os.path.exists(dir):
+    """
+    Reports benchmark results to files in a given directory.
+
+    This class implements a `BenchmarkReporter` subclass that persists benchmark
+    records to files within a specified directory. It supports both reading and
+    writing records, using file extensions to automatically determine the appropriate
+    serialization format.
+
+    Args:
+    -----
+        directory (str): The directory where benchmark files will be stored.
+
+    Raises:
+    -------
+        BaseException: If the directory is not initialized.
+    """
+
+    def __init__(self, directory: str):
+        self.directory = directory
+        if not os.path.exists(directory):
             self.initialize()
 
     def initialize(self) -> None:
-        try:
-            os.makedirs(self.dir, exist_ok=True)
-        except OSError as e:
-            self.finalize()
-            raise ValueError(f"Could not create directory: {self.dir}") from e
+        os.makedirs(self.directory, exist_ok=True)
 
-    def read(self, file_name: str) -> BenchmarkRecord:
-        if not self.dir:
-            raise BaseException("Directory is not initialized")
-        file_path = os.path.join(self.dir, file_name)
+    def read(self, **kwargs: Any) -> List[BenchmarkRecord]:
+        if not self.directory:
+            raise BaseException("No directory is initialized")
+        file_name = str(kwargs["file_name"])
+        file_path = os.path.join(self.directory, file_name)
         file_type = file_name.split(".")[1]
-        try:
-            with open(file_path) as file:
-                data = file.read()
-                parsed_data = parse_records(data, file_type)
-                return parsed_data
-        except FileNotFoundError:
-            raise ValueError(f"Could not read the file: {file_path}")
+        with open(file_path) as file:
+            return _get_file_loader(file_type)[1](file, {})
 
-    def write(self, record: BenchmarkRecord, file_name: str) -> None:
-        if not self.dir:
-            raise BaseException("Directory is not initialized")
-
-        file_path = os.path.join(self.dir, file_name)
-        if not os.path.exists(file_path):  # Create the file
+    def write(self, record: BenchmarkRecord, **kwargs: dict[str, Any]) -> None:
+        if not self.directory:
+            raise BaseException("No directory is initialized")
+        file_name = str(kwargs["file_name"])
+        file_path = os.path.join(self.directory, file_name)
+        # Create the file, if not already existing
+        if not os.path.exists(file_path):
             with open(file_path, "w") as file:
                 file.write("")
-        try:
-            parsed_records = self.read(file_name)
-            file_type = file_name.split(".")[1]
-            new_records = append_record_to_records(parsed_records, record, file_type)
-            with open(file_path, "w") as file:
-                file.write(new_records)
-        except FileNotFoundError:
-            raise ValueError(f"Could not read the file: {file_path}")
-
-    def finalize(self) -> None:
-        del self.dir
+        prev_records = self.read(file_name=file_name)
+        prev_records = prev_records if prev_records else []
+        prev_records.append(record)  #
+        file_type = file_name.split(".")[1]
+        with open(file_path, "w") as file:
+            _get_file_loader(file_type)[0](file, prev_records, {})
