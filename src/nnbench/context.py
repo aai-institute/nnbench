@@ -1,9 +1,10 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
 from __future__ import annotations
 
+import itertools
 import platform
 import sys
-from typing import Any, Callable, Iterable, Literal
+from typing import Any, Callable, ItemsView, KeysView, Literal, ValuesView
 
 ContextProvider = Callable[[], dict[str, Any]]
 """A function providing a dictionary of context values."""
@@ -188,104 +189,254 @@ class CPUInfo:
         return {self.key: result}
 
 
-class BenchmarkContext:
-    def __init__(
-        self,
-        context: ContextElement | Iterable[dict | ContextProvider] | None = None,
-        name: str | None = None,
-    ) -> None:
-        self.context: dict[str, Any] = {}
+class Context:
+    def __init__(self, context: dict[str, Any] | ContextProvider | "Context" | None = None) -> None:
+        self._ctx_dict: dict[str, Any] = {}
         if context:
-            self.insert(context)
-        self.name = name or f"BenchmarkContext_{id(self)}"
+            self.merge(context, inplace=True)
 
-    @property
-    def context_keys(self) -> set:
-        return set(self.context)
+    def keys(self) -> KeysView[str]:
+        return self._ctx_dict.keys()
 
-    @staticmethod
-    def _duplicate_keys(this: dict[str, Any], other: dict[str, Any]) -> set:
-        this_keys = set(this.keys())
-        other_keys = set(other.keys())
-        return this_keys & other_keys
+    def values(self) -> ValuesView[Any]:
+        return self._ctx_dict.values()
 
-    def insert_dict(self, context: dict) -> BenchmarkContext:
-        for key in self._duplicate_keys(self.context, context):
-            if self.context[key] != context[key]:
-                raise ValueError(f"got multiple values for context key {key!r}")
-        self.context |= context
-        return self
-
-    def insert_provider(self, provider: ContextProvider) -> BenchmarkContext:
-        context = provider()
-        if not isinstance(context, dict):
-            raise ValueError(f"Provider {provider} did not return a context dict. Got {context}")
-        return self.insert_dict(context)
-
-    def insert_single(self, context: ContextElement) -> BenchmarkContext:
-        if callable(context):
-            self.insert_provider(context)
-        elif isinstance(context, dict):
-            self.insert_dict(context)
-        else:
-            raise ValueError(f"Unknown context type {context}.")
-        return self
-
-    def insert(self, contexts: ContextElement | Iterable[ContextElement]) -> BenchmarkContext:
-        if isinstance(contexts, Iterable) and not isinstance(contexts, dict):
-            for context in contexts:
-                self.insert_single(context)
-        else:
-            self.insert_single(contexts)
-        return self
-
-    def __getitem__(self, key: str) -> Any:
-        return self.context[key]
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.context[key] = value
+    def items(self) -> ItemsView[str, Any]:
+        return self._ctx_dict.items()
 
     def merge(
-        self, other: BenchmarkContext, inplace: bool = False, placeholder: str = "<MISSING>"
-    ) -> BenchmarkContext:
-        duplicate_keys = self._duplicate_keys(self.context, other.context)
-        left_only_keys = self.context_keys ^ other.context_keys
-        right_only_keys = other.context_keys ^ self.context_keys
-        union_keys = duplicate_keys | left_only_keys | right_only_keys
-        merged = {}
-        for key in union_keys:
-            if key in duplicate_keys and self.context[key] == other.context[key]:
-                merged[key] = self.context[key]
-            elif key in duplicate_keys:
-                if self.name == other.name:
-                    raise ValueError(
-                        "Cannot merge BenchmarkContext with same name but deviating values for keys of same name."
-                    )
-                merged[f"{self.name}_{key}"] = self.context[key]
-                merged[f"{other.name}_{key}"] = other.context[key]
-            elif key in left_only_keys:
-                merged[f"{self.name}_{key}"] = self.context[key]
-                merged[f"{other.name}_{key}"] = placeholder
-            elif key in right_only_keys:
-                merged[f"{self.name}_{key}"] = placeholder
-                merged[f"{other.name}_{key}"] = other.context[key]
-        merged_name = f"merged_{self.name}_{other.name}"
+        self,
+        other: "Context" | dict[str, Any] | ContextProvider,
+        this_ctx: dict[str, Any] | None = None,
+        inplace: bool = True,
+    ) -> "Context":
+        """
+        Merge another dictionary, Context, or ContextProvider into this Context.
+
+        Parameters
+        ----------
+        other : Context | dict[str, Any] | ContextProvider
+            The other context to merge into this one.
+        this_ctx : dict[str, Any] | None, optional
+            The target dictionary to merge into. Takes this classes context if None.
+        inplace : bool, optional
+            If True, modifies the current context in place. Otherwise, returns a new merged Context.
+
+        Raises
+        ------
+        TypeError
+            If 'other' is not a Context, dict, or callable returning a dict, or if 'this_ctx'
+            is specified but not a dict.
+        ValueError
+            If 'other' is a callable that does not return a dictionary.
+
+        Returns
+        -------
+        Context
+            The current context after merging, if inplace is True. Otherwise, a new Context instance.
+        """
+        if isinstance(other, Context):
+            other = other._ctx_dict
+        elif callable(other):
+            result = other()
+            if not isinstance(result, dict):
+                raise ValueError("Provider did not return a dictionary.")
+            other = result
+        elif isinstance(other, dict):
+            pass
+        else:
+            raise TypeError(f"Unknown type for source, got {type(other)}")
+
+        if this_ctx is None:
+            this = self._ctx_dict
+        elif isinstance(this_ctx, dict):
+            this = this_ctx
+        else:
+            raise TypeError(f"Unkown type for target, got {type(this_ctx)}")
+
+        merged = {**other, **this}
+
+        intersection_keys = set(this.keys()) & (set(other.keys()))
+        for key in intersection_keys:
+            if this[key] == other[key]:
+                merged[key] = this[key]
+            elif isinstance(this[key], dict) and isinstance(other[key], dict):
+                merged[key] = self.merge(other=other[key], this_ctx=this[key], inplace=False)
+            else:
+                raise ValueError(f"Key collision upon merge, {key}")
+
         if inplace:
-            self.context = merged
-            self.name = merged_name
+            self._ctx_dict = merged
             return self
         else:
-            return BenchmarkContext(context=merged, name=merged_name)
+            return Context(context=merged)
 
-    def copy(self) -> BenchmarkContext:
-        new = BenchmarkContext(context=self.context, name=self.name)
-        return new
+    @staticmethod
+    def flatten_dict(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
+        """
+        Turn a nested dictionary into a flattened dictionary.
 
-    def __add__(
-        self, other: BenchmarkContext | ContextElement | Iterable[ContextElement]
-    ) -> BenchmarkContext:
-        new_instance = self.copy()
-        if isinstance(other, BenchmarkContext):
-            return new_instance.merge(other, inplace=False)
+        Parameters
+        ----------
+        d: dict[str, Any]
+            (Possibly) nested dictionary to flatten.
+        prefix: str
+            Key prefix to apply at the top-level (nesting level 0).
+        sep: str
+            Separator on which to join keys, "." by default.
+
+        Returns
+        -------
+        dict[str, Any]
+            The flattened dictionary.
+        """
+
+        items: list[tuple[str, Any]] = []
+        for key, value in d.items():
+            new_key = prefix + sep + key if prefix else key
+            if isinstance(value, dict):
+                items.extend(Context.flatten_dict(value, new_key, sep).items())
+            else:
+                items.append((new_key, value))
+        return dict(items)
+
+    def flatten(self, prefix: str = "", sep: str = ".", inplace: bool = True) -> "Context":
+        """
+        Flatten the context's dictionary, converting nested dictionaries into a single dictionary with keys separated by `sep`.
+
+        Parameters
+        ----------
+        prefix : str, optional
+            A prefix to prepend to each key in the flattened dictionary.
+        sep : str, optional
+            The separator used to join nested keys.
+        inplace : bool, optional
+            If True, the current context's dictionary is modified in-place. Otherwise, return a new Context instance.
+
+        Returns
+        -------
+        Context
+            The current context instance if `inplace` is True; otherwise, a new, flattened Context instance.
+        """
+
+        if inplace:
+            self._ctx_dict = self.flatten_dict(d=self._ctx_dict, prefix=prefix, sep=sep)
+            return self
         else:
-            return self.copy().insert(other)
+            return Context(context=self.flatten_dict(self._ctx_dict, prefix=prefix, sep=sep))
+
+    @staticmethod
+    def unflatten_dict(d: dict[str, Any], sep: str = ".") -> dict[str, Any]:
+        """
+        Recursively unflatten a dictionary by expanding keys seperated by `sep` into nested dictionaries.
+
+        Parameters
+        ----------
+        d : dict[str, Any]
+            The dictionary to unflatten.
+        sep : str, optional
+            The separator used in the flattened keys.
+
+        Returns
+        -------
+        dict[str, Any]
+            The unflattened dictionary.
+        """
+        sorted_keys = sorted(d.keys())
+        unflattened = {}
+        for prefix, keys in itertools.groupby(sorted_keys, key=lambda key: key.split(sep, 1)[0]):
+            key_group = list(keys)
+            if len(key_group) == 1 and sep not in key_group[0]:
+                unflattened[prefix] = d[prefix]
+            else:
+                nested_dict = {key.split(sep, 1)[1]: d[key] for key in key_group}
+                unflattened[prefix] = Context.unflatten_dict(d=nested_dict, sep=sep)
+        return unflattened
+
+    def unflatten(self, sep: str = ".", inplace: bool = True) -> "Context":
+        """
+        Unflatten the context's dictionary, expanding keys into nested dictionaries on the `sep` value.
+
+        Parameters
+        ----------
+        sep : str, optional
+            The separator used in the flattened keys.
+        inplace : bool, optional
+            If True, the current context's dictionary is modified in-place. Otherwise, return a new Context instance.
+
+        Returns
+        -------
+        Context
+            The current context instance if `inplace` is True; otherwise, a new unflattened Context instance.
+        """
+        if inplace:
+            self._ctx_dict = self.unflatten_dict(self._ctx_dict, sep=sep)
+            return self
+        else:
+            return Context(context=self.unflatten_dict(self._ctx_dict, sep=sep))
+
+    @staticmethod
+    def filter_dict(d: dict[str, Any], predicate: Callable[[str, Any], bool]) -> dict[str, Any]:
+        """
+        Recursively filter a dictionary based on a predicate.
+
+        Parameters
+        ----------
+        d : dict[str, Any]
+            The dictionary to filter.
+        predicate : Callable[[str, Any], bool]
+            The function to determine if a key-value pair should be included in the filtered dictionary.
+
+        Returns
+        -------
+        dict[str, Any]
+            The filtered dictionary, including applicable nested dictionaries.
+        """
+        filtered: dict[str, Any] = {}
+        for k, v in d.items():
+            if isinstance(v, dict):
+                nested_filtered = Context.filter_dict(d=v, predicate=predicate)
+                if nested_filtered:
+                    filtered[k] = nested_filtered
+            elif predicate(k, v):
+                filtered[k] = v
+        return filtered
+
+    def filter(self, predicate: Callable[[str, Any], bool], inplace: bool = False) -> "Context":
+        """
+        Filter the context's dictionary based on a given predicate, including nested dictionaries.
+
+        Parameters
+        ----------
+        predicate : Callable[[str, Any], bool]
+            A function that takes a key and a value as arguments and returns True if the element should be included in the filtered result.
+        inplace : bool, optional
+            If True, modifies the current context in place. Otherwise, returns a new Context instance with the filtered result.
+
+        Returns
+        -------
+        Context
+            The current context after filtering, if inplace is True. Otherwise, a new filtered Context instance.
+        """
+        if inplace:
+            self._ctx_dict = self.filter_dict(self._ctx_dict, predicate=predicate)
+            return self
+        else:
+            return Context(context=self.filter_dict(self._ctx_dict, predicate=predicate))
+
+    @classmethod
+    def make(cls, d: dict[str, Any]) -> "Context":
+        """
+        Create a new Context instance from a given dictionary.
+
+        Parameters
+        ----------
+        d : dict[str, Any]
+            The initialization dictionary.
+
+        Returns
+        -------
+        Context
+            The new Context instance.
+        """
+        return cls(context=d)
