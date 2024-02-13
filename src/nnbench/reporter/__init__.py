@@ -7,9 +7,12 @@ import importlib
 import types
 
 from .base import BenchmarkReporter
+from .file import FileReporter
 
 # internal, mutable
-_reporter_registry: dict[str, type[BenchmarkReporter]] = {}
+_reporter_registry: dict[str, type[BenchmarkReporter]] = {
+    "file": FileReporter,
+}
 
 # external, immutable
 reporter_registry: types.MappingProxyType[str, type[BenchmarkReporter]] = types.MappingProxyType(

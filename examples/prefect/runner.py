@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 import training
 from prefect import flow, get_run_logger, task
@@ -11,7 +13,7 @@ class PrefectReporter(reporter.BenchmarkReporter):
     def __init__(self):
         self.logger = get_run_logger()
 
-    def write(self, record: types.BenchmarkRecord) -> None:
+    def write(self, record: types.BenchmarkRecord, **kwargs: Any) -> None:
         self.logger.info(record)
 
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, List, Sequence
 
 from tabulate import tabulate
 
@@ -128,13 +128,13 @@ class BenchmarkReporter:
 
         print(tabulate(filtered, headers="keys", tablefmt=self.tablefmt))
 
-    def read(self) -> BenchmarkRecord:
+    def read(self, **kwargs: Any) -> BenchmarkRecord | List[BenchmarkRecord]:
         raise NotImplementedError
 
     def read_batched(self) -> list[BenchmarkRecord]:
         raise NotImplementedError
 
-    def write(self, record: BenchmarkRecord) -> None:
+    def write(self, record: BenchmarkRecord, **kwargs: Any) -> None:
         raise NotImplementedError
 
     def write_batched(self, records: Sequence[BenchmarkRecord]) -> None:
