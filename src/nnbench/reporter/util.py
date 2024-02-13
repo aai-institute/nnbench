@@ -2,7 +2,7 @@ import collections
 from typing import Any
 
 
-def nullcols(_benchmarks: list[dict[str, Any]]) -> tuple[str, ...]:
+def nullcols(_benchmarks: list[dict[str, Any]]) -> set[str]:
     """
     Extracts columns that only contain false-ish data from a list of benchmarks.
 
@@ -16,12 +16,12 @@ def nullcols(_benchmarks: list[dict[str, Any]]) -> tuple[str, ...]:
 
     Returns
     -------
-    tuple[str, ...]
-        Tuple of the columns (key names) that only contain false-ish values
+    set[str]
+        Set of the columns (key names) that only contain false-ish values
         across all benchmarks.
     """
     nulls: dict[str, bool] = collections.defaultdict(bool)
     for bm in _benchmarks:
         for k, v in bm.items():
             nulls[k] = nulls[k] or bool(v)
-    return tuple(k for k, v in nulls.items() if not v)
+    return set(k for k, v in nulls.items() if not v)

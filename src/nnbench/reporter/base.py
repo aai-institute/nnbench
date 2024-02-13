@@ -22,10 +22,15 @@ class BenchmarkReporter:
     For example, to write benchmark results to a database, you could save the credentials
     for authentication on the class, and then stream the results directly to
     the database in ``report_result()``, with preprocessing if necessary.
-    """
 
-    merge: bool = False
-    """Whether to merge multiple BenchmarkRecords before reporting."""
+    Parameters
+    ----------
+    tablefmt: str
+        A table format identifier to use when displaying records in the console.
+    custom_formatters: dict[str, Callable[[Any], Any]] | None
+        A mapping of column names to custom formatters, i.e. functions formatting input
+        values for display in the console.
+    """
 
     def __init__(
         self,
@@ -39,8 +44,8 @@ class BenchmarkReporter:
         """
         Initialize the reporter's state.
 
-        This is the place where to create a result directory, a database connection,
-        or a HTTP client.
+        This is the intended place to create resources like a result directory,
+        a database connection, or a HTTP client.
         """
         pass
 
@@ -48,7 +53,7 @@ class BenchmarkReporter:
         """
         Finalize the reporter's state.
 
-        This is the place to destroy / release resources that were previously
+        This is the intended place to destroy/release resources that were previously
         acquired in ``initialize()``.
         """
         pass
@@ -57,12 +62,47 @@ class BenchmarkReporter:
         self,
         record: BenchmarkRecord,
         benchmark_filter: str | None = None,
+        include: tuple[str, ...] | None = None,
+        exclude: tuple[str, ...] = (),
         include_context: tuple[str, ...] = (),
         exclude_empty: bool = True,
     ) -> None:
+        """
+        Display a benchmark record in the console.
+
+        Benchmarks and context values will be filtered before display
+        if any filtering is applied.
+
+        Columns that do not contain any useful information are omitted by default.
+
+        Parameters
+        ----------
+        record: BenchmarkRecord
+            The benchmark record to display.
+        benchmark_filter: str | None
+            A regex used to match benchmark names whose results to display.
+        include: tuple[str, ...] | None
+            Columns to include in the displayed table.
+        exclude: tuple[str, ...]
+            Columns to exclude from the displayed table.
+        include_context: tuple[str, ...]
+            Context values to include. Supports nested attribute via dot syntax,
+            i.e. a name "foo.bar" causes the member ``"bar"`` of the context value
+            ``"foo"`` to be displayed.
+        exclude_empty: bool
+            Exclude columns that only contain false-ish values.
+        """
         ctx, benchmarks = record["context"], record["benchmarks"]
 
+        # This assumes a stable schema across benchmarks.
+        if include is None:
+            includes = set(benchmarks[0].keys())
+        else:
+            includes = set(include)
+
+        excludes = set(exclude)
         nulls = set() if not exclude_empty else nullcols(benchmarks)
+        cols = includes - nulls - excludes
 
         if benchmark_filter is not None:
             regex = re.compile(benchmark_filter, flags=re.IGNORECASE)
@@ -78,7 +118,7 @@ class BenchmarkReporter:
                 for k, v in Context.flatten_dict(ctx).items()
                 if any(k.startswith(i) for i in include_context)
             }
-            filteredbm = {k: v for k, v in bm.items() if k not in nulls}
+            filteredbm = {k: v for k, v in bm.items() if k in cols}
             filteredbm.update(filteredctx)
             # only apply custom formatters after context merge
             #  to allow custom formatting of context values.
