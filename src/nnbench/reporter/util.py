@@ -25,32 +25,3 @@ def nullcols(_benchmarks: list[dict[str, Any]]) -> tuple[str, ...]:
         for k, v in bm.items():
             nulls[k] = nulls[k] or bool(v)
     return tuple(k for k, v in nulls.items() if not v)
-
-
-def flatten(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
-    """
-    Turn a nested dictionary into a flattened dictionary.
-
-    Parameters
-    ----------
-    d: dict[str, Any]
-        (Possibly) nested dictionary to flatten.
-    prefix: str
-        Key prefix to apply at the top-level (nesting level 0).
-    sep: str
-        Separator on which to join keys, "." by default.
-
-    Returns
-    -------
-    dict[str, Any]
-        The flattened dictionary.
-    """
-
-    items: list[tuple[str, Any]] = []
-    for key, value in d.items():
-        new_key = prefix + sep + key if prefix else key
-        if isinstance(value, dict):
-            items.extend(flatten(value, new_key, sep).items())
-        else:
-            items.append((new_key, value))
-    return dict(items)
