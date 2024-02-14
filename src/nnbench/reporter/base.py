@@ -115,7 +115,7 @@ class BenchmarkReporter:
                 continue
             filteredctx = {
                 k: v
-                for k, v in Context.flatten_dict(ctx).items()
+                for k, v in Context._flatten_dict(ctx).items()
                 if any(k.startswith(i) for i in include_context)
             }
             filteredbm = {k: v for k, v in bm.items() if k in cols}
