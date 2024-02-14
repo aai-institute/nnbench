@@ -21,23 +21,10 @@ class BenchmarkReporter:
     For example, to write benchmark results to a database, you could save the credentials
     for authentication on the class, and then stream the results directly to
     the database in ``report_result()``, with preprocessing if necessary.
-
-    Parameters
-    ----------
-    tablefmt: str
-        A table format identifier to use when displaying records in the console.
-    custom_formatters: dict[str, Callable[[Any], Any]] | None
-        A mapping of column names to custom formatters, i.e. functions formatting input
-        values for display in the console.
     """
 
-    def __init__(
-        self,
-        tablefmt: str = "simple",
-        custom_formatters: dict[str, Callable[[Any], Any]] | None = None,
-    ):
-        self.tablefmt = tablefmt
-        self.custom_formatters: dict[str, Callable[[Any], Any]] = custom_formatters or {}
+    def __init__(self):
+        self._initialized = False
 
     def initialize(self):
         """
@@ -46,7 +33,7 @@ class BenchmarkReporter:
         This is the intended place to create resources like a result directory,
         a database connection, or a HTTP client.
         """
-        pass
+        self._initialized = True
 
     def finalize(self):
         """
@@ -57,14 +44,16 @@ class BenchmarkReporter:
         """
         pass
 
+    @staticmethod
     def display(
-        self,
         record: BenchmarkRecord,
         benchmark_filter: str | None = None,
         include: tuple[str, ...] | None = None,
         exclude: tuple[str, ...] = (),
         include_context: tuple[str, ...] = (),
         exclude_empty: bool = True,
+        tablefmt: str = "simple",
+        custom_formatters: dict[str, Callable[[Any], Any]] | None = None,
     ) -> None:
         """
         Display a benchmark record in the console.
@@ -90,6 +79,11 @@ class BenchmarkReporter:
             ``"foo"`` to be displayed.
         exclude_empty: bool
             Exclude columns that only contain false-ish values.
+        tablefmt: str
+            A table format identifier to use when displaying records in the console.
+        custom_formatters: dict[str, Callable[[Any], Any]] | None
+            A mapping of column names to custom formatters, i.e. functions formatting input
+            values for display in the console.
         """
         ctx, benchmarks = record["context"], record["benchmarks"]
 
@@ -122,22 +116,22 @@ class BenchmarkReporter:
             # only apply custom formatters after context merge
             #  to allow custom formatting of context values.
             filteredbm = {
-                k: self.custom_formatters.get(k, lambda x: x)(v) for k, v in filteredbm.items()
+                k: custom_formatters.get(k, lambda x: x)(v) for k, v in filteredbm.items()
             }
             filtered.append(filteredbm)
 
-        print(tabulate(filtered, headers="keys", tablefmt=self.tablefmt))
+        print(tabulate(filtered, headers="keys", tablefmt=tablefmt))
 
-    def read(self) -> BenchmarkRecord:
+    def read(self, *args: Any, **kwargs: Any) -> BenchmarkRecord:
         raise NotImplementedError
 
-    def read_batched(self) -> list[BenchmarkRecord]:
+    def read_batched(self, *args: Any, **kwargs: Any) -> list[BenchmarkRecord]:
         raise NotImplementedError
 
-    def write(self, record: BenchmarkRecord) -> None:
+    def write(self, record: BenchmarkRecord, *args: Any, **kwargs: Any) -> None:
         raise NotImplementedError
 
-    def write_batched(self, records: Sequence[BenchmarkRecord]) -> None:
+    def write_batched(self, records: Sequence[BenchmarkRecord], *args: Any, **kwargs: Any) -> None:
         # By default, just loop over the records and write() everything.
         for record in records:
-            self.write(record)
+            self.write(record, *args, **kwargs)
