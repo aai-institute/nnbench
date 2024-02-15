@@ -47,14 +47,61 @@ def test_flatten_nested_dictionary():
     assert flattened._ctx_dict == {"a": 1, "b.c": 2, "b.d.e": 3}
 
 
-def test_flatten_with_prefix():
-    nested_ctx = Context({"a": 1, "b": {"c": 2, "d": {"e": 3}}})
-    flattened = nested_ctx.flatten(prefix="prefix", inplace=False)
-    expected_dict = {f"prefix.{k}": v for k, v in {"a": 1, "b.c": 2, "b.d.e": 3}.items()}
-    assert flattened._ctx_dict == expected_dict
-
-
 def test_unflatten_dictionary():
     flat_ctx = Context(data={"a": 1, "b.c": 2, "b.d.e": 3})
     unflattened = flat_ctx.unflatten(inplace=False)
     assert unflattened._ctx_dict == {"a": 1, "b": {"c": 2, "d": {"e": 3}}}
+
+
+def test_context_keys():
+    ctx = Context({"a": 1, "b": {"c": 2}})
+    expected_keys = set(["a", "b.c"])
+    assert set(ctx.keys()) == expected_keys
+
+
+def test_context_values():
+    ctx = Context({"a": 1, "b": {"c": 2}})
+    expected_values = set([1, 2])
+    assert set(ctx.values()) == expected_values
+
+
+def test_context_items():
+    ctx = Context({"a": 1, "b": {"c": 2}})
+    expected_items = set([("a", 1), ("b.c", 2)])
+    assert set(ctx.items()) == expected_items
+
+
+def test_update_with_unnested_dict():
+    ctx = Context({"a": 1, "b": 2})
+    ctx.update({"a": 3, "c": 4})
+    expected_dict = {"a": 3, "b": 2, "c": 4}
+    assert ctx._ctx_dict == expected_dict
+
+
+def test_update_with_nested_dict():
+    ctx = Context({"a": 1})
+    ctx.update({"b": {"c": 2}})
+    expected_dict = {"a": 1, "b": {"c": 2}}
+    assert ctx._ctx_dict == expected_dict
+
+
+def test_update_unnested_with_nested_dict():
+    ctx = Context({"a": 1, "b": 2})
+    ctx.update({"b": {"c": 3}})
+    expected_dict = {"a": 1, "b": {"c": 3}}
+    assert ctx._ctx_dict == expected_dict
+
+
+def test_update_nested_with_unnested_dict():
+    ctx = Context({"a": {"b": 2}})
+    ctx.update({"a": 3, "c": 4})
+    expected_dict = {"a": 3, "c": 4}
+    assert ctx._ctx_dict == expected_dict
+
+
+def test_update_with_context_instance():
+    ctx1 = Context({"a": 1, "b": {"c": 2}})
+    ctx2 = Context({"d": 4})
+    ctx1.update(ctx2)
+    expected_dict = {"a": 1, "b": {"c": 2}, "d": 4}
+    assert ctx1._ctx_dict == expected_dict
