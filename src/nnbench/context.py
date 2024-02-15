@@ -9,8 +9,6 @@ from typing import Any, Callable, Iterator, Literal
 ContextProvider = Callable[[], dict[str, Any]]
 """A function providing a dictionary of context values."""
 
-ContextElement = dict[str, Any] | ContextProvider
-
 
 def system() -> dict[str, str]:
     return {"system": platform.system()}
@@ -193,10 +191,27 @@ class Context:
     def __init__(self, data: dict[str, Any] | ContextProvider | None = None) -> None:
         self._ctx_dict: dict[str, Any] = {}
         if data:
-            self.update(data)
+            self.update(data, sep=None)
 
     @staticmethod
     def _ctx_items(d: dict[str, Any], prefix: str, sep: str) -> Iterator[tuple[str, Any]]:
+        """
+        Iterate over nested dictionary items. Keys are formatted to indicate their nested path.
+
+        Parameters
+        ----------
+        d : dict[str, Any]
+            Dictionary to iterate over.
+        prefix : str
+            Current prefix to prepend to keys, used for recursion to build the full key path.
+        sep : str
+            The separator to use between levels of nesting in the key path.
+
+        Yields
+        ------
+        tuple[str, Any]
+            Iterator over key-value tuples.
+        """
         for k, v in d.items():
             new_key = prefix + sep + k if prefix else k
             if isinstance(v, dict):
@@ -205,22 +220,115 @@ class Context:
                 yield new_key, v
 
     def keys(self, sep: str = ".") -> Iterator[str]:
+        """
+        Keys of the context dictionary, with an optional separator for nested keys.
+
+        Parameters
+        ----------
+        sep : str, optional
+            Separator to use for nested keys.
+
+        Yields
+        ------
+        str
+            Iterator over the context dictionary keys.
+        """
         for k, v in self._ctx_items(d=self._ctx_dict, prefix="", sep=sep):
             yield k
 
     def values(self) -> Iterator[Any]:
+        """
+        Values of the context dictionary, including values from nested dictionaries.
+
+        Yields
+        ------
+        Any
+            Iterator over all values in the context dictionary.
+        """
         for k, v in self._ctx_items(d=self._ctx_dict, prefix="", sep=""):
             yield v
 
     def items(self, sep: str = ".") -> Iterator[tuple[str, Any]]:
+        """
+        Items (key-value pairs) of the context dictionary, with an separator for nested keys.
+
+        Parameters
+        ----------
+        sep : str, optional
+            Separator to use for nested dictionary keys.
+
+        Yields
+        ------
+        tuple[str, Any]
+            Iterator over the items of the context dictionary.
+        """
         yield from self._ctx_items(d=self._ctx_dict, prefix="", sep=sep)
 
-    def update(self, other: ContextProvider | dict[str, Any] | "Context") -> None:
+    def update(
+        self, other: ContextProvider | dict[str, Any] | "Context", sep: str | None = "."
+    ) -> None:
+        """
+        Updates the context.
+        If `sep` is None, perform shallow update, deep update otherwise.
+
+        Parameters
+        ----------
+        other : ContextProvider | dict[str, Any] | "Context"
+            The data to update the context with. This can be a dictionary, a Context instance, or a provider.
+        sep : str | None, optional
+            The separator used for nested keys. If None, perform shallow update.
+        """
         if callable(other):
             other = other()
         elif isinstance(other, Context):
             other = other._ctx_dict
-        self._ctx_dict.update(other)
+        if sep is None:
+            self._ctx_dict.update(other)
+        else:
+            self._ctx_dict = self._deepupdate_dict(this=self._ctx_dict, other=other, sep=sep)
+
+    @staticmethod
+    def _deepupdate_dict(
+        this: dict[str, Any], other: dict[str, Any], sep: str = "."
+    ) -> dict[str, Any]:
+        """
+        Deep update a dictionary with another dictionary, supporting nested updates via a separator for nested keys.
+
+        Parameters
+        ----------
+        this : dict[str, Any]
+            The dictionary to update.
+        other : dict[str, Any]
+            The dictionary with updates to apply.
+        sep : str, optional
+            The separator used to identify nested keys.
+
+        Returns
+        -------
+        dict[str, Any]
+            The deep updated dictionary.
+        """
+        for key, value in other.items():
+            # Update on top level, if `this` is flattened
+            if key in this:
+                this[key] = value
+                continue
+
+            # Handle nested update
+            key_parts = key.split(sep=sep, maxsplit=1)
+            top_level_key = key_parts[0]
+            rest_key = key_parts[1] if len(key_parts) > 1 else None
+
+            if rest_key:
+                # Overwrite value in favour of update with nesting
+                if not isinstance(this.get(top_level_key), dict):
+                    this[top_level_key] = {}
+                this[top_level_key] = Context._deepupdate_dict(
+                    this=this[top_level_key], other={rest_key: value}, sep=sep
+                )
+            else:
+                this[top_level_key] = value
+        return this
 
     @staticmethod
     def _flatten_dict(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
@@ -246,19 +354,17 @@ class Context:
         for key, value in d.items():
             new_key = prefix + sep + key if prefix else key
             if isinstance(value, dict):
-                items.extend(Context._flatten_dict(value, new_key, sep).items())
+                items.extend(Context._flatten_dict(d=value, prefix=new_key, sep=sep).items())
             else:
                 items.append((new_key, value))
         return dict(items)
 
-    def flatten(self, prefix: str = "", sep: str = ".", inplace: bool = True) -> "Context" | None:
+    def flatten(self, sep: str = ".", inplace: bool = True) -> "Context" | None:
         """
         Flatten the context's dictionary, converting nested dictionaries into a single dictionary with keys separated by `sep`.
 
         Parameters
         ----------
-        prefix : str, optional
-            A prefix to prepend to each key in the flattened dictionary.
         sep : str, optional
             The separator used to join nested keys.
         inplace : bool, optional
@@ -271,10 +377,10 @@ class Context:
         """
 
         if inplace:
-            self._ctx_dict = self._flatten_dict(d=self._ctx_dict, prefix=prefix, sep=sep)
+            self._ctx_dict = self._flatten_dict(d=self._ctx_dict, prefix="", sep=sep)
             return None
         else:
-            return Context(data=self._flatten_dict(self._ctx_dict, prefix=prefix, sep=sep))
+            return Context(data=self._flatten_dict(self._ctx_dict, prefix="", sep=sep))
 
     @staticmethod
     def _unflatten_dict(d: dict[str, Any], sep: str = ".") -> dict[str, Any]:
