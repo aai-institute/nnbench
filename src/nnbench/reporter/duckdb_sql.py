@@ -8,6 +8,8 @@ import weakref
 from pathlib import Path
 from typing import Any
 
+from nnbench.context import Context
+
 try:
     import duckdb
 
@@ -126,9 +128,8 @@ class DuckDBReporter(FileReporter):
         results = rel.fetchall()
 
         benchmarks = [dict(zip(columns, r)) for r in results]
-        context: dict[str, Any] = {}
+        context = Context()
         for bm in benchmarks:
-            # TODO: Merge these instead of just taking the last one.
-            context = bm.pop("context", {})
+            context.update(bm.pop("context", {}))
 
         return BenchmarkRecord(context=context, benchmarks=benchmarks)

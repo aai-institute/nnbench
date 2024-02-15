@@ -3,6 +3,7 @@ import threading
 from pathlib import Path
 from typing import IO, Any, Callable
 
+from nnbench.context import Context
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 
@@ -49,9 +50,9 @@ def json_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
     import json
 
     benchmarks: list[dict[str, Any]] = json.load(fp, **options)
-    context: dict[str, Any] = {}
+    context = Context()
     for bm in benchmarks:
-        context = bm.pop("context", {})
+        context.update(bm.pop("context", {}))
 
     return BenchmarkRecord(context=context, benchmarks=benchmarks)
 
@@ -73,14 +74,14 @@ def csv_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
 
     reader = csv.DictReader(fp, **options)
 
-    context: dict[str, Any] = {}
+    context = Context()
     benchmarks: list[dict[str, Any]] = []
 
     # apparently csv.DictReader has no appropriate type hint for __next__,
     # so we supply one ourselves.
     bm: dict[str, Any]
     for bm in reader:
-        context = bm.pop("context", {})
+        context.update(bm.pop("context", {}))
         benchmarks.append(bm)
 
     return BenchmarkRecord(context=context, benchmarks=benchmarks)
