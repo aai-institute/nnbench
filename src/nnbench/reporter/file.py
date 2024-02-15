@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import IO, Any, Callable
 
 from nnbench.context import Context
-
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 

@@ -10,7 +10,6 @@ from typing import Any
 
 from nnbench.context import Context
 
-
 try:
     import duckdb
 
@@ -132,6 +131,5 @@ class DuckDBReporter(FileReporter):
         context = Context()
         for bm in benchmarks:
             context.update(bm.pop("context", {}))
-
 
         return BenchmarkRecord(context=context, benchmarks=benchmarks)
