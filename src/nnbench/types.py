@@ -6,12 +6,14 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, TypedDict, TypeVar
 
+from nnbench.context import Context
+
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
 
 class BenchmarkRecord(TypedDict):
-    context: dict[str, Any]
+    context: Context
     benchmarks: list[dict[str, Any]]
 
 

@@ -52,7 +52,6 @@ def test_context_collection_in_runner(testfolder: str) -> None:
         context=context_providers,
     )
 
-    print(result)
     assert "system" in result["context"]
     assert "cpuarch" in result["context"]
     assert "python_version" in result["context"]

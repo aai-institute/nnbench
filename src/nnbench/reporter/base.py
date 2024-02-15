@@ -5,7 +5,6 @@ from typing import Any, Callable, Sequence
 
 from tabulate import tabulate
 
-from nnbench.context import Context
 from nnbench.reporter.util import nullcols
 from nnbench.types import BenchmarkRecord
 
@@ -115,7 +114,7 @@ class BenchmarkReporter:
                 continue
             filteredctx = {
                 k: v
-                for k, v in Context._flatten_dict(ctx).items()
+                for k, v in ctx.flatten().items()
                 if any(k.startswith(i) for i in include_context)
             }
             filteredbm = {k: v for k, v in bm.items() if k in cols}

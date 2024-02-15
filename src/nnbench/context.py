@@ -193,6 +193,9 @@ class Context:
         if data:
             self.update(data, sep=None)
 
+    def __contains__(self, key: str) -> bool:
+        return key in self.keys()
+
     @staticmethod
     def _ctx_items(d: dict[str, Any], prefix: str, sep: str) -> Iterator[tuple[str, Any]]:
         """
