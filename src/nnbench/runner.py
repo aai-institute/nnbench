@@ -13,7 +13,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Generator, Sequence, get_origin
 
-from nnbench.context import ContextProvider
+from nnbench.context import Context, ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters
 from nnbench.util import import_file_as_module, ismodule
 
@@ -226,7 +226,7 @@ class BenchmarkRunner:
         # if we still have no benchmarks after collection, warn and return an empty record.
         if not self.benchmarks:
             warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
-            return BenchmarkRecord(context={}, benchmarks=[])
+            return BenchmarkRecord(context=Context(), benchmarks=[])
 
         params = params or {}
         if isinstance(params, Parameters):
@@ -236,19 +236,16 @@ class BenchmarkRunner:
 
         self._check(dparams)
 
-        ctx: dict[str, Any] = dict()
-        ctxkeys = set(ctx.keys())
+        ctx = Context()
 
         for provider in context:
             ctxval = provider()
-            valkeys = set(ctxval.keys())
             # we do not allow multiple values for a context key.
-            duplicates = ctxkeys & valkeys
+            duplicates = set(ctx.keys()) & set(ctxval.keys())
             if duplicates:
                 dupe, *_ = duplicates
                 raise ValueError(f"got multiple values for context key {dupe!r}")
-            ctx |= ctxval
-            ctxkeys |= valkeys
+            ctx.update(ctxval)
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
