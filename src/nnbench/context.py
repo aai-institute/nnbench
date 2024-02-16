@@ -188,10 +188,8 @@ class CPUInfo:
 
 
 class Context:
-    def __init__(self, data: dict[str, Any] | ContextProvider | None = None) -> None:
-        self._ctx_dict: dict[str, Any] = {}
-        if data:
-            self.update(data, sep=None)
+    def __init__(self, data: dict[str, Any] | None = None) -> None:
+        self._ctx_dict: dict[str, Any] = data or {}
 
     def __contains__(self, key: str) -> bool:
         return key in self.keys()
@@ -267,9 +265,7 @@ class Context:
         """
         yield from self._ctx_items(d=self._ctx_dict, prefix="", sep=sep)
 
-    def update(
-        self, other: ContextProvider | dict[str, Any] | "Context", sep: str | None = "."
-    ) -> None:
+    def update(self, other: ContextProvider | dict[str, Any] | "Context") -> None:
         """
         Updates the context.
         If `sep` is None, perform shallow update, deep update otherwise.
@@ -278,60 +274,12 @@ class Context:
         ----------
         other : ContextProvider | dict[str, Any] | "Context"
             The data to update the context with. This can be a dictionary, a Context instance, or a provider.
-        sep : str | None, optional
-            The separator used for nested keys. If None, perform shallow update.
         """
         if callable(other):
             other = other()
         elif isinstance(other, Context):
             other = other._ctx_dict
-        if sep is None:
-            self._ctx_dict.update(other)
-        else:
-            self._ctx_dict = self._deepupdate_dict(this=self._ctx_dict, other=other, sep=sep)
-
-    @staticmethod
-    def _deepupdate_dict(
-        this: dict[str, Any], other: dict[str, Any], sep: str = "."
-    ) -> dict[str, Any]:
-        """
-        Deep update a dictionary with another dictionary, supporting nested updates via a separator for nested keys.
-
-        Parameters
-        ----------
-        this : dict[str, Any]
-            The dictionary to update.
-        other : dict[str, Any]
-            The dictionary with updates to apply.
-        sep : str, optional
-            The separator used to identify nested keys.
-
-        Returns
-        -------
-        dict[str, Any]
-            The deep updated dictionary.
-        """
-        for key, value in other.items():
-            # Update on top level, if `this` is flattened
-            if key in this:
-                this[key] = value
-                continue
-
-            # Handle nested update
-            key_parts = key.split(sep=sep, maxsplit=1)
-            top_level_key = key_parts[0]
-            rest_key = key_parts[1] if len(key_parts) > 1 else None
-
-            if rest_key:
-                # Overwrite value in favour of update with nesting
-                if not isinstance(this.get(top_level_key), dict):
-                    this[top_level_key] = {}
-                this[top_level_key] = Context._deepupdate_dict(
-                    this=this[top_level_key], other={rest_key: value}, sep=sep
-                )
-            else:
-                this[top_level_key] = value
-        return this
+        self._ctx_dict.update(other)
 
     @staticmethod
     def _flatten_dict(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
@@ -362,7 +310,7 @@ class Context:
                 items.append((new_key, value))
         return dict(items)
 
-    def flatten(self, sep: str = ".", inplace: bool = True) -> "Context" | None:
+    def flatten(self, sep: str = ".") -> dict[str, Any]:
         """
         Flatten the context's dictionary, converting nested dictionaries into a single dictionary with keys separated by `sep`.
 
@@ -370,23 +318,17 @@ class Context:
         ----------
         sep : str, optional
             The separator used to join nested keys.
-        inplace : bool, optional
-            If True, the current context's dictionary is modified in-place. Otherwise, return a new Context instance.
 
         Returns
         -------
-        Context | None
-            None if `inplace` is True; otherwise, a new, flattened Context instance.
+        dict[str, Any]
+            The flattened context values as a Python dictionary.
         """
 
-        if inplace:
-            self._ctx_dict = self._flatten_dict(d=self._ctx_dict, prefix="", sep=sep)
-            return None
-        else:
-            return Context(data=self._flatten_dict(self._ctx_dict, prefix="", sep=sep))
+        return self._flatten_dict(self._ctx_dict, prefix="", sep=sep)
 
     @staticmethod
-    def _unflatten_dict(d: dict[str, Any], sep: str = ".") -> dict[str, Any]:
+    def unflatten(d: dict[str, Any], sep: str = ".") -> dict[str, Any]:
         """
         Recursively unflatten a dictionary by expanding keys seperated by `sep` into nested dictionaries.
 
@@ -410,30 +352,8 @@ class Context:
                 unflattened[prefix] = d[prefix]
             else:
                 nested_dict = {key.split(sep, 1)[1]: d[key] for key in key_group}
-                unflattened[prefix] = Context._unflatten_dict(d=nested_dict, sep=sep)
+                unflattened[prefix] = Context.unflatten(d=nested_dict, sep=sep)
         return unflattened
-
-    def unflatten(self, sep: str = ".", inplace: bool = True) -> "Context" | None:
-        """
-        Unflatten the context's dictionary, expanding keys into nested dictionaries on the `sep` value.
-
-        Parameters
-        ----------
-        sep : str, optional
-            The separator used in the flattened keys.
-        inplace : bool, optional
-            If True, the current context's dictionary is modified in-place. Otherwise, return a new Context instance.
-
-        Returns
-        -------
-        Context | None
-            None if `inplace` is True; otherwise, a new unflattened Context instance.
-        """
-        if inplace:
-            self._ctx_dict = self._unflatten_dict(self._ctx_dict, sep=sep)
-            return None
-        else:
-            return Context(data=self._unflatten_dict(self._ctx_dict, sep=sep))
 
     @classmethod
     def make(cls, d: dict[str, Any]) -> "Context":
@@ -450,4 +370,4 @@ class Context:
         Context
             The new Context instance.
         """
-        return cls(data=d)
+        return cls(data=cls.unflatten(d))

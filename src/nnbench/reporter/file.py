@@ -42,7 +42,7 @@ def json_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
 
     context, benchmarks = record["context"], record["benchmarks"]
     for bm in benchmarks:
-        bm["context"] = context
+        bm["context"] = context._ctx_dict
     json.dump(benchmarks, fp, **options)
 
 
@@ -65,7 +65,7 @@ def csv_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
 
     context = record["context"]
     for bm in record["benchmarks"]:
-        bm["context"] = context
+        bm["context"] = context._ctx_dict
         writer.writerow(bm)
 
 
