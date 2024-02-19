@@ -6,7 +6,6 @@ import sys
 import tempfile
 import weakref
 from pathlib import Path
-from typing import Any
 
 from nnbench.context import Context
 
@@ -17,11 +16,11 @@ try:
 except ImportError:
     DUCKDB_INSTALLED = False
 
-from nnbench.reporter.file import FileIO
+from nnbench.reporter.file import FileReporter
 from nnbench.types import BenchmarkRecord
 
 
-class DuckDBReporter(FileIO):
+class DuckDBReporter(FileReporter):
     """
     A reporter for streaming benchmark results to duckdb.
 
@@ -77,14 +76,13 @@ class DuckDBReporter(FileIO):
 
         self.conn: duckdb.DuckDBPyConnection | None = None
 
-        self._initialized = False
-
     @property
     def directory(self) -> os.PathLike[str]:
         return self._directory
 
     def initialize(self):
         self.conn = duckdb.connect(self.dbname, read_only=self.read_only)
+        self._initialized = True
 
     def finalize(self):
         if self.conn:
@@ -97,7 +95,6 @@ class DuckDBReporter(FileIO):
         self,
         file: str | os.PathLike[str],
         driver: str | None = None,
-        options: dict[str, Any] | None = None,
         include: tuple[str, ...] | None = None,
         alias: dict[str, str] | None = None,
         limit: int | None = None,
@@ -132,3 +129,7 @@ class DuckDBReporter(FileIO):
             context.update(bm.pop("context", {}))
 
         return BenchmarkRecord(context=context, benchmarks=benchmarks)
+
+    def raw_sql(self, query: str) -> duckdb.DuckDBPyRelation:
+        rel = self.conn.sql(query=query)
+        return rel

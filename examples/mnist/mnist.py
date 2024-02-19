@@ -217,10 +217,10 @@ def mnist_jax():
 
     # the nnbench portion.
     runner = nnbench.BenchmarkRunner()
-    reporter = nnbench.BenchmarkReporter()
+    reporter = nnbench.reporter.FileReporter()
     params = MNISTTestParameters(params=state.params, data=data)
     result = runner.run(HERE, params=params)
-    reporter.write(result)
+    reporter.write(result, "result.json")
 
 
 if __name__ == "__main__":

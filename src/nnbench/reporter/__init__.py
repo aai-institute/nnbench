@@ -5,3 +5,4 @@ from __future__ import annotations
 
 from .base import BenchmarkReporter
 from .duckdb_sql import DuckDBReporter
+from .file import FileReporter
