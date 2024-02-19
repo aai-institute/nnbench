@@ -75,7 +75,7 @@ def test_update_with_unnested_dict():
     ctx = Context({"a": 1, "b": 2})
     ctx.update({"a": 3, "c": 4})
     expected_dict = {"a": 3, "b": 2, "c": 4}
-    assert ctx._ctx_dict == expected_dict
+    assert ctx._data == expected_dict
 
 
 def test_update_with_context_instance():
@@ -83,4 +83,4 @@ def test_update_with_context_instance():
     ctx2 = Context({"d": 4})
     ctx1.update(ctx2)
     expected_dict = {"a": 1, "b": {"c": 2}, "d": 4}
-    assert ctx1._ctx_dict == expected_dict
+    assert ctx1._data == expected_dict

@@ -85,8 +85,7 @@ class BenchmarkReporter:
             A mapping of column names to custom formatters, i.e. functions formatting input
             values for display in the console.
         """
-        ctx, benchmarks = record["context"], record["benchmarks"]
-
+        benchmarks = record.benchmarks
         # This assumes a stable schema across benchmarks.
         if include is None:
             includes = set(benchmarks[0].keys())
@@ -108,7 +107,7 @@ class BenchmarkReporter:
                 continue
             filteredctx = {
                 k: v
-                for k, v in ctx.flatten().items()
+                for k, v in record.context.items()
                 if any(k.startswith(i) for i in include_context)
             }
             filteredbm = {k: v for k, v in bm.items() if k in cols}

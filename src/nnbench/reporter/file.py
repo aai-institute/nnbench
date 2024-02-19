@@ -1,90 +1,92 @@
+from __future__ import annotations
+
 import os
 import threading
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import IO, Any, Callable
+from typing import IO, Any, Callable, Literal, Sequence
 
-from nnbench.context import Context
-from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
+
+
+@dataclass(frozen=True)
+class FileDriverOptions:
+    options: dict[str, Any] = field(default_factory=dict)
+    """Options to pass to the underlying serializer library call, e.g. ``json.dump``."""
+    ctxmode: Literal["flatten", "inline", "omit"] = "inline"
+    """How to handle the context struct."""
+
 
 _Options = dict[str, Any]
 SerDe = tuple[
-    Callable[[BenchmarkRecord, IO, _Options], None], Callable[[IO, _Options], BenchmarkRecord]
+    Callable[[BenchmarkRecord, IO, FileDriverOptions], None],
+    Callable[[IO, FileDriverOptions], BenchmarkRecord],
 ]
 
 
 _file_drivers: dict[str, SerDe] = {}
+_compressions: dict[str, Callable] = {}
 _file_driver_lock = threading.Lock()
+_compression_lock = threading.Lock()
 
 
-def yaml_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+def yaml_save(record: BenchmarkRecord, fp: IO, fdoptions: FileDriverOptions) -> None:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    yaml.safe_dump(record, fp, **options)
+    bms = record.compact(mode=fdoptions.ctxmode)
+    yaml.safe_dump(bms, fp, **fdoptions.options)
 
 
-def yaml_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
+def yaml_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    # takes no options, but the slot is useful for passing options to file loaders.
-    obj = yaml.safe_load(fp)
-    return BenchmarkRecord(context=obj["context"], benchmarks=obj["benchmarks"])
+    bms = yaml.safe_load(fp)
+    return BenchmarkRecord.expand(bms)
 
 
-def json_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+def json_save(record: BenchmarkRecord, fp: IO, fdoptions: FileDriverOptions) -> None:
     import json
 
-    context, benchmarks = record["context"], record["benchmarks"]
-    for bm in benchmarks:
-        bm["context"] = context._ctx_dict
-    json.dump(benchmarks, fp, **options)
+    benchmarks = record.compact(mode=fdoptions.ctxmode)
+    json.dump(benchmarks, fp, **fdoptions.options)
 
 
-def json_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
+def json_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
     import json
 
-    benchmarks: list[dict[str, Any]] = json.load(fp, **options)
-    context = Context()
-    for bm in benchmarks:
-        context.update(bm.pop("context", {}))
-
-    return BenchmarkRecord(context=context, benchmarks=benchmarks)
+    benchmarks: list[dict[str, Any]] = json.load(fp, **fdoptions.options)
+    return BenchmarkRecord.expand(benchmarks)
 
 
-def csv_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+def csv_save(record: BenchmarkRecord, fp: IO, fdoptions: FileDriverOptions) -> None:
     import csv
 
-    fieldnames = set(record["benchmarks"][0].keys()) | {"context"}
-    writer = csv.DictWriter(fp, fieldnames=fieldnames, **options)
+    benchmarks = record.compact(mode=fdoptions.ctxmode)
+    writer = csv.DictWriter(fp, fieldnames=benchmarks[0].keys(), **fdoptions.options)
 
-    context = record["context"]
-    for bm in record["benchmarks"]:
-        bm["context"] = context._ctx_dict
+    for bm in benchmarks:
         writer.writerow(bm)
 
 
-def csv_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
+def csv_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
     import csv
 
-    reader = csv.DictReader(fp, **options)
+    reader = csv.DictReader(fp, **fdoptions.options)
 
-    context = Context()
     benchmarks: list[dict[str, Any]] = []
-
     # apparently csv.DictReader has no appropriate type hint for __next__,
     # so we supply one ourselves.
     bm: dict[str, Any]
     for bm in reader:
-        context.update(bm.pop("context", {}))
         benchmarks.append(bm)
 
-    return BenchmarkRecord(context=context, benchmarks=benchmarks)
+    return BenchmarkRecord.expand(benchmarks)
 
 
 with _file_driver_lock:
@@ -94,14 +96,20 @@ with _file_driver_lock:
     # TODO: Add parquet support
 
 
-class FileReporter(BenchmarkReporter):
-    def __init__(self):
-        super().__init__()
+class FileIO:
+    def __init__(
+        self,
+        drivers: dict[str, SerDe] | None = None,
+        compressions: dict[str, Callable] | None = None,
+    ):
+        self.drivers = drivers or _file_drivers
+        self.compressions = compressions or _compressions
 
     def read(
         self,
         file: str | os.PathLike[str],
         driver: str | None = None,
+        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
         options: dict[str, Any] | None = None,
     ) -> BenchmarkRecord:
         """
@@ -116,6 +124,8 @@ class FileReporter(BenchmarkReporter):
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
+        ctxmode: Literal["flatten", "inline", "omit"]
+            How to handle the benchmark context when writing the record data.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
 
@@ -132,18 +142,32 @@ class FileReporter(BenchmarkReporter):
         driver = driver or Path(file).suffix.removeprefix(".")
 
         try:
-            _, de = _file_drivers[driver]
+            _, de = self.drivers[driver]
         except KeyError:
             raise ValueError(f"unsupported file format {driver!r}")
 
+        fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
+
         with open(file, "w") as fp:
-            return de(fp, options or {})
+            return de(fp, fdoptions)
+
+    def read_batched(
+        self,
+        records: Sequence[BenchmarkRecord],
+        file: str | os.PathLike[str],
+        driver: str | None = None,
+        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
+        options: dict[str, Any] | None = None,
+    ) -> None:
+        """A batched version of ``FileIO.read()``."""
+        pass
 
     def write(
         self,
         record: BenchmarkRecord,
         file: str | os.PathLike[str],
         driver: str | None = None,
+        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
         options: dict[str, Any] | None = None,
     ) -> None:
         """
@@ -160,6 +184,8 @@ class FileReporter(BenchmarkReporter):
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
+        ctxmode: Literal["flatten", "inline", "omit"]
+            How to handle the benchmark context when writing the record data.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
 
@@ -171,9 +197,31 @@ class FileReporter(BenchmarkReporter):
         driver = driver or Path(file).suffix.removeprefix(".")
 
         try:
-            ser, _ = _file_drivers[driver]
+            ser, _ = self.drivers[driver]
         except KeyError:
             raise KeyError(f"unsupported file format {driver!r}") from None
 
+        fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
         with open(file, "w") as fp:
-            ser(record, fp, options or {})
+            ser(record, fp, fdoptions)
+
+    def write_batched(
+        self,
+        records: Sequence[BenchmarkRecord],
+        file: str | os.PathLike[str],
+        driver: str | None = None,
+        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
+        options: dict[str, Any] | None = None,
+    ) -> None:
+        """A batched version of ``FileIO.write()``."""
+        driver = driver or Path(file).suffix.removeprefix(".")
+
+        try:
+            ser, _ = self.drivers[driver]
+        except KeyError:
+            raise KeyError(f"unsupported file format {driver!r}") from None
+
+        fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
+        with open(file, "a+") as fp:
+            for record in records:
+                ser(record, fp, fdoptions)

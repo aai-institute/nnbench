@@ -52,9 +52,10 @@ def test_context_collection_in_runner(testfolder: str) -> None:
         context=context_providers,
     )
 
-    assert "system" in result["context"]
-    assert "cpuarch" in result["context"]
-    assert "python_version" in result["context"]
+    ctx = result.context
+    assert "system" in ctx
+    assert "cpuarch" in ctx
+    assert "python_version" in ctx
 
 
 def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
