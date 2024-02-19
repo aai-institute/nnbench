@@ -189,10 +189,14 @@ class CPUInfo:
 
 class Context:
     def __init__(self, data: dict[str, Any] | None = None) -> None:
-        self._ctx_dict: dict[str, Any] = data or {}
+        self._data: dict[str, Any] = data or {}
 
     def __contains__(self, key: str) -> bool:
         return key in self.keys()
+
+    @property
+    def data(self):
+        return self._data
 
     @staticmethod
     def _ctx_items(d: dict[str, Any], prefix: str, sep: str) -> Iterator[tuple[str, Any]]:
@@ -234,7 +238,7 @@ class Context:
         str
             Iterator over the context dictionary keys.
         """
-        for k, v in self._ctx_items(d=self._ctx_dict, prefix="", sep=sep):
+        for k, v in self._ctx_items(d=self._data, prefix="", sep=sep):
             yield k
 
     def values(self) -> Iterator[Any]:
@@ -246,7 +250,7 @@ class Context:
         Any
             Iterator over all values in the context dictionary.
         """
-        for k, v in self._ctx_items(d=self._ctx_dict, prefix="", sep=""):
+        for k, v in self._ctx_items(d=self._data, prefix="", sep=""):
             yield v
 
     def items(self, sep: str = ".") -> Iterator[tuple[str, Any]]:
@@ -263,7 +267,7 @@ class Context:
         tuple[str, Any]
             Iterator over the items of the context dictionary.
         """
-        yield from self._ctx_items(d=self._ctx_dict, prefix="", sep=sep)
+        yield from self._ctx_items(d=self._data, prefix="", sep=sep)
 
     def update(self, other: ContextProvider | dict[str, Any] | "Context") -> None:
         """
@@ -278,8 +282,8 @@ class Context:
         if callable(other):
             other = other()
         elif isinstance(other, Context):
-            other = other._ctx_dict
-        self._ctx_dict.update(other)
+            other = other._data
+        self._data.update(other)
 
     @staticmethod
     def _flatten_dict(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
@@ -325,7 +329,7 @@ class Context:
             The flattened context values as a Python dictionary.
         """
 
-        return self._flatten_dict(self._ctx_dict, prefix="", sep=sep)
+        return self._flatten_dict(self._data, prefix="", sep=sep)
 
     @staticmethod
     def unflatten(d: dict[str, Any], sep: str = ".") -> dict[str, Any]:

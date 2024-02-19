@@ -4,7 +4,7 @@ from __future__ import annotations
 import inspect
 import os
 from dataclasses import dataclass, field
-from typing import Any, Callable, Generic, TypedDict, TypeVar
+from typing import Any, Callable, Generic, Literal, TypeVar
 
 from nnbench.context import Context
 
@@ -12,13 +12,80 @@ T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
 
-class BenchmarkRecord(TypedDict):
-    context: Context
-    benchmarks: list[dict[str, Any]]
-
-
 def NoOp(**kwargs: Any) -> None:
     pass
+
+
+@dataclass(frozen=True)
+class BenchmarkRecord:
+    context: Context
+    benchmarks: list[dict[str, Any]]
+    _ctx_keys: tuple[str, ...] = field(init=False, repr=False)
+
+    def __post_init__(self):
+        super().__setattr__("_ctx_keys", tuple(self.context.keys()))
+
+    def compact(
+        self, mode: Literal["flatten", "inline", "omit"] = "inline"
+    ) -> list[dict[str, Any]]:
+        """
+        Prepare the benchmark results, optionally inlining the context either as a
+        nested dictionary or in flattened form.
+
+        Parameters
+        ----------
+        mode: Literal["flatten", "inline", "omit"]
+            How to handle the context. ``"omit"`` leaves out the context entirely, ``"inline"``
+            inserts it into the benchmark dictionary as a single entry named ``"context"``, and
+            ``"flatten"`` inserts the flattened context values into the dictionary.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The updated list of benchmark records.
+        """
+        if mode == "omit":
+            return self.benchmarks
+
+        for b in self.benchmarks:
+            if mode == "inline":
+                b["context"] = self.context.data
+            elif mode == "flatten":
+                flat = self.context.flatten()
+                b.update(flat)
+                b["_context_keys"] = self._ctx_keys
+        return self.benchmarks
+
+    @classmethod
+    def expand(cls, bms: list[dict[str, Any]]) -> BenchmarkRecord:
+        """
+        Expand a list of deserialized JSON-like objects into a benchmark record.
+        This is equivalent to extracting the context given by the method it was
+        serialized with, and then returning the rest of the data as is.
+        Parameters
+        ----------
+        bms: list[dict[str, Any]]
+            The list of benchmark dicts to expand into a record.
+
+        Returns
+        -------
+        BenchmarkRecord
+            The resulting record with the context extracted.
+
+        """
+        dctx: dict[str, Any] = {}
+        for b in bms:
+            if "context" in b:
+                dctx = b.pop("context")
+            elif "_context_keys" in b:
+                ctxkeys = b.pop("_context_keys")
+                for k in ctxkeys:
+                    # This should never throw, save for data corruption.
+                    dctx[k] = b.pop(k)
+        return cls(context=Context.make(dctx), benchmarks=bms)
+
+    # TODO: Add an expandmany() API for returning a sequence of records for heterogeneous
+    #  context data.
 
 
 class Artifact(Generic[T]):

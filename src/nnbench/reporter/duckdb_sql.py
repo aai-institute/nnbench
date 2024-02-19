@@ -17,11 +17,11 @@ try:
 except ImportError:
     DUCKDB_INSTALLED = False
 
-from nnbench.reporter.file import FileReporter
+from nnbench.reporter.file import FileIO
 from nnbench.types import BenchmarkRecord
 
 
-class DuckDBReporter(FileReporter):
+class DuckDBReporter(FileIO):
     """
     A reporter for streaming benchmark results to duckdb.
 
@@ -85,7 +85,6 @@ class DuckDBReporter(FileReporter):
 
     def initialize(self):
         self.conn = duckdb.connect(self.dbname, read_only=self.read_only)
-        super().initialize()
 
     def finalize(self):
         if self.conn:
@@ -94,7 +93,7 @@ class DuckDBReporter(FileReporter):
         if self.delete:
             shutil.rmtree(self._directory, ignore_errors=True)
 
-    def read(
+    def read_sql(
         self,
         file: str | os.PathLike[str],
         driver: str | None = None,
