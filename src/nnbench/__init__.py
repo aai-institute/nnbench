@@ -1,6 +1,6 @@
 """A framework for organizing and running benchmark workloads on machine learning models."""
 
-from importlib.metadata import PackageNotFoundError, entry_points, version
+from importlib.metadata import PackageNotFoundError, version
 
 try:
     __version__ = version("nnbench")
@@ -9,22 +9,6 @@ except PackageNotFoundError:
     pass
 
 from .core import benchmark, parametrize, product
-from .reporter import BenchmarkReporter, register_reporter
+from .reporter import BenchmarkReporter
 from .runner import BenchmarkRunner
 from .types import Parameters
-
-
-def add_reporters():
-    eps = entry_points()
-
-    if hasattr(eps, "select"):  # Python 3.10+ / importlib.metadata >= 3.9.0
-        reporters = eps.select(group="nnbench.reporters")
-    else:
-        reporters = eps.get("nnbench.reporters", [])  # type: ignore
-
-    for rep in reporters:
-        key, clsname = rep.name.split("=", 1)
-        register_reporter(key, clsname)
-
-
-add_reporters()
