@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import IO, Any, Callable, Literal, Sequence
 
+from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 
 
@@ -19,8 +20,8 @@ class FileDriverOptions:
 
 _Options = dict[str, Any]
 SerDe = tuple[
-    Callable[[BenchmarkRecord, IO, FileDriverOptions], None],
-    Callable[[IO, FileDriverOptions], BenchmarkRecord],
+    Callable[[Sequence[BenchmarkRecord], IO, FileDriverOptions], None],
+    Callable[[IO, FileDriverOptions], list[BenchmarkRecord]],
 ]
 
 
@@ -30,51 +31,67 @@ _file_driver_lock = threading.Lock()
 _compression_lock = threading.Lock()
 
 
-def yaml_save(record: BenchmarkRecord, fp: IO, fdoptions: FileDriverOptions) -> None:
+def yaml_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    bms = record.compact(mode=fdoptions.ctxmode)
+    bms = []
+    for r in records:
+        bms += r.compact(mode=fdoptions.ctxmode)
     yaml.safe_dump(bms, fp, **fdoptions.options)
 
 
-def yaml_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
+def yaml_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
+    # TODO: Use expandmany()
     bms = yaml.safe_load(fp)
-    return BenchmarkRecord.expand(bms)
+    return [BenchmarkRecord.expand(bms)]
 
 
-def json_save(record: BenchmarkRecord, fp: IO, fdoptions: FileDriverOptions) -> None:
+def json_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
     import json
 
-    benchmarks = record.compact(mode=fdoptions.ctxmode)
-    json.dump(benchmarks, fp, **fdoptions.options)
+    newline: bool = fdoptions.options.pop("newline", False)
+    bm = []
+    for r in records:
+        bm += r.compact(mode=fdoptions.ctxmode)
+    if newline:
+        fp.write("\n".join([json.dumps(b) for b in bm]))
+    else:
+        json.dump(bm, fp, **fdoptions.options)
 
 
-def json_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
+def json_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     import json
 
-    benchmarks: list[dict[str, Any]] = json.load(fp, **fdoptions.options)
-    return BenchmarkRecord.expand(benchmarks)
+    newline: bool = fdoptions.options.pop("newline", False)
+    benchmarks: list[dict[str, Any]]
+    if newline:
+        benchmarks = [json.loads(line, **fdoptions.options) for line in fp]
+    else:
+        benchmarks = json.load(fp, **fdoptions.options)
+    return [BenchmarkRecord.expand(benchmarks)]
 
 
-def csv_save(record: BenchmarkRecord, fp: IO, fdoptions: FileDriverOptions) -> None:
+def csv_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
     import csv
 
-    benchmarks = record.compact(mode=fdoptions.ctxmode)
-    writer = csv.DictWriter(fp, fieldnames=benchmarks[0].keys(), **fdoptions.options)
+    bm = []
+    for r in records:
+        bm += r.compact(mode=fdoptions.ctxmode)
+    writer = csv.DictWriter(fp, fieldnames=bm[0].keys(), **fdoptions.options)
 
-    for bm in benchmarks:
-        writer.writerow(bm)
+    for b in bm:
+        writer.writerow(b)
 
 
-def csv_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
+def csv_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     import csv
 
     reader = csv.DictReader(fp, **fdoptions.options)
@@ -86,7 +103,7 @@ def csv_load(fp: IO, fdoptions: FileDriverOptions) -> BenchmarkRecord:
     for bm in reader:
         benchmarks.append(bm)
 
-    return BenchmarkRecord.expand(benchmarks)
+    return [BenchmarkRecord.expand(benchmarks)]
 
 
 with _file_driver_lock:
@@ -102,6 +119,7 @@ class FileIO:
         drivers: dict[str, SerDe] | None = None,
         compressions: dict[str, Callable] | None = None,
     ):
+        super().__init__()
         self.drivers = drivers or _file_drivers
         self.compressions = compressions or _compressions
 
@@ -109,30 +127,40 @@ class FileIO:
         self,
         file: str | os.PathLike[str],
         driver: str | None = None,
-        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
         options: dict[str, Any] | None = None,
     ) -> BenchmarkRecord:
         """
-        Writes a benchmark record to the given file path.
+        Greedy version of ``FileIO.read_batched()``, returning the first read record.
+        When reading a multi-record file, this uses as much memory as the batched version.
+        """
+        records = self.read_batched(file=file, driver=driver, options=options)
+        return records[0]
+
+    def read_batched(
+        self,
+        file: str | os.PathLike[str],
+        driver: str | None = None,
+        options: dict[str, Any] | None = None,
+    ) -> list[BenchmarkRecord]:
+        """
+        Reads a set of benchmark records from the given file path.
 
         The file driver is chosen based on the extension found on the ``file`` path.
 
         Parameters
         ----------
         file: str | os.PathLike[str]
-            The file name to write to.
+            The file name to read from.
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
-        ctxmode: Literal["flatten", "inline", "omit"]
-            How to handle the benchmark context when writing the record data.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
 
         Returns
         -------
-        BenchmarkRecord
-            The benchmark record contained in the file.
+        list[BenchmarkRecord]
+            The benchmark records contained in the file.
 
         Raises
         ------
@@ -144,27 +172,28 @@ class FileIO:
         try:
             _, de = self.drivers[driver]
         except KeyError:
-            raise ValueError(f"unsupported file format {driver!r}")
+            raise KeyError(f"unsupported file format {driver!r}") from None
 
-        fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
+        # dummy value, since the context mode is unused in read ops.
+        fdoptions = FileDriverOptions(ctxmode="omit", options=options or {})
 
-        with open(file, "w") as fp:
+        with open(file, "r") as fp:
             return de(fp, fdoptions)
 
-    def read_batched(
+    def write(
         self,
-        records: Sequence[BenchmarkRecord],
+        record: BenchmarkRecord,
         file: str | os.PathLike[str],
         driver: str | None = None,
         ctxmode: Literal["flatten", "inline", "omit"] = "inline",
         options: dict[str, Any] | None = None,
     ) -> None:
-        """A batched version of ``FileIO.read()``."""
-        pass
+        """Greedy version of ``FileIO.write_batched()``"""
+        self.write_batched([record], file=file, driver=driver, ctxmode=ctxmode, options=options)
 
-    def write(
+    def write_batched(
         self,
-        record: BenchmarkRecord,
+        records: Sequence[BenchmarkRecord],
         file: str | os.PathLike[str],
         driver: str | None = None,
         ctxmode: Literal["flatten", "inline", "omit"] = "inline",
@@ -177,7 +206,7 @@ class FileIO:
 
         Parameters
         ----------
-        record: BenchmarkRecord
+        records: Sequence[BenchmarkRecord]
             The record to write to the database.
         file: str | os.PathLike[str]
             The file name to write to.
@@ -203,25 +232,8 @@ class FileIO:
 
         fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
         with open(file, "w") as fp:
-            ser(record, fp, fdoptions)
+            ser(records, fp, fdoptions)
 
-    def write_batched(
-        self,
-        records: Sequence[BenchmarkRecord],
-        file: str | os.PathLike[str],
-        driver: str | None = None,
-        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
-        options: dict[str, Any] | None = None,
-    ) -> None:
-        """A batched version of ``FileIO.write()``."""
-        driver = driver or Path(file).suffix.removeprefix(".")
 
-        try:
-            ser, _ = self.drivers[driver]
-        except KeyError:
-            raise KeyError(f"unsupported file format {driver!r}") from None
-
-        fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
-        with open(file, "a+") as fp:
-            for record in records:
-                ser(record, fp, fdoptions)
+class FileReporter(FileIO, BenchmarkReporter):
+    pass

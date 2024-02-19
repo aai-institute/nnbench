@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Callable, Sequence
+from typing import Any, Callable
 
 from tabulate import tabulate
 
@@ -23,7 +23,8 @@ class BenchmarkReporter:
     the database in ``report_result()``, with preprocessing if necessary.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._initialized = False
 
     def initialize(self):
@@ -120,17 +121,3 @@ class BenchmarkReporter:
             filtered.append(filteredbm)
 
         print(tabulate(filtered, headers="keys", tablefmt=tablefmt))
-
-    def read(self, *args: Any, **kwargs: Any) -> BenchmarkRecord:
-        raise NotImplementedError
-
-    def read_batched(self, *args: Any, **kwargs: Any) -> list[BenchmarkRecord]:
-        raise NotImplementedError
-
-    def write(self, record: BenchmarkRecord, *args: Any, **kwargs: Any) -> None:
-        raise NotImplementedError
-
-    def write_batched(self, records: Sequence[BenchmarkRecord], *args: Any, **kwargs: Any) -> None:
-        # By default, just loop over the records and write() everything.
-        for record in records:
-            self.write(record, *args, **kwargs)
