@@ -106,6 +106,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://nnbench.github.io/latest/tutorials/bq/</loc>
+         <lastmod>2024-02-22</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://nnbench.github.io/latest/tutorials/mnist/</loc>
          <lastmod>2024-02-22</lastmod>
          <changefreq>daily</changefreq>
