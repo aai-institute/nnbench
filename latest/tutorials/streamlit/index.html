@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/guides/organization/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/streamlit/">
       
       
-        <link rel="prev" href="../customization/">
+        <link rel="prev" href="../prefect/">
       
       
-        <link rel="next" href="../runners/">
+        <link rel="next" href="../../reference/nnbench/">
       
       
       <link rel="icon" href="../../_images/aai-favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>How to efficiently organize benchmark code - nnbench</title>
+        <title>Streamlit - nnbench</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-efficiently-organize-benchmark-code" class="md-skip">
+        <a href="#integrating-nnbench-with-streamlit-and-prefect" class="md-skip">
           Skip to content
         </a>
       
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to efficiently organize benchmark code
+              Streamlit
             
           </span>
         </div>
@@ -310,24 +310,22 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -344,7 +342,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             User Guide
@@ -358,7 +356,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../benchmarks/" class="md-nav__link">
+      <a href="../../guides/benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -379,7 +377,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../customization/" class="md-nav__link">
+      <a href="../../guides/customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -397,30 +395,10 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    How to efficiently organize benchmark code
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../guides/organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -429,53 +407,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tip-1-separate-benchmarks-from-project-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tip 1: Separate benchmarks from project code
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tip-2-group-benchmarks-by-common-attributes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tip 2: Group benchmarks by common attributes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tip-3-attach-tags-to-benchmarks-for-selective-filtering" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tip 3: Attach tags to benchmarks for selective filtering
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -488,7 +419,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../runners/" class="md-nav__link">
+      <a href="../../guides/runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -513,22 +444,24 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../tutorials/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -545,7 +478,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -559,7 +492,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/mnist/" class="md-nav__link">
+      <a href="../mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -580,7 +513,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/prefect/" class="md-nav__link">
+      <a href="../prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -598,10 +531,28 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../tutorials/streamlit/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Streamlit
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -610,6 +561,60 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-nnbench-with-streamlit-and-prefect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating nnbench with Streamlit and Prefect
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-streamlit-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Streamlit UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-prefect-with-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating Prefect with Streamlit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -992,8 +997,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1002,27 +1005,36 @@ released. For the most accurate information, please <strong><a href="../../..">a
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tip-1-separate-benchmarks-from-project-code" class="md-nav__link">
+  <a href="#integrating-nnbench-with-streamlit-and-prefect" class="md-nav__link">
     <span class="md-ellipsis">
-      Tip 1: Separate benchmarks from project code
+      Integrating nnbench with Streamlit and Prefect
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#tip-2-group-benchmarks-by-common-attributes" class="md-nav__link">
+  <a href="#the-streamlit-ui" class="md-nav__link">
     <span class="md-ellipsis">
-      Tip 2: Group benchmarks by common attributes
+      The Streamlit UI
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#tip-3-attach-tags-to-benchmarks-for-selective-filtering" class="md-nav__link">
+  <a href="#integrating-prefect-with-streamlit" class="md-nav__link">
     <span class="md-ellipsis">
-      Tip 3: Attach tags to benchmarks for selective filtering
+      Integrating Prefect with Streamlit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the example
     </span>
   </a>
   
@@ -1043,7 +1055,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/guides/organization.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/streamlit.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1051,69 +1063,49 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
 
-<h1 id="how-to-efficiently-organize-benchmark-code">How to efficiently organize benchmark code<a class="headerlink" href="#how-to-efficiently-organize-benchmark-code" title="Permanent link">&para;</a></h1>
-<p>To efficiently organize benchmarks and keeping your setup modular, you can follow a few guidelines.</p>
-<h2 id="tip-1-separate-benchmarks-from-project-code">Tip 1: Separate benchmarks from project code<a class="headerlink" href="#tip-1-separate-benchmarks-from-project-code" title="Permanent link">&para;</a></h2>
-<p>This tip is well known from other software development practices such as unit testing.
-To improve project organization, consider splitting off your benchmarks into their own modules or even directories, if you have multiple benchmark workloads.</p>
-<p>An example project layout can look like this, with benchmarks as a separate directory at the top-level:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>my-project/
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── benchmarks/ # &lt;- contains all benchmarking Python files.
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── docs/
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── src/
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── .pre-commit-config.yaml
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── pyproject.toml
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── README.md
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>└── ...
+  <h1>Streamlit</h1>
+
+<h2 id="integrating-nnbench-with-streamlit-and-prefect">Integrating nnbench with Streamlit and Prefect<a class="headerlink" href="#integrating-nnbench-with-streamlit-and-prefect" title="Permanent link">&para;</a></h2>
+<p>In a project you may want to execute benchmarks or investigate their results with a dedicated frontend. There exist several frameworks that can help you setting up a frontend quickly. For example <a href="https://streamlit.io/">Streamlit</a>, <a href="https://www.gradio.app/">Gradio</a>, <a href="https://dash.plotly.com/tutorial">Dash</a>, or you could roll your own implementation using a backend framework such as <a href="https://flask.palletsprojects.com/en/3.0.x/">Flask</a>.
+In this guide we will use Streamlit and integrate it with the <a href="../prefect/">orchestration setup</a> we've developed with Prefect.
+That guide is a prerequisite for this one. 
+The full example code can be found in the nnbench <a href="https://github.com/aai-institute/nnbench/tree/main/examples/streamlit">repository</a>.</p>
+<h2 id="the-streamlit-ui">The Streamlit UI<a class="headerlink" href="#the-streamlit-ui" title="Permanent link">&para;</a></h2>
+<p>The Streamlit UI is launched by executing 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>streamlit<span class="w"> </span>run<span class="w"> </span>streamlit_example.py
 </span></code></pre></div>
-<p>This keeps the benchmarks neatly grouped together while siloing them away from the actual project code.
-Since you will most likely not run your benchmarks in a production setting, this is also advantageous for packaging, as the <code>benchmarks/</code> directory does not ship by default in this configuration.</p>
-<h2 id="tip-2-group-benchmarks-by-common-attributes">Tip 2: Group benchmarks by common attributes<a class="headerlink" href="#tip-2-group-benchmarks-by-common-attributes" title="Permanent link">&para;</a></h2>
-<p>To maintain good organization within your benchmark directory, you can group similar benchmarks into their own Python files.
-As an example, if you have a set of benchmarks to establish data quality, and benchmarks for scoring trained models on curated data, you could structure them as follows:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>benchmarks/
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── data_quality.py
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── model_perf.py
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>└── ...
+and initially looks like this:
+<img alt="Workflow runs" src="../streamlit_resources/initial_ui.png" /></p>
+<p>The user interface is assembled in the final part of <code>streamlit_example.py</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>
 </span></code></pre></div>
-<p>This is helpful when running multiple benchmark workloads separately, as you can just point your benchmark runner to each of these separate files:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">data_metrics</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks/data_quality.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">)</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># same for model metrics, where instead you pass benchmarks/model_perf.py.</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">model_metrics</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks/model_perf.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">)</span>
+<p>The user inputs are generated via the custom <code>setup_ui()</code> function which then processes the input values once the "Run Benchmark" button is clicked.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>
 </span></code></pre></div>
-<h2 id="tip-3-attach-tags-to-benchmarks-for-selective-filtering">Tip 3: Attach tags to benchmarks for selective filtering<a class="headerlink" href="#tip-3-attach-tags-to-benchmarks-for-selective-filtering" title="Permanent link">&para;</a></h2>
-<p>For structuring benchmarks within files, you can also use <strong>tags</strong>, which are tuples of strings attached to a benchmark:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># benchmarks/data_quality.py</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span> <span class="nn">nnbench</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,))</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">def</span> <span class="nf">foo1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="o">...</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,))</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">def</span> <span class="nf">foo2</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="o">...</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,))</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="o">...</span>
+<p>We use a session state to keep track of all the benchmarks we ran in the current session which then are displayed within expander elements at the bottom.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>
 </span></code></pre></div>
-<p>Now, to only run data quality benchmarks marked "foo", pass the corresponding tag to <code>BenchmarkRunner.run()</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">foo_data_metrics</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks/data_quality.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,))</span>
+<h2 id="integrating-prefect-with-streamlit">Integrating Prefect with Streamlit<a class="headerlink" href="#integrating-prefect-with-streamlit" title="Permanent link">&para;</a></h2>
+<p>To integrate Streamlit with Prefect, we have to do some initial housekeeping. Namely, we specify the URL for the <code>PreFectClient</code> as well as the storage location of run artifacts where we retrieve the benchmark results from.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>
 </span></code></pre></div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>This concept works exactly the same when creating benchmarks with the <code>@nnbench.parametrize</code> and <code>@nnbench.product</code> decorators.</p>
-</div>
+<p>In this example there is no direct integration of Streamlit with nnbench, but all interactions are passing through Prefect to make use of its orchestration benefits such as caching of tasks.
+Another thing to note is that we are working with local instances for easier reproducibility of this example. Adapting it to work with a remote orchestration server and object storage should be straightforward.</p>
+<p>The main interaction of the Streamlit frontend with Prefect takes place in the <code>run_bms</code> and <code>get_bm_artifacts</code> functions.</p>
+<p>The former searches for a Prefect deployment <code>"train-and-benchmark/benchmark-runner"</code> and executes it with the benchmark parameters specified by the user. It returns the <code>storage_key</code>, which we use to retrieve the persisted benchmark results.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>
+</span></code></pre></div>
+<p>The <code>get_bm_artifacts</code> function gets a storage key and retrieves the corresponding results. As the results are stored in raw bytes, we have some logic to reconstruct the <code>nnbench.types.BenchmarkRecord</code> object. We transform the data into Pandas <code>DataFrame</code>s, which are later processed by Streamlit to display the results in tables.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>
+</span></code></pre></div>
+<h2 id="running-the-example">Running the example<a class="headerlink" href="#running-the-example" title="Permanent link">&para;</a></h2>
+<p>To run the example, we have to do several things. 
+First, we need to start Prefect using <code>prefect server start</code> in the command line. 
+Next, we need to make the <code>"train-and-benchmark/benchmark-runner"</code> deployment available.
+We do so by running the corresponding Python file, <code>python runner.py</code>. You find that file in the <code>examples/prefect/src</code> directory. 
+If you are recreating this example on your machine, make sure you have the full contents of the <code>prefect</code> directory available in addition to the <code>streamlit_example.py</code>. For more information, you can look into the <a href="../prefect/">Prefect Guide</a>.</p>
+<p>Now that Prefect is set up, you can launch a local instance of Streamlit with <code>streamlit run streamlit_example.py</code>.</p>
+<p>For more information on how to work with Streamlit, visit their <a href="https://docs.streamlit.io/">docs</a>.</p>
 
 
 
