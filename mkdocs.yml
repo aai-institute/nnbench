@@ -27,6 +27,7 @@ nav:
     - tutorials/mnist.md
     - tutorials/prefect.md
     - tutorials/streamlit.md
+    - tutorials/bq.md
   - API Reference: reference/
   - Contributing: CONTRIBUTING.md
 
