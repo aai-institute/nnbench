@@ -20,10 +20,6 @@ def NoOp(**kwargs: Any) -> None:
 class BenchmarkRecord:
     context: Context
     benchmarks: list[dict[str, Any]]
-    _ctx_keys: tuple[str, ...] = field(init=False, repr=False)
-
-    def __post_init__(self):
-        super().__setattr__("_ctx_keys", tuple(self.context.keys()))
 
     def compact(
         self, mode: Literal["flatten", "inline", "omit"] = "inline"
@@ -53,7 +49,7 @@ class BenchmarkRecord:
             elif mode == "flatten":
                 flat = self.context.flatten()
                 b.update(flat)
-                b["_context_keys"] = self._ctx_keys
+                b["_context_keys"] = tuple(self.context.keys())
         return self.benchmarks
 
     @classmethod
