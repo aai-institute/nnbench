@@ -13,7 +13,7 @@ from nnbench.types import BenchmarkRecord
 @dataclass(frozen=True)
 class FileDriverOptions:
     options: dict[str, Any] = field(default_factory=dict)
-    """Options to pass to the underlying serializer library call, e.g. ``json.dump``."""
+    """Options to pass to the underlying serialization API call, e.g. ``json.dump``."""
     ctxmode: Literal["flatten", "inline", "omit"] = "inline"
     """How to handle the context struct."""
 
@@ -57,25 +57,33 @@ def yaml_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
 def json_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
     import json
 
-    newline: bool = fdoptions.options.pop("newline", False)
     bm = []
     for r in records:
         bm += r.compact(mode=fdoptions.ctxmode)
-    if newline:
-        fp.write("\n".join([json.dumps(b) for b in bm]))
-    else:
-        json.dump(bm, fp, **fdoptions.options)
+    json.dump(bm, fp, **fdoptions.options)
 
 
 def json_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     import json
 
-    newline: bool = fdoptions.options.pop("newline", False)
+    benchmarks: list[dict[str, Any]] = json.load(fp, **fdoptions.options)
+    return [BenchmarkRecord.expand(benchmarks)]
+
+
+def ndjson_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+    import json
+
+    bm = []
+    for r in records:
+        bm += r.compact(mode=fdoptions.ctxmode)
+    fp.write("\n".join([json.dumps(b) for b in bm]))
+
+
+def ndjson_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+    import json
+
     benchmarks: list[dict[str, Any]]
-    if newline:
-        benchmarks = [json.loads(line, **fdoptions.options) for line in fp]
-    else:
-        benchmarks = json.load(fp, **fdoptions.options)
+    benchmarks = [json.loads(line, **fdoptions.options) for line in fp]
     return [BenchmarkRecord.expand(benchmarks)]
 
 
@@ -106,11 +114,24 @@ def csv_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     return [BenchmarkRecord.expand(benchmarks)]
 
 
-with _file_driver_lock:
-    _file_drivers["yaml"] = (yaml_save, yaml_load)
-    _file_drivers["json"] = (json_save, json_load)
-    _file_drivers["csv"] = (csv_save, csv_load)
-    # TODO: Add parquet support
+def parquet_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    bm = []
+    for r in records:
+        bm += r.compact(mode=fdoptions.ctxmode)
+
+    table = pa.Table.from_pylist(bm)
+    pq.write_table(table, fp, **fdoptions.options)
+
+
+def parquet_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+    import pyarrow.parquet as pq
+
+    table = pq.read_table(fp, **fdoptions.options)
+    benchmarks: list[dict[str, Any]] = table.to_pylist()
+    return [BenchmarkRecord.expand(benchmarks)]
 
 
 def get_driver_implementation(name: str) -> SerDe:
@@ -150,11 +171,6 @@ def bz2_compression(filename: str | os.PathLike[str], mode: Literal["r", "w"] = 
     return bz2.BZ2File(filename=filename, mode=mode)
 
 
-with _compression_lock:
-    _compressions["gzip"] = gzip_compression
-    _compressions["bz2"] = bz2_compression
-
-
 def get_compression_algorithm(name: str) -> Callable:
     try:
         return _compressions[name]
@@ -176,6 +192,15 @@ def register_compression(name: str, impl: Callable, clobber: bool = False) -> No
 def deregister_compression(name: str) -> Callable | None:
     with _compression_lock:
         return _compressions.pop(name, None)
+
+
+register_driver_implementation("yaml", (yaml_save, yaml_load))
+register_driver_implementation("json", (json_save, json_load))
+register_driver_implementation("ndjson", (ndjson_save, ndjson_load))
+register_driver_implementation("csv", (csv_save, csv_load))
+register_driver_implementation("parquet", (parquet_save, parquet_load))
+register_compression("gz", gzip_compression)
+register_compression("bz2", bz2_compression)
 
 
 class FileIO:
