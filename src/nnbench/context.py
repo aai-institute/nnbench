@@ -194,6 +194,13 @@ class Context:
     def __contains__(self, key: str) -> bool:
         return key in self.keys()
 
+    def __eq__(self, other):
+        if not isinstance(other, Context):
+            raise NotImplementedError(
+                f"cannot compare {type(self)} for equality with type {type(other)}"
+            )
+        return self._data.__eq__(other._data)
+
     @property
     def data(self):
         return self._data

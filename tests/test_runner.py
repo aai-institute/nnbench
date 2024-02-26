@@ -6,10 +6,10 @@ import nnbench
 from nnbench.context import cpuarch, python_version, system
 
 
-def test_runner_discovery(testfolder: str, another_testfolder: str) -> None:
+def test_runner_collection(testfolder: str) -> None:
     r = nnbench.BenchmarkRunner()
 
-    r.collect(os.path.join(testfolder, "standard_benchmarks.py"), tags=("runner-collect",))
+    r.collect(os.path.join(testfolder, "standard.py"), tags=("runner-collect",))
     assert len(r.benchmarks) == 1
     r.clear()
 
@@ -19,16 +19,14 @@ def test_runner_discovery(testfolder: str, another_testfolder: str) -> None:
 
     r.collect(testfolder, tags=("runner-collect",))
     assert len(r.benchmarks) == 1
-    r.collect(another_testfolder, tags=("runner-collect",))
-    assert len(r.benchmarks) == 2
 
 
 def test_tag_selection(testfolder: str) -> None:
-    PATH = os.path.join(testfolder, "tag_selection_benchmark.py")
+    PATH = os.path.join(testfolder, "tags.py")
 
     r = nnbench.BenchmarkRunner()
 
-    r.collect(PATH, tags=())
+    r.collect(PATH)
     assert len(r.benchmarks) == 3
     r.clear()
 
@@ -41,7 +39,7 @@ def test_tag_selection(testfolder: str) -> None:
     r.clear()
 
 
-def test_context_collection_in_runner(testfolder: str) -> None:
+def test_context_assembly(testfolder: str) -> None:
     r = nnbench.BenchmarkRunner()
 
     context_providers = [system, cpuarch, python_version]

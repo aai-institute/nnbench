@@ -1,6 +1,7 @@
 """Useful type interfaces to override/subclass in benchmarking workflows."""
 from __future__ import annotations
 
+import copy
 import inspect
 import os
 from dataclasses import dataclass, field
@@ -47,14 +48,18 @@ class BenchmarkRecord:
         if mode == "omit":
             return self.benchmarks
 
+        result = []
+
         for b in self.benchmarks:
+            bc = copy.deepcopy(b)
             if mode == "inline":
-                b["context"] = self.context.data
+                bc["context"] = self.context.data
             elif mode == "flatten":
                 flat = self.context.flatten(sep=sep)
-                b.update(flat)
-                b["_context_keys"] = tuple(self.context.keys())
-        return self.benchmarks
+                bc.update(flat)
+                bc["_contextkeys"] = list(self.context.keys())
+            result.append(bc)
+        return result
 
     @classmethod
     def expand(cls, bms: list[dict[str, Any]]) -> BenchmarkRecord:
@@ -77,8 +82,8 @@ class BenchmarkRecord:
         for b in bms:
             if "context" in b:
                 dctx = b.pop("context")
-            elif "_context_keys" in b:
-                ctxkeys = b.pop("_context_keys")
+            elif "_contextkeys" in b:
+                ctxkeys = b.pop("_contextkeys")
                 for k in ctxkeys:
                     # This should never throw, save for data corruption.
                     dctx[k] = b.pop(k)

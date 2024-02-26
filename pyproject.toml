@@ -46,6 +46,7 @@ dev = [
     "build>=1.0.0",
     "pre-commit>=3.3.3",
     "psutil",
+    "pyarrow",
     "pytest>=7.4.0",
 ]
 docs = [

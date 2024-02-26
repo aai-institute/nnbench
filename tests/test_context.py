@@ -55,19 +55,19 @@ def test_unflatten_dictionary():
 
 def test_context_keys():
     ctx = Context({"a": 1, "b": {"c": 2}})
-    expected_keys = set(["a", "b.c"])
+    expected_keys = {"a", "b.c"}
     assert set(ctx.keys()) == expected_keys
 
 
 def test_context_values():
     ctx = Context({"a": 1, "b": {"c": 2}})
-    expected_values = set([1, 2])
+    expected_values = {1, 2}
     assert set(ctx.values()) == expected_values
 
 
 def test_context_items():
     ctx = Context({"a": 1, "b": {"c": 2}})
-    expected_items = set([("a", 1), ("b.c", 2)])
+    expected_items = {("a", 1), ("b.c", 2)}
     assert set(ctx.items()) == expected_items
 
 
