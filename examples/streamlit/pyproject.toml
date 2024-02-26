@@ -16,5 +16,5 @@ dependencies = [
     "streamlit==1.28.*",
     "nnbench@git+https://github.com/aai-institute/nnbench.git"
 ]
-authors = [{name="Max Mynter", email="m.mynter@appliedai-institute.de"}]
-maintainers = [{ name = "appliedAI Initiative", email = "info+oss@appliedai.de" }]
+maintainers = [{name="Max Mynter", email="m.mynter@appliedai-institute.de"}]
+authors = [{ name = "appliedAI Initiative", email = "info+oss@appliedai.de" }]
