@@ -94,6 +94,7 @@ def csv_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOp
     for r in records:
         bm += r.compact(mode=fdoptions.ctxmode)
     writer = csv.DictWriter(fp, fieldnames=bm[0].keys(), **fdoptions.options)
+    writer.writeheader()
 
     for b in bm:
         writer.writerow(b)
@@ -101,6 +102,7 @@ def csv_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOp
 
 def csv_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     import csv
+    import json
 
     reader = csv.DictReader(fp, **fdoptions.options)
 
@@ -110,7 +112,14 @@ def csv_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     bm: dict[str, Any]
     for bm in reader:
         benchmarks.append(bm)
-
+        # it can happen that the context is inlined as a stringified JSON object
+        # (e.g. in CSV), so we optionally JSON-load the context.
+        for key in ("context", "_contextkeys"):
+            if key in bm:
+                strctx: str = bm[key]
+                # TODO: This does not play nicely with doublequote, maybe re.sub?
+                strctx = strctx.replace("'", '"')
+                bm[key] = json.loads(strctx)
     return [BenchmarkRecord.expand(benchmarks)]
 
 
