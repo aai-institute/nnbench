@@ -279,12 +279,12 @@ class Context:
 
     def add(self, provider: ContextProvider) -> None:
         """
-        Adds data from a provider to the Context.
+        Adds data from a provider to the context.
 
         Parameters
         ----------
-        provider: ContextProvider
-            The context provider; a callable that returns a dict with context values.
+        provider : ContextProvider
+            The provider to inject into this context.
         """
         self._data.update(provider())
 
@@ -294,8 +294,8 @@ class Context:
 
         Parameters
         ----------
-        other :  "Context"
-            The other Context to update this Context with.
+        other : Context
+            The other context to update this context with.
         """
         self._data.update(other._data)
 
@@ -306,11 +306,11 @@ class Context:
 
         Parameters
         ----------
-        d: dict[str, Any]
+        d : dict[str, Any]
             (Possibly) nested dictionary to flatten.
-        prefix: str
+        prefix : str
             Key prefix to apply at the top-level (nesting level 0).
-        sep: str
+        sep : str
             Separator on which to join keys, "." by default.
 
         Returns
