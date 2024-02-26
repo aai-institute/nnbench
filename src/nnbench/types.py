@@ -1,11 +1,13 @@
 """Useful type interfaces to override/subclass in benchmarking workflows."""
 from __future__ import annotations
 
+import collections.abc
 import copy
 import inspect
 import os
+from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, Generic, Literal, TypeVar
+from typing import Any, Callable, Generic, Iterable, Iterator, Literal, TypeVar
 
 from nnbench.context import Context
 
@@ -67,6 +69,7 @@ class BenchmarkRecord:
         Expand a list of deserialized JSON-like objects into a benchmark record.
         This is equivalent to extracting the context given by the method it was
         serialized with, and then returning the rest of the data as is.
+
         Parameters
         ----------
         bms: list[dict[str, Any]]
@@ -93,7 +96,38 @@ class BenchmarkRecord:
     #  context data.
 
 
-class Artifact(Generic[T]):
+class ArtifactLoader:
+    @abstractmethod
+    def load(self) -> os.PathLike[str]:
+        """Load the artifact"""
+
+
+class LocalArtifactLoader(ArtifactLoader):
+    """
+    ArtifactLoader for loading artifacts from a local file system.
+
+    Parameters
+    ----------
+    path : str | os.PathLike[str]
+        The file system pathto the artifact.
+    """
+
+    def __init__(self, path: str | os.PathLike[str]):
+        self._path = path
+
+    def load(self):
+        """
+        Returns the path to the artifact on the local file system.
+        """
+        return self._path
+
+
+class S3ArtifactLoader(ArtifactLoader):
+    # TODO: Implement this and other common ArtifactLoders here or in a util
+    pass
+
+
+class Artifact(Generic[T], metaclass=ABCMeta):
     """
     A base artifact class for loading (materializing) artifacts from disk or from remote storage.
 
@@ -101,32 +135,97 @@ class Artifact(Generic[T]):
     It is most useful when running models on already saved data or models, e.g. when
     comparing a newly trained model against a baseline in storage.
 
-    Subclasses need to implement the `Artifact.materialize()` API, telling nnbench how to
-    load the desired artifact from a path.
+    You need to supply an ArtifactLoader with a load() method to load the Artifact into the
+    local system storage.
+
+    Subclasses need to implement the `Artifact.deserialize()` API, telling nnbench to
+    load the desired artifact from their path.
 
     Parameters
     ----------
-    path: str | os.PathLike[str]
-        Path to the artifact files.
+    loader: ArtifactLoader
+        Loader to get the artifact.
     """
 
-    def __init__(self, path: str | os.PathLike[str]) -> None:
-        # Save the path for later just-in-time materialization.
-        self.path = path
+    def __init__(self, loader: ArtifactLoader) -> None:
+        # Save the path for later just-in-time deserialization.
+        self.path = loader.load()  # fetch the artifact from wherever it resides
         self._value: T | None = None
 
-    @classmethod
-    def materialize(cls) -> "Artifact":
-        """Load the artifact from storage."""
-        raise NotImplementedError
+    @abstractmethod
+    def deserialize(self) -> None:
+        """Deserialize the artifact."""
 
+    def is_deserialized(self) -> bool:
+        """Checks if the artifact is already deserialized."""
+        return self._value is not None
+
+    def __str__(self) -> str:
+        return f"Artifact(path={self.path!r}, is_deserialized={self.is_deserialized()})"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(path={self.path!r}, is_deserialized={self.is_deserialized()})"
+
+    @property
     def value(self) -> T:
+        """
+        Returns the deserialized artifact value.
+
+        Returns
+        -------
+        T
+            The deserialized value of the artifact.
+        """
         if self._value is None:
-            raise ValueError(
-                f"artifact has not been instantiated yet, "
-                f"perhaps you forgot to call {self.__class__.__name__}.materialize()?"
-            )
+            self.deserialize()
         return self._value
+
+
+class ArtifactCollection(Generic[T], collections.abc.Iterable[Artifact[T]]):
+    """
+    A collection wrapper around multiple Artifact instances.
+    """
+
+    def __init__(self, *artifacts: Artifact[T]) -> None:
+        self._artifacts = [art for art in artifacts]
+
+    def add(self, artifacts: Artifact[T] | Iterable[Artifact[T]]) -> None:
+        """
+        Adds a single Artifact or an Iterable of Artifacts to the collection.
+
+        Parameters
+        ----------
+        artifacts : Artifact[T] | Iterable[Artifact[T]]
+            The Artifact instance(s) to add to the collection.
+        """
+        if isinstance(artifacts, Iterable):
+            self._artifacts.extend(artifacts)
+        else:
+            self._artifacts.append(artifacts)
+
+    def __iter__(self) -> Iterator[Artifact[T]]:
+        """
+        Iterator over deserialized artifacts in the collection.
+
+        Yields
+        -------
+        Iterator[Artifact[T]]
+            An iterator over deserialized artifacts in the collection.
+        """
+        for artifact in self._artifacts:
+            yield artifact
+
+    def values(self) -> Iterator[T]:
+        """
+        Iterator over the values of deserialized artifacts in the collection.
+
+        Yields
+        ------
+        Iterator[T]
+            An iterator over the values of the deserialized artifacts.
+        """
+        for artifact in self:
+            yield artifact.value
 
 
 @dataclass(init=False, frozen=True)

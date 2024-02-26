@@ -21,9 +21,10 @@ nav:
     - guides/benchmarks.md
     - guides/customization.md
     - guides/organization.md
-    - guides/runners.md
+    - guides/runners.md 
   - Examples:
     - tutorials/index.md
+    - tutorials/artifact_benchmarking.md
     - tutorials/mnist.md
     - tutorials/prefect.md
     - tutorials/streamlit.md
