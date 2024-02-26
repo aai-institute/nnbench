@@ -144,8 +144,8 @@ def get_driver_implementation(name: str) -> SerDe:
 def register_driver_implementation(name: str, impl: SerDe, clobber: bool = False) -> None:
     if name in _file_drivers and not clobber:
         raise RuntimeError(
-            f"driver {name!r} is already registered. To force registration, "
-            f"rerun with clobber=True"
+            f"driver {name!r} is already registered (to force registration, "
+            f"rerun with clobber=True)"
         )
 
     with _file_driver_lock:
@@ -181,8 +181,8 @@ def get_compression_algorithm(name: str) -> Callable:
 def register_compression(name: str, impl: Callable, clobber: bool = False) -> None:
     if name in _compressions and not clobber:
         raise RuntimeError(
-            f"compression {name!r} is already registered. To force registration, "
-            f"rerun with clobber=True"
+            f"compression {name!r} is already registered (to force registration, "
+            f"rerun with clobber=True)"
         )
 
     with _compression_lock:
@@ -253,6 +253,12 @@ class FileIO:
         -------
         list[BenchmarkRecord]
             The benchmark records contained in the file.
+
+        Raises
+        ------
+        ValueError
+            If no registered file driver matches the file extension and no other driver
+            was explicitly specified.
         """
         fileext = Path(file).suffix.removeprefix(".")
         # if the extension looks like FORMAT.COMPRESSION, we split.
@@ -265,17 +271,17 @@ class FileIO:
         driver = driver or ext_driver
         compression = compression or ext_compression
 
+        if driver is None:
+            raise ValueError(
+                f"could not infer a file driver to write file {str(file)!r}, "
+                f"and no file driver was specified (available drivers: "
+                f"{', '.join(repr(d) for d in _file_drivers)})"
+            )
         _, de = get_driver_implementation(driver)
 
-        # canonicalize extension to make sure the file gets it correctly
-        # regardless of where driver and compression came from.
-        fullext = "." + driver
         if compression is not None:
-            fullext += "." + compression
-            file = Path(file).with_suffix(fullext)
             fd = get_compression_algorithm(compression)(file, mode)
         else:
-            file = Path(file).with_suffix(fullext)
             fd = open(file, mode)
 
         # dummy value, since the context mode is unused in read ops.
@@ -338,6 +344,12 @@ class FileIO:
             How to handle the benchmark context when writing the record data.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
+
+        Raises
+        ------
+        ValueError
+            If no registered file driver matches the file extension and no other driver
+            was explicitly specified.
         """
         fileext = Path(file).suffix.removeprefix(".")
         # if the extension looks like FORMAT.COMPRESSION, we split.
@@ -349,17 +361,17 @@ class FileIO:
         driver = driver or ext_driver
         compression = compression or ext_compression
 
+        if driver is None:
+            raise ValueError(
+                f"could not infer a file driver to write file {str(file)!r}, "
+                f"and no file driver was specified (available drivers: "
+                f"{', '.join(repr(d) for d in _file_drivers)})"
+            )
         ser, _ = get_driver_implementation(driver)
 
-        # canonicalize extension to make sure the file gets it correctly
-        # regardless of where driver and compression came from.
-        fullext = "." + driver
         if compression is not None:
-            fullext += "." + compression
-            file = Path(file).with_suffix(fullext)
             fd = get_compression_algorithm(compression)(file, mode)
         else:
-            file = Path(file).with_suffix(fullext)
             fd = open(file, mode)
 
         fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
