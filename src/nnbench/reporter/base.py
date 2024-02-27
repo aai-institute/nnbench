@@ -116,7 +116,7 @@ class BenchmarkReporter:
             # only apply custom formatters after context merge
             #  to allow custom formatting of context values.
             filteredbm = {
-                k: custom_formatters.get(k, lambda x: x)(v) for k, v in filteredbm.items()
+                k: (custom_formatters or {}).get(k, lambda x: x)(v) for k, v in filteredbm.items()
             }
             filtered.append(filteredbm)
 
