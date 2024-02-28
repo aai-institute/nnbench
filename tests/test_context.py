@@ -71,9 +71,16 @@ def test_context_items():
     assert set(ctx.items()) == expected_items
 
 
-def test_update_with_unnested_dict():
+def test_update_with_context():
     ctx = Context({"a": 1, "b": 2})
-    ctx.update({"a": 3, "c": 4})
+    ctx.update(Context.make({"a": 3, "c": 4}))
+    expected_dict = {"a": 3, "b": 2, "c": 4}
+    assert ctx._data == expected_dict
+
+
+def test_add_with_provider():
+    ctx = Context({"a": 1, "b": 2})
+    ctx.add(lambda: {"a": 3, "c": 4})
     expected_dict = {"a": 3, "b": 2, "c": 4}
     assert ctx._data == expected_dict
 

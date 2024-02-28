@@ -276,21 +276,27 @@ class Context:
         """
         yield from self._ctx_items(d=self._data, prefix="", sep=sep)
 
-    def update(self, other: ContextProvider | dict[str, Any] | "Context") -> None:
+    def add(self, provider: ContextProvider) -> None:
         """
-        Updates the context.
-        If `sep` is None, perform shallow update, deep update otherwise.
+        Adds data from a provider to the Context.
 
         Parameters
         ----------
-        other : ContextProvider | dict[str, Any] | "Context"
-            The data to update the context with. This can be a dictionary, a Context instance, or a provider.
+        provider: ContextProvider
+            The context provider; a callable that returns a dict with context values.
         """
-        if callable(other):
-            other = other()
-        elif isinstance(other, Context):
-            other = other._data
-        self._data.update(other)
+        self._data.update(provider())
+
+    def update(self, other: "Context") -> None:
+        """
+        Updates the context.
+
+        Parameters
+        ----------
+        other :  "Context"
+            The other Context to update this Context with.
+        """
+        self._data.update(other._data)
 
     @staticmethod
     def _flatten_dict(d: dict[str, Any], prefix: str = "", sep: str = ".") -> dict[str, Any]:
