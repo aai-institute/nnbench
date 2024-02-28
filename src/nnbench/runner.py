@@ -188,7 +188,7 @@ class BenchmarkRunner:
         path_or_module: str | os.PathLike[str],
         params: dict[str, Any] | Parameters | None = None,
         tags: tuple[str, ...] = (),
-        context: Sequence[ContextProvider] = (),
+        context: Sequence[ContextProvider] | Context = (),
     ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
@@ -204,7 +204,7 @@ class BenchmarkRunner:
         tags: tuple[str, ...]
             Tags to filter for when collecting benchmarks. Only benchmarks containing either of
             these tags are collected.
-        context: Sequence[ContextProvider]
+        context: Sequence[ContextProvider] | Context
             Additional context to log with the benchmark in the output JSON record. Useful for
             obtaining environment information and configuration, like CPU/GPU hardware info,
             ML model metadata, and more.
@@ -237,16 +237,20 @@ class BenchmarkRunner:
 
         self._check(dparams)
 
-        ctx = Context()
+        if isinstance(context, Context):
+            ctx = context
+        else:
+            ctx = Context()
 
-        for provider in context:
-            ctxval = provider()
-            # we do not allow multiple values for a context key.
-            duplicates = set(ctx.keys()) & set(ctxval.keys())
-            if duplicates:
-                dupe, *_ = duplicates
-                raise ValueError(f"got multiple values for context key {dupe!r}")
-            ctx.update(ctxval)
+            for provider in context:
+                ctx_cand = Context.make(provider())
+
+                # we do not allow multiple values for a context key.
+                duplicates = set(ctx.keys()) & set(ctx_cand.keys())
+                if duplicates:
+                    dupe, *_ = duplicates
+                    raise ValueError(f"got multiple values for context key {dupe!r}")
+                ctx.update(ctx_cand)
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
