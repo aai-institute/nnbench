@@ -76,6 +76,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/io/</loc>
+         <lastmod>2024-03-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/</loc>
          <lastmod>2024-03-04</lastmod>
          <changefreq>daily</changefreq>
