@@ -1,4 +1,5 @@
 """The abstract benchmark runner interface, which can be overridden for custom benchmark workloads."""
+
 from __future__ import annotations
 
 import contextlib
