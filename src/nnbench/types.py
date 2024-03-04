@@ -1,4 +1,5 @@
 """Useful type interfaces to override/subclass in benchmarking workflows."""
+
 from __future__ import annotations
 
 import copy

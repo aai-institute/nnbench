@@ -63,8 +63,7 @@ def benchmark(
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
-) -> Callable[[Callable], Benchmark]:
-    ...
+) -> Callable[[Callable], Benchmark]: ...
 
 
 # Case #2: Application with arguments
@@ -78,8 +77,7 @@ def benchmark(
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
-) -> Benchmark:
-    ...
+) -> Benchmark: ...
 
 
 def benchmark(
