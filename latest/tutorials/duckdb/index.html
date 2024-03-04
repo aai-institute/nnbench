@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/duckdb/">
       
       
-        <link rel="prev" href="../guides/runners/">
+        <link rel="prev" href="../bq/">
       
       
-        <link rel="next" href="mnist/">
+        <link rel="next" href="../../reference/nnbench/">
       
       
-      <link rel="icon" href="../_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.11">
     
     
       
-        <title>Examples - nnbench</title>
+        <title>Querying benchmark results at scale with duckDB - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -43,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="../assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="../_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="../_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#examples" class="md-skip">
+        <a href="#querying-benchmark-results-at-scale-with-duckdb" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           <div class="md-banner__inner md-grid md-typeset">
             
             You are currently viewing <strong>pre-release</strong> documentation. This may contain features that have not yet been
-released. For the most accurate information, please <strong><a href="../..">access the latest
+released. For the most accurate information, please <strong><a href="../../..">access the latest
     release</a></strong>.
           </div>
           
@@ -114,7 +114,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://nnbench.github.io" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Examples
+              Querying benchmark results at scale with duckDB
             
           </span>
         </div>
@@ -246,7 +246,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   <label class="md-nav__title" for="__drawer">
     <a href="https://nnbench.github.io" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -273,7 +273,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -293,7 +293,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -325,7 +325,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../guides/" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -356,7 +356,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/benchmarks/" class="md-nav__link">
+      <a href="../../guides/benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -377,7 +377,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/customization/" class="md-nav__link">
+      <a href="../../guides/customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -398,7 +398,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/organization/" class="md-nav__link">
+      <a href="../../guides/organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -419,7 +419,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/runners/" class="md-nav__link">
+      <a href="../../guides/runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -461,7 +461,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -472,7 +472,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -492,7 +492,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="mnist/" class="md-nav__link">
+      <a href="../mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -513,7 +513,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="prefect/" class="md-nav__link">
+      <a href="../prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -534,7 +534,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="streamlit/" class="md-nav__link">
+      <a href="../streamlit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -555,7 +555,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="bq/" class="md-nav__link">
+      <a href="../bq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -573,10 +573,30 @@ released. For the most accurate information, please <strong><a href="../..">acce
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="duckdb/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Querying benchmark results at scale with duckDB
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -585,6 +605,53 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites-and-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites and installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-and-ingesting-benchmark-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing and ingesting benchmark records
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#querying-metadata-directly-in-sql-by-flattening-the-context-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      Querying metadata directly in SQL by flattening the context struct
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -651,7 +718,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -682,7 +749,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -703,7 +770,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -736,7 +803,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/reporter/" class="md-nav__link ">
+            <a href="../../reference/nnbench/reporter/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -767,7 +834,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/base/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/base/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -788,7 +855,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -809,7 +876,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/file/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -830,7 +897,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -859,7 +926,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -880,7 +947,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -901,7 +968,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -937,7 +1004,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -970,6 +1037,41 @@ released. For the most accurate information, please <strong><a href="../..">acce
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites-and-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites and installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-and-ingesting-benchmark-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing and ingesting benchmark records
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#querying-metadata-directly-in-sql-by-flattening-the-context-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      Querying metadata directly in SQL by flattening the context struct
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -983,7 +1085,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/index.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/duckdb.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -991,13 +1093,94 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
 
 
-<h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h1>
-<p>This page showcases some examples of applications for nnbench.
-Click any of the links below for inspiration on how to use nnbench in your projects.</p>
-<ul>
-<li><a href="mnist/">How to integrate nnbench into an existing ML pipeline</a></li>
-<li><a href="prefect/">How to integrate nnbench with workflow orchestrators</a></li>
-</ul>
+<h1 id="querying-benchmark-results-at-scale-with-duckdb">Querying benchmark results at scale with duckDB<a class="headerlink" href="#querying-benchmark-results-at-scale-with-duckdb" title="Permanent link">&para;</a></h1>
+<p>For a powerful way to query, filter, and visualize benchmark records, <a href="https://duckdb.org/">duckdb</a> is a great choice.
+This page contains a quick tutorial for analyzing benchmark results with duckDB.</p>
+<h2 id="prerequisites-and-installation">Prerequisites and installation<a class="headerlink" href="#prerequisites-and-installation" title="Permanent link">&para;</a></h2>
+<p>To use duckdb, install the duckdb Python package by running <code>pip install --upgrade duckdb</code>.
+In this tutorial, we are going to be using the in-memory database only, but you can easily persist SQL views of records on disk as well.</p>
+<h2 id="writing-and-ingesting-benchmark-records">Writing and ingesting benchmark records<a class="headerlink" href="#writing-and-ingesting-benchmark-records" title="Permanent link">&para;</a></h2>
+<p>We consider the following easy benchmark example:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span></code></pre></div>
+<p>Running both of these benchmarks produces a benchmark record, which we can save to disk using the <code>FileIO</code> class.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">nnbench.context</span> <span class="kn">import</span> <span class="n">GitEnvironmentInfo</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">nnbench.reporter.file</span> <span class="kn">import</span> <span class="n">FileIO</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">record</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">context</span><span class="o">=</span><span class="p">(</span><span class="n">GitEnvironmentInfo</span><span class="p">(),))</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">fio</span> <span class="o">=</span> <span class="n">FileIO</span><span class="p">()</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">fio</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s2">&quot;record.json&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;ndjson&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>This writes a newline-delimited JSON file as <code>record.json</code> into the current directory. We choose this format because it is ideal for duckdb to work with.</p>
+<p>Now, we can easily ingest the record into a duckDB database:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">duckdb</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">duckdb</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="sd">    SELECT name, value FROM read_ndjson_auto(&#39;record.json&#39;)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># ----- prints: -----</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># ┌─────────┬───────┐</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># │  name   │ value │</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># │ varchar │ int64 │</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># ├─────────┼───────┤</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># │ prod    │     1 │</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># │ sum     │     2 │</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="c1"># └─────────┴───────┘</span>
+</span></code></pre></div>
+<h2 id="querying-metadata-directly-in-sql-by-flattening-the-context-struct">Querying metadata directly in SQL by flattening the context struct<a class="headerlink" href="#querying-metadata-directly-in-sql-by-flattening-the-context-struct" title="Permanent link">&para;</a></h2>
+<p>By default, the benchmark context struct, which holds additional information about the benchmark runs, is inlined into the raw dictionary before saving it to a file.
+This is not ideal for some SQL implementations, where you might not be able to filter records easily by interpreting the serialized <code>context</code> struct.</p>
+<p>To improve, you can pass <code>ctxmode="flatten"</code> to the <code>FileIO.write()</code> method to flatten the context and inline all nested values instead.
+This comes at the expense of an inflated schema, i.e. more columns in the database.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">fio</span> <span class="o">=</span> <span class="n">FileIO</span><span class="p">()</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">fio</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s2">&quot;record.json&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;ndjson&quot;</span><span class="p">,</span> <span class="n">ctxmode</span><span class="o">=</span><span class="s2">&quot;flatten&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>In the example above, we used the <code>GitEnvironmentInfo</code> context provider to log some information on the git environment we ran our benchmarks in.
+In flat mode, this includes the <code>git.commit</code> and <code>git.repository</code> values, telling us at which commit and in which repository the benchmarks were run, respectively.</p>
+<p>To log this information in a duckDB view, we run the following on a flat-context NDJSON record:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">duckdb</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="sd">    SELECT name, value, \&quot;git.commit\&quot;, \&quot;git.repository\&quot; FROM read_ndjson_auto(&#39;record.json&#39;)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">#   ---------------------------------- prints ------------------------------------------</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># ┌─────────┬───────┬──────────────────────────────────────────┬───────────────────────┐</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># │  name   │ value │                git.commit                │    git.repository     │</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># │ varchar │ int64 │                 varchar                  │        varchar        │</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1"># ├─────────┼───────┼──────────────────────────────────────────┼───────────────────────┤</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># │ prod    │     1 │ 0d47d7bcd2d2c13b69796355fe9d4ef5f50b1edb │ aai-institute/nnbench │</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># │ sum     │     2 │ 0d47d7bcd2d2c13b69796355fe9d4ef5f50b1edb │ aai-institute/nnbench │</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1"># └─────────┴───────┴──────────────────────────────────────────┴───────────────────────┘</span>
+</span></code></pre></div>
+<p>This method is great to select a subset of context values when the full context metadata structure is not required.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>In duckDB specifically, this is equivalent to dotted access of the "context" column if <code>ctxmode="inline"</code>.
+This means that the following also works to obtain the git commit mentioned above:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">duckdb</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="sd">    SELECT name, value, context.git.commit AS \&quot;git.commit\&quot; FROM read_ndjson_auto(&#39;record.json&#39;)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></p>
+</div>
 
 
 
@@ -1090,10 +1273,10 @@ Click any of the links below for inspiration on how to use nnbench in your proje
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.8fd75fb4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.8fd75fb4.min.js"></script>
       
     
   </body>
