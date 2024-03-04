@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/bq/">
       
       
-        <link rel="prev" href="../guides/runners/">
+        <link rel="prev" href="../streamlit/">
       
       
-        <link rel="next" href="mnist/">
+        <link rel="next" href="../duckdb/">
       
       
-      <link rel="icon" href="../_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
-        <title>Examples - nnbench</title>
+        <title>Streaming benchmarks to a cloud database - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -43,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="../assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="../_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="../_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#examples" class="md-skip">
+        <a href="#streaming-benchmarks-to-a-cloud-database" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://nnbench.github.io" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Examples
+              Streaming benchmarks to a cloud database
             
           </span>
         </div>
@@ -236,7 +236,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="https://nnbench.github.io" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -263,7 +263,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -283,7 +283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -315,7 +315,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../guides/" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -346,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/benchmarks/" class="md-nav__link">
+      <a href="../../guides/benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -367,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/customization/" class="md-nav__link">
+      <a href="../../guides/customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -388,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/organization/" class="md-nav__link">
+      <a href="../../guides/organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -409,7 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/runners/" class="md-nav__link">
+      <a href="../../guides/runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -451,7 +451,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -462,7 +462,7 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -482,7 +482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="mnist/" class="md-nav__link">
+      <a href="../mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -503,7 +503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="prefect/" class="md-nav__link">
+      <a href="../prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -524,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="streamlit/" class="md-nav__link">
+      <a href="../streamlit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -542,10 +542,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="bq/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Streaming benchmarks to a cloud database
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -554,6 +574,71 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      The benchmarks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-a-bigquery-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a BigQuery client
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a table
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-bigquerys-schema-auto-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using BigQuery's schema auto-detection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recap-and-the-full-source-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recap and the full source code
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -566,7 +651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="duckdb/" class="md-nav__link">
+      <a href="../duckdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -641,7 +726,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -672,7 +757,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -693,7 +778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -714,7 +799,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/io/" class="md-nav__link">
+      <a href="../../reference/nnbench/io/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -747,7 +832,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/reporter/" class="md-nav__link ">
+            <a href="../../reference/nnbench/reporter/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -778,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/base/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/base/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -799,7 +884,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -820,7 +905,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/file/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -841,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -870,7 +955,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -891,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -912,7 +997,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -948,7 +1033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -981,6 +1066,59 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      The benchmarks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-a-bigquery-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a BigQuery client
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a table
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-bigquerys-schema-auto-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using BigQuery's schema auto-detection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recap-and-the-full-source-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recap and the full source code
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -994,7 +1132,7 @@
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/index.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/bq.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1002,13 +1140,96 @@
   
 
 
-<h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h1>
-<p>This page showcases some examples of applications for nnbench.
-Click any of the links below for inspiration on how to use nnbench in your projects.</p>
-<ul>
-<li><a href="mnist/">How to integrate nnbench into an existing ML pipeline</a></li>
-<li><a href="prefect/">How to integrate nnbench with workflow orchestrators</a></li>
-</ul>
+<h1 id="streaming-benchmarks-to-a-cloud-database">Streaming benchmarks to a cloud database<a class="headerlink" href="#streaming-benchmarks-to-a-cloud-database" title="Permanent link">&para;</a></h1>
+<p>Once you obtain the results of your benchmarks, you will most likely want to store them somewhere.
+Whether that is in storage as flat files, on a server, or in a database, <code>nnbench</code> allows you to write records anywhere, provided the destination supports JSON.</p>
+<p>This is a small guide containing a snippet on how to stream benchmark results to a Google Cloud BigQuery table.</p>
+<h2 id="the-benchmarks">The benchmarks<a class="headerlink" href="#the-benchmarks" title="Permanent link">&para;</a></h2>
+<p>Configure your benchmarks as normal, for example by separating them into a Python file.
+The following is a very simple example benchmark setup.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span></code></pre></div>
+<h2 id="setting-up-a-bigquery-client">Setting up a BigQuery client<a class="headerlink" href="#setting-up-a-bigquery-client" title="Permanent link">&para;</a></h2>
+<p>In order to authenticate with BigQuery, follow the official <a href="https://cloud.google.com/bigquery/docs/authentication#client-libs">Google Cloud documentation</a>.
+In this case, we rely on Application Default Credentials (ADC), which can be configured with the <code>gcloud</code> CLI.</p>
+<p>To interact with BigQuery from Python, the <code>google-cloud-bigquery</code> package has to be installed.
+You can do this e.g. using pip via <code>pip install --upgrade google-cloud-bigquery</code>.</p>
+<h2 id="creating-a-table">Creating a table<a class="headerlink" href="#creating-a-table" title="Permanent link">&para;</a></h2>
+<p>Within your configured project, proceed by creating a destination table to write the benchmarks to.
+Consider the <a href="https://cloud.google.com/bigquery/docs/tables#python">BigQuery Python documentation on tables</a> for how to create a table programmatically.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the configured dataset does not exist, you will have to create it as well, either programmatically via the <code>bigquery.Client.create_dataset</code> API or in the Google Cloud console.</p>
+</div>
+<h2 id="using-bigquerys-schema-auto-detection">Using BigQuery's schema auto-detection<a class="headerlink" href="#using-bigquerys-schema-auto-detection" title="Permanent link">&para;</a></h2>
+<p>In order to skip tedious schema inference by hand, we can use BigQuery's <a href="https://cloud.google.com/bigquery/docs/schema-detect">schema auto-detection from JSON records</a>.
+All we have to do is configure a BigQuery load job to auto-detect the schema from the Python dictionaries in memory:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>    <span class="n">job_config</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">LoadJobConfig</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        <span class="n">autodetect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source_format</span><span class="o">=</span><span class="n">bigquery</span><span class="o">.</span><span class="n">SourceFormat</span><span class="o">.</span><span class="n">NEWLINE_DELIMITED_JSON</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="p">)</span>
+</span></code></pre></div>
+<p>After that, write and stream the compacted benchmark record directly to your destination table.
+In this example, we decide to flatten the benchmark context to be able to extract scalar context values directly from the result table using raw SQL queries.
+Note that you have to use a custom separator (an underscore <code>"_"</code> in this case) for the context data, since BigQuery does not allow dots in column names.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>        <span class="n">res</span><span class="o">.</span><span class="n">compact</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;flatten&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">job_config</span><span class="o">=</span><span class="n">job_config</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">load_job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you would like to save the context dictionary as a struct instead, use <code>mode = "inline"</code> in the call to <code>BenchmarkRecord.compact()</code>.</p>
+</div>
+<p>And that's all! To check that the records appear as expected, you can now query the data e.g. like so:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># check that the insert worked.</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SELECT name, value, time_ns, git_commit AS commit FROM </span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="p">():</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="recap-and-the-full-source-code">Recap and the full source code<a class="headerlink" href="#recap-and-the-full-source-code" title="Permanent link">&para;</a></h2>
+<p>In this tutorial, we</p>
+<p>1) defined and ran a benchmark workload using <code>nnbench</code>.
+2) configured a Google Cloud BigQuery client and a load job to insert benchmark records into a table, and
+3) inserted the records into the destination table.</p>
+<p>The full source code for this tutorial is included below, and also in the <a href="https://github.com/aai-institute/nnbench/tree/main/examples/bq">nnbench repository</a>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">google.cloud</span> <span class="kn">import</span> <span class="n">bigquery</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">from</span> <span class="nn">nnbench.context</span> <span class="kn">import</span> <span class="n">GitEnvironmentInfo</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="c1"># TODO: Fill these out with your appropriate resource names.</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">table_id</span> <span class="o">=</span> <span class="s2">&quot;&lt;PROJECT&gt;.&lt;DATASET&gt;.&lt;TABLE&gt;&quot;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="n">job_config</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">LoadJobConfig</span><span class="p">(</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="n">autodetect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source_format</span><span class="o">=</span><span class="n">bigquery</span><span class="o">.</span><span class="n">SourceFormat</span><span class="o">.</span><span class="n">NEWLINE_DELIMITED_JSON</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="p">)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="n">res</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">context</span><span class="o">=</span><span class="p">(</span><span class="n">GitEnvironmentInfo</span><span class="p">(),))</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">load_job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">load_table_from_json</span><span class="p">(</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>        <span class="n">res</span><span class="o">.</span><span class="n">compact</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;flatten&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">job_config</span><span class="o">=</span><span class="n">job_config</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    <span class="p">)</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    <span class="n">load_job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>    <span class="n">main</span><span class="p">()</span>
+</span></code></pre></div>
 
 
 
@@ -1101,10 +1322,10 @@ Click any of the links below for inspiration on how to use nnbench in your proje
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>

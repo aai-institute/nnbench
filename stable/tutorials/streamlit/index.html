@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/streamlit/">
       
       
-        <link rel="prev" href="../guides/runners/">
+        <link rel="prev" href="../prefect/">
       
       
-        <link rel="next" href="mnist/">
+        <link rel="next" href="../bq/">
       
       
-      <link rel="icon" href="../_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
-        <title>Examples - nnbench</title>
+        <title>Streamlit - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -43,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="../assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="../_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="../_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#examples" class="md-skip">
+        <a href="#integrating-nnbench-with-streamlit-and-prefect" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://nnbench.github.io" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Examples
+              Streamlit
             
           </span>
         </div>
@@ -236,7 +236,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="https://nnbench.github.io" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -263,7 +263,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -283,7 +283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -315,7 +315,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../guides/" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -346,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/benchmarks/" class="md-nav__link">
+      <a href="../../guides/benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -367,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/customization/" class="md-nav__link">
+      <a href="../../guides/customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -388,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/organization/" class="md-nav__link">
+      <a href="../../guides/organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -409,7 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/runners/" class="md-nav__link">
+      <a href="../../guides/runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -451,7 +451,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -462,7 +462,7 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -482,7 +482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="mnist/" class="md-nav__link">
+      <a href="../mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -503,7 +503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="prefect/" class="md-nav__link">
+      <a href="../prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -521,10 +521,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="streamlit/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Streamlit
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -533,6 +551,60 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-nnbench-with-streamlit-and-prefect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating nnbench with Streamlit and Prefect
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-streamlit-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Streamlit UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-prefect-with-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating Prefect with Streamlit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -545,7 +617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="bq/" class="md-nav__link">
+      <a href="../bq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -566,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="duckdb/" class="md-nav__link">
+      <a href="../duckdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -641,7 +713,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -672,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -693,7 +765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -714,7 +786,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/io/" class="md-nav__link">
+      <a href="../../reference/nnbench/io/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -747,7 +819,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/reporter/" class="md-nav__link ">
+            <a href="../../reference/nnbench/reporter/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -778,7 +850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/base/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/base/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -799,7 +871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -820,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/file/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -841,7 +913,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -870,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -891,7 +963,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -912,7 +984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -948,7 +1020,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -978,8 +1050,50 @@
   
   
   
-    
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-nnbench-with-streamlit-and-prefect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating nnbench with Streamlit and Prefect
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-streamlit-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Streamlit UI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-prefect-with-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating Prefect with Streamlit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -994,7 +1108,7 @@
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/index.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/streamlit.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1002,13 +1116,49 @@
   
 
 
-<h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h1>
-<p>This page showcases some examples of applications for nnbench.
-Click any of the links below for inspiration on how to use nnbench in your projects.</p>
-<ul>
-<li><a href="mnist/">How to integrate nnbench into an existing ML pipeline</a></li>
-<li><a href="prefect/">How to integrate nnbench with workflow orchestrators</a></li>
-</ul>
+  <h1>Streamlit</h1>
+
+<h2 id="integrating-nnbench-with-streamlit-and-prefect">Integrating nnbench with Streamlit and Prefect<a class="headerlink" href="#integrating-nnbench-with-streamlit-and-prefect" title="Permanent link">&para;</a></h2>
+<p>In a project you may want to execute benchmarks or investigate their results with a dedicated frontend. There exist several frameworks that can help you setting up a frontend quickly. For example <a href="https://streamlit.io/">Streamlit</a>, <a href="https://www.gradio.app/">Gradio</a>, <a href="https://dash.plotly.com/tutorial">Dash</a>, or you could roll your own implementation using a backend framework such as <a href="https://flask.palletsprojects.com/en/3.0.x/">Flask</a>.
+In this guide we will use Streamlit and integrate it with the <a href="../prefect/">orchestration setup</a> we've developed with Prefect.
+That guide is a prerequisite for this one. 
+The full example code can be found in the nnbench <a href="https://github.com/aai-institute/nnbench/tree/main/examples/streamlit">repository</a>.</p>
+<h2 id="the-streamlit-ui">The Streamlit UI<a class="headerlink" href="#the-streamlit-ui" title="Permanent link">&para;</a></h2>
+<p>The Streamlit UI is launched by executing 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>streamlit<span class="w"> </span>run<span class="w"> </span>streamlit_example.py
+</span></code></pre></div>
+and initially looks like this:
+<img alt="Workflow runs" src="../streamlit_resources/initial_ui.png" /></p>
+<p>The user interface is assembled in the final part of <code>streamlit_example.py</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>
+</span></code></pre></div>
+<p>The user inputs are generated via the custom <code>setup_ui()</code> function which then processes the input values once the "Run Benchmark" button is clicked.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>
+</span></code></pre></div>
+<p>We use a session state to keep track of all the benchmarks we ran in the current session which then are displayed within expander elements at the bottom.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>
+</span></code></pre></div>
+<h2 id="integrating-prefect-with-streamlit">Integrating Prefect with Streamlit<a class="headerlink" href="#integrating-prefect-with-streamlit" title="Permanent link">&para;</a></h2>
+<p>To integrate Streamlit with Prefect, we have to do some initial housekeeping. Namely, we specify the URL for the <code>PreFectClient</code> as well as the storage location of run artifacts where we retrieve the benchmark results from.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>
+</span></code></pre></div>
+<p>In this example there is no direct integration of Streamlit with nnbench, but all interactions are passing through Prefect to make use of its orchestration benefits such as caching of tasks.
+Another thing to note is that we are working with local instances for easier reproducibility of this example. Adapting it to work with a remote orchestration server and object storage should be straightforward.</p>
+<p>The main interaction of the Streamlit frontend with Prefect takes place in the <code>run_bms</code> and <code>get_bm_artifacts</code> functions.</p>
+<p>The former searches for a Prefect deployment <code>"train-and-benchmark/benchmark-runner"</code> and executes it with the benchmark parameters specified by the user. It returns the <code>storage_key</code>, which we use to retrieve the persisted benchmark results.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>
+</span></code></pre></div>
+<p>The <code>get_bm_artifacts</code> function gets a storage key and retrieves the corresponding results. As the results are stored in raw bytes, we have some logic to reconstruct the <code>nnbench.types.BenchmarkRecord</code> object. We transform the data into Pandas <code>DataFrame</code>s, which are later processed by Streamlit to display the results in tables.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>
+</span></code></pre></div>
+<h2 id="running-the-example">Running the example<a class="headerlink" href="#running-the-example" title="Permanent link">&para;</a></h2>
+<p>To run the example, we have to do several things. 
+First, we need to start Prefect using <code>prefect server start</code> in the command line. 
+Next, we need to make the <code>"train-and-benchmark/benchmark-runner"</code> deployment available.
+We do so by running the corresponding Python file, <code>python runner.py</code>. You find that file in the <code>examples/prefect/src</code> directory. 
+If you are recreating this example on your machine, make sure you have the full contents of the <code>prefect</code> directory available in addition to the <code>streamlit_example.py</code>. For more information, you can look into the <a href="../prefect/">Prefect Guide</a>.</p>
+<p>Now that Prefect is set up, you can launch a local instance of Streamlit with <code>streamlit run streamlit_example.py</code>.</p>
+<p>For more information on how to work with Streamlit, visit their <a href="https://docs.streamlit.io/">docs</a>.</p>
 
 
 
@@ -1101,10 +1251,10 @@ Click any of the links below for inspiration on how to use nnbench in your proje
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>
