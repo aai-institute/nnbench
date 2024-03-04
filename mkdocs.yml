@@ -28,6 +28,7 @@ nav:
     - tutorials/prefect.md
     - tutorials/streamlit.md
     - tutorials/bq.md
+    - tutorials/duckdb.md
   - API Reference: reference/
   - Contributing: CONTRIBUTING.md
 
