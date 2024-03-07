@@ -56,7 +56,8 @@ rep.display(record)  # ...and print the results to the terminal.
 # power    power       2024-03-07T10:14:21     1024        750
 ```
 
-For more advanced usages of the library, you can check out the [documentation](https://aai-institute.github.io/nnbench/latest/).
+For a more realistic example of how to evaluate a trained model with a benchmark suite, check the [Quickstart](https://aai-institute.github.io/nnbench/latest/quickstart/).
+For even more advanced usages of the library, you can check out the [Examples](https://aai-institute.github.io/nnbench/latest/tutorials/) in the documentation.
 
 ## Contributing
 
