@@ -24,6 +24,40 @@ pip install nnbench
 poetry add nnbench
 ```
 
+## A ⚡️- quick demo
+
+To understand how nnbench works, you can run the following in your Python interpreter:
+
+```python
+# example.py
+import nnbench
+
+
+@nnbench.benchmark
+def product(a: int, b: int) -> int:
+    return a * b
+
+
+@nnbench.benchmark
+def power(a: int, b: int) -> int:
+    return a ** b
+
+
+runner = nnbench.BenchmarkRunner()
+# run the above benchmarks with the parameters `a=2, b=10`...
+record = runner.run("__main__", params={"a": 2, "b": 10})
+rep = nnbench.BenchmarkReporter()
+rep.display(record)  # ...and print the results to the terminal.
+
+# results in a table like the following:
+# name     function    date                   value    time_ns
+# -------  ----------  -------------------  -------  ---------
+# product  product     2024-03-07T10:14:21       20       1000
+# power    power       2024-03-07T10:14:21     1024        750
+```
+
+For more advanced usages of the library, you can check out the [documentation](https://aai-institute.github.io/nnbench/latest/).
+
 ## Contributing
 
 We encourage and welcome contributions from the community to enhance the project.
