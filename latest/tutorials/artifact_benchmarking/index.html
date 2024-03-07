@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/artifact_benchmarking/">
       
       
-        <link rel="prev" href="../guides/runners/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="artifact_benchmarking/">
+        <link rel="next" href="../mnist/">
       
       
-      <link rel="icon" href="../_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
-        <title>Examples - nnbench</title>
+        <title>Benchmark on saved models - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -43,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="../assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="../_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="../_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#examples" class="md-skip">
+        <a href="#benchmark-on-saved-models" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           <div class="md-banner__inner md-grid md-typeset">
             
             You are currently viewing <strong>pre-release</strong> documentation. This may contain features that have not yet been
-released. For the most accurate information, please <strong><a href="../..">access the latest
+released. For the most accurate information, please <strong><a href="../../..">access the latest
     release</a></strong>.
           </div>
           
@@ -114,7 +114,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://nnbench.github.io" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Examples
+              Benchmark on saved models
             
           </span>
         </div>
@@ -246,7 +246,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   <label class="md-nav__title" for="__drawer">
     <a href="https://nnbench.github.io" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -273,7 +273,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -293,7 +293,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -325,7 +325,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../guides/" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -356,7 +356,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/benchmarks/" class="md-nav__link">
+      <a href="../../guides/benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -377,7 +377,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/customization/" class="md-nav__link">
+      <a href="../../guides/customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -398,7 +398,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/organization/" class="md-nav__link">
+      <a href="../../guides/organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -419,7 +419,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../guides/runners/" class="md-nav__link">
+      <a href="../../guides/runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -461,7 +461,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -472,7 +472,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -489,10 +489,30 @@ released. For the most accurate information, please <strong><a href="../..">acce
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="artifact_benchmarking/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Benchmark on saved models
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -501,6 +521,101 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-named-entity-recognition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Named Entity Recognition
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Named Entity Recognition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#model-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Training
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Benchmarks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-benchmarks-with-saved-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running Benchmarks with saved Artifacts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Benchmarks with saved Artifacts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#artifact-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artifact Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifact-loaders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artifact Loaders
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifact-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artifact Collections
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -513,7 +628,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="mnist/" class="md-nav__link">
+      <a href="../mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -534,7 +649,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="prefect/" class="md-nav__link">
+      <a href="../prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -555,7 +670,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="streamlit/" class="md-nav__link">
+      <a href="../streamlit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -576,7 +691,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="bq/" class="md-nav__link">
+      <a href="../bq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -597,7 +712,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="duckdb/" class="md-nav__link">
+      <a href="../duckdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -672,7 +787,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -703,7 +818,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -724,7 +839,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -745,7 +860,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/io/" class="md-nav__link">
+      <a href="../../reference/nnbench/io/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -778,7 +893,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/nnbench/reporter/" class="md-nav__link ">
+            <a href="../../reference/nnbench/reporter/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -809,7 +924,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/base/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/base/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -830,7 +945,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -851,7 +966,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/file/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -872,7 +987,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/reporter/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -901,7 +1016,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -922,7 +1037,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -943,7 +1058,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../reference/nnbench/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -979,7 +1094,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
   
     <li class="md-nav__item">
-      <a href="../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1012,6 +1127,89 @@ released. For the most accurate information, please <strong><a href="../..">acce
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example-named-entity-recognition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Named Entity Recognition
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Named Entity Recognition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#model-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Training
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Benchmarks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-benchmarks-with-saved-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running Benchmarks with saved Artifacts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Benchmarks with saved Artifacts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#artifact-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artifact Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifact-loaders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artifact Loaders
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifact-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artifact Collections
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1025,7 +1223,7 @@ released. For the most accurate information, please <strong><a href="../..">acce
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/index.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/artifact_benchmarking.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1033,13 +1231,88 @@ released. For the most accurate information, please <strong><a href="../..">acce
   
 
 
-<h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h1>
-<p>This page showcases some examples of applications for nnbench.
-Click any of the links below for inspiration on how to use nnbench in your projects.</p>
-<ul>
-<li><a href="mnist/">How to integrate nnbench into an existing ML pipeline</a></li>
-<li><a href="prefect/">How to integrate nnbench with workflow orchestrators</a></li>
-</ul>
+<h1 id="benchmark-on-saved-models">Benchmark on saved models<a class="headerlink" href="#benchmark-on-saved-models" title="Permanent link">&para;</a></h1>
+<p>There is a high likelihood that you, at some point, find yourself wanting to benchmark models that were trained previously.
+In this guide we will walk through how we can accomplish this with nnbench.</p>
+<h2 id="example-named-entity-recognition">Example: Named Entity Recognition<a class="headerlink" href="#example-named-entity-recognition" title="Permanent link">&para;</a></h2>
+<p>We will start with an aside that talks through the setup of the example we will use in this guide.
+If you are only interested in the application of nnbench, you can skip this section.</p>
+<p>There are lots of reasons why you could want to retrieve saved models for benchmarking. 
+Among them these are reviewing the work of colleagues, comparing experimental performances to an existing benchmark, or dealing with models that require significant compute such that in-place retraining is impractical.
+For this example, we deal with a named entity recognition (NER) model that is based on the pre-trained encoder-decoder transformer <a href="https://arxiv.org/abs/1810.04805">BERT</a>.
+The model is trained on the <a href="https://huggingface.co/datasets/conllpp">CoNLLpp dataset</a> which consists of sentences from news stories where words were tagged with Person, Organization, Location, or Miscellaneous if they referred to entities. 
+Words are assigned an out-of-entity label if they do not represent an entity.</p>
+<h3 id="model-training">Model Training<a class="headerlink" href="#model-training" title="Permanent link">&para;</a></h3>
+<p>You find the code to train the model in the nnbench <a href="https://github.com/aai-institute/nnbench">repository</a> in the directory <code>examples/artifact_benchmarking/src/training/training.py</code>.
+If you want to skip running the training script but still want to reproduce this example, you can take any BERT model fine tuned for NER with the CoNLL dataset family.
+You find many on the Huggingface model hub, for example <a href="https://huggingface.co/dslim/bert-base-NER">this one</a>. You need to download the <code>model.safetensors</code>, <code>config.json</code>, <code>tokenizer_config.json</code>, and <code>tokenizer.json</code> files.
+If you want to train your own model, continue below. </p>
+<p>There is some necessary preprocessing and data wrangling to train the model. 
+We will not go into the details here. But if you are interested in a more thorough walkthrough, look into this <a href="https://huggingface.co/learn/nlp-course/chapter7/2?fw=pt">resource</a> by Huggingface which served as the basis for this example. 
+It is not feasible to train the model on a CPU. If you do not have access to a GPU you can use free GPU instances on <a href="https://colab.research.google.com/">Google Colab</a>.
+When you open a new notebook there make sure to select a GPU instance in the upper right corner.
+The you can upload the <code>training.py</code>.
+You can ignore An eventual warning that the data is not persisted.
+Next, install the necessary dependencies: <code>!pip install datasets transformers[torch]</code>.
+Google Colab comes with some dependencies already installed in the environment.
+Hence, if you are working with a different GPU instance, make sure to install everything from the <code>pyproject.toml</code> in the <code>examples/artifact_benchmarking</code> folder. 
+Next you can execute the <code>training.py</code> with <code>!python training.py</code>.
+This will train two BERT models ("bert-base-uncased" and "distilbert-base-uncased") which we can compare using nnbench. 
+If you want, you can adapt the training script to train other models by editing the tuples in the <code>tokenizers_and_models</code> list at the bottom of the training script. 
+The training of the models takes around 10 minutes.
+Once it is done, download the respective files and save them to your disk.
+They should be the same mentioned above. 
+We will need the path to the files for benchmarking later.</p>
+<h3 id="the-benchmarks">The Benchmarks<a class="headerlink" href="#the-benchmarks" title="Permanent link">&para;</a></h3>
+<p>The benchmarking code is found in the <code>examples/artifact_benchmarking/benchmark.py</code>.
+We calculate precision, recall, accuracy, and f1 scores for the whole test set and specific labels.
+Additionally, we obtain information about the model such as its memory footprint and inference time.
+We are not walking through the whole file but instead point out certain design choices as an inspiration to you. 
+If you are interested in a more detailed walkthrough on how to set up benchmarks, you can find it <a href="../../guides/benchmarks/">here</a>.
+Notable design choices in this benchmark are that we factored out the evaluation loop as it is necessary for all evaluation metrics. We cache it using the <code>functools.lru_cache</code> decorator so the evaluation loop runs only once per benchmark run instead of once per metric which greatly reduces runtime.
+We use <code>nnbench.parametrize</code> to get the per-class metrics. </p>
+<h2 id="running-benchmarks-with-saved-artifacts">Running Benchmarks with saved Artifacts<a class="headerlink" href="#running-benchmarks-with-saved-artifacts" title="Permanent link">&para;</a></h2>
+<p>Now that we have explained the example, let's jump into the benchmarking code.
+You find it in the nnbench repository in <code>examples/artifact_benchmarking/src/runner.py</code>.</p>
+<p>The benchmarking code is written to be executed as a script that consumes any number of file paths to models to benchmark as arguments, <code>python runner.py /path/to/model1 /path/to/model2</code>.
+The parsing of the arguments is handled by the last lines in the script which then calls the <code>main()</code> function:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>
+</span></code></pre></div>
+<h3 id="artifact-classes">Artifact Classes<a class="headerlink" href="#artifact-classes" title="Permanent link">&para;</a></h3>
+<p>The <code>main()</code> function first sets up the benchmark reporter and the runner. 
+Then we create a list of models. These models are instances of a <code>TokenClassificationModel</code>, a custom class we implemented which inherits from the <code>Artifact</code> base class.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>
+</span></code></pre></div>
+<p>The <code>Artifact</code> class is a typesafe wrapper around serialized data of any kind.
+It allows for lazy deserialization of artifacts from a  path attribute.
+This attribute is set by the <code>ArtifactLoader</code> (which we will cover in a moment) that supplied a path to the local artifact disk storage. 
+In our derived class, we have to override the <code>deserialize()</code> method to properly load the artifact value into memory.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>
+</span></code></pre></div>
+<p>The <code>deserialize()</code> method has to set the <code>self._value</code> attribute to the value we want to access later.
+In this case, we assign it a tuple containing the Huggingface Transformers model and tokenizer.</p>
+<p>We do similar with the CoNLLpp dataset.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>
+</span></code></pre></div>
+<p>In this case, we store the <code>datasets.Dataset</code> object as well ass a dictionary which maps the label id to a semantic string in the <code>_value</code> attribute. 
+The value that we store in the <code>_value</code> of an artifact can be of any kind and that we use tuples in both instances here is a circumstance.</p>
+<h3 id="artifact-loaders">Artifact Loaders<a class="headerlink" href="#artifact-loaders" title="Permanent link">&para;</a></h3>
+<p>Upon instantiation of an <code>Artifact</code> or derived classes we need to supply an <code>ArtifactLoader</code> (or a class derived from it). <code>ArtifactLoader</code>s are classes that implement a <code>load()</code> method that resolves to a path-like object or string which points to the local storage location of the artifact. This method is used by the Artifact class. </p>
+<p>For our models, we use the provided <code>LocalArtifactLoader</code> which consumes a path and passes it on later.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>
+</span></code></pre></div>
+<p>We have a little more logic with respect to the dataset as we handle the train test split as well.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>
+</span></code></pre></div>
+<h3 id="artifact-collections">Artifact Collections<a class="headerlink" href="#artifact-collections" title="Permanent link">&para;</a></h3>
+<p>The <code>ArtifactCollection</code> object is a convenient wrapper around <code>Artifact</code>s to allow for iteration and abstract away the <code>deserialize()</code> call. 
+We can instantiate them by passing an iterable of <code>Artifact</code>s.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>
+</span></code></pre></div>
+<p>We can then either iterate over the <code>ArtifactCollection</code> directly, using the lazy deserialization, or we use the <code>.values()</code> method to return whatever we assigned to the <code>._values</code> attribute of the <code>Artifact</code>s.
+We then execute the benchmark in the loop for the different models we have supplied to the <code>ArtifactCollection</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>
+</span></code></pre></div>
 
 
 
@@ -1132,10 +1405,10 @@ Click any of the links below for inspiration on how to use nnbench in your proje
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>
