@@ -8,7 +8,11 @@ import inspect
 import os
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
+from pathlib import Path
+from tempfile import mkdtemp
 from typing import Any, Callable, Generic, Iterable, Iterator, Literal, TypeVar
+
+from fsspec import spec
 
 from nnbench.context import Context
 
@@ -110,22 +114,52 @@ class LocalArtifactLoader(ArtifactLoader):
     Parameters
     ----------
     path : str | os.PathLike[str]
-        The file system pathto the artifact.
+        The file system path to the artifact.
     """
 
-    def __init__(self, path: str | os.PathLike[str]):
+    def __init__(self, path: str | os.PathLike[str]) -> None:
         self._path = path
 
-    def load(self):
+    def load(self) -> Path:
         """
         Returns the path to the artifact on the local file system.
         """
-        return self._path
+        return Path(self._path).resolve()
 
 
-class S3ArtifactLoader(ArtifactLoader):
-    # TODO: Implement this and other common ArtifactLoders here or in a util
-    pass
+class FilePathArtifactLoader(ArtifactLoader):
+    """
+    ArtifactLoader for loading artifacts using fsspec-supported file systems.
+
+    This allows for loading from various file systems like local, S3, GCS, etc.,
+    by using a unified API provided by fsspec.
+
+    Parameters
+    ----------
+    path : str | os.PathLike[str]
+        The path to the artifact, which can include a protocol specifier (like 's3://') for remote access.
+    to_localdir : str | os.PathLike[str] | None, optional
+        The local directory to which remote artifacts will be downloaded. If not provided, a temporary directory is created.
+    """
+
+    def __init__(
+        self, path: str | os.PathLike[str], to_localdir: str | os.PathLike[str] | None = None
+    ) -> None:
+        self.rpath = str(path)
+        self.lpath = Path(to_localdir or mkdtemp())
+
+    def load(self) -> Path:
+        """
+        Loads the artifact, downloading it if necessary, and returns the local path.
+
+        Returns
+        -------
+        Path
+            The path to the artifact on the local filesystem.
+        """
+        fs = spec.AbstractFileSystem()
+        fs.get(self.rpath, self.lpath, recursive=True)
+        return Path(self.lpath).resolve()
 
 
 class Artifact(Generic[T], metaclass=ABCMeta):
