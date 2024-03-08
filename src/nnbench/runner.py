@@ -255,7 +255,7 @@ class BenchmarkRunner:
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
             bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
-            bmdefaults = {k: v for (k, t, v) in benchmark.interface.variables}
+            bmdefaults = {k: v for (k, _, v) in benchmark.interface.variables}
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
