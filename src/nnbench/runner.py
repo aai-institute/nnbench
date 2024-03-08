@@ -89,7 +89,9 @@ class BenchmarkRunner:
                     )
 
                 if typ == empty:
-                    logger.debug(f"parameter {name!r} untyped in benchmark {bm.fn.__name__}().")
+                    logger.debug(
+                        f"parameter {name!r} untyped in benchmark {bm.fn.__name__}()."
+                    )
 
                 if name in allvars:
                     currvar = allvars[name]
@@ -134,7 +136,9 @@ class BenchmarkRunner:
         """Clear all registered benchmarks."""
         self.benchmarks.clear()
 
-    def collect(self, path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) -> None:
+    def collect(
+        self, path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()
+    ) -> None:
         # TODO: functools.cache this guy
         """
         Discover benchmarks in a module and memoize them for later use.
@@ -226,7 +230,9 @@ class BenchmarkRunner:
 
         # if we still have no benchmarks after collection, warn and return an empty record.
         if not self.benchmarks:
-            warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
+            warnings.warn(
+                f"No benchmarks found in path/module {str(path_or_module)!r}."
+            )
             return BenchmarkRecord(context=Context(), benchmarks=[])
 
         params = params or {}
@@ -254,7 +260,10 @@ class BenchmarkRunner:
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
-            bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
+            bmparams = {
+                k: v for k, v in dparams.items() if k in benchmark.interface.names
+            }
+            bmdefaults = {k: v for (k, t, v) in benchmark.interface.variables}
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
@@ -263,6 +272,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
+                "parameters": {**bmdefaults, **bmparams},
             }
             try:
                 benchmark.setUp(**bmparams)
