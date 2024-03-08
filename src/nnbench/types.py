@@ -6,13 +6,16 @@ import collections.abc
 import copy
 import inspect
 import os
+import shutil
+import weakref
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import mkdtemp
 from typing import Any, Callable, Generic, Iterable, Iterator, Literal, TypeVar
 
-from fsspec import spec
+from fsspec import core, filesystem, utils
+from fsspec.implementations.local import LocalFileSystem
 
 from nnbench.context import Context
 
@@ -138,15 +141,27 @@ class FilePathArtifactLoader(ArtifactLoader):
     ----------
     path : str | os.PathLike[str]
         The path to the artifact, which can include a protocol specifier (like 's3://') for remote access.
-    to_localdir : str | os.PathLike[str] | None, optional
-        The local directory to which remote artifacts will be downloaded. If not provided, a temporary directory is created.
+    to_localdir : str | os.PathLike[str] | None
+        The local directory to which remote artifacts will be downloaded. If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
+    storage_options : dict[str, Any] | None
+        Storage options for remote storage.
     """
 
     def __init__(
-        self, path: str | os.PathLike[str], to_localdir: str | os.PathLike[str] | None = None
+        self,
+        path: str | os.PathLike[str],
+        to_localdir: str | os.PathLike[str] | None = None,
+        storage_options: dict[str, Any] | None = None,
     ) -> None:
-        self.rpath = str(path)
-        self.lpath = Path(to_localdir or mkdtemp())
+        self.source_path = str(path)
+        if to_localdir:
+            self.target_path = Path(to_localdir)
+            delete = False
+        else:
+            self.target_path = Path(mkdtemp())
+            delete = True
+        self._finalizer = weakref.finalize(self, self._cleanup, delete=delete)
+        self.storage_options = storage_options or {}
 
     def load(self) -> Path:
         """
@@ -157,9 +172,17 @@ class FilePathArtifactLoader(ArtifactLoader):
         Path
             The path to the artifact on the local filesystem.
         """
-        fs = spec.AbstractFileSystem()
-        fs.get(self.rpath, self.lpath, recursive=True)
-        return Path(self.lpath).resolve()
+        fs, _, _ = core.get_fs_token_paths(self.source_path)
+        if isinstance(fs, LocalFileSystem):
+            return Path(self.source_path).resolve()
+        else:
+            fs = filesystem(utils.get_protocol(self.source_path), **self.storage_options)
+            fs.get(self.source_path, self.target_path, recursive=True)
+            return Path(self.target_path).resolve()
+
+    def _cleanup(self, delete: bool) -> None:
+        if delete:
+            shutil.rmtree(self.target_path)
 
 
 class Artifact(Generic[T], metaclass=ABCMeta):
