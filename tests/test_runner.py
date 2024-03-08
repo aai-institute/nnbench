@@ -71,3 +71,21 @@ def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
             params={"x": 1, "y": 1},
             context=context_providers,
         )
+
+
+def test_filter_benchmarks_on_params(testfolder: str) -> None:
+    r = nnbench.BenchmarkRunner()
+    results = r.run(testfolder, tags=("parametrized",))
+    print(results)
+    assert len(results.benchmarks) == 2
+    assert (
+        len(
+            list(
+                filter(
+                    lambda bm: bm["parameters"]["a"] == 1,
+                    results.benchmarks,
+                )
+            )
+        )
+        == 1
+    )
