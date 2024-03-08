@@ -52,7 +52,7 @@ The benchmarking code is written to be executed as a script that consumes any nu
 The parsing of the arguments is handled by the last lines in the script which then calls the `main()` function:
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:92:96"
+--8<-- "examples/artifact_benchmarking/src/runner.py:92:96"
 ```
 
 ### Artifact Classes
@@ -60,7 +60,7 @@ The `main()` function first sets up the benchmark reporter and the runner.
 Then we create a list of models. These models are instances of a `TokenClassificationModel`, a custom class we implemented which inherits from the `Artifact` base class.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:30:37"
+--8<-- "examples/artifact_benchmarking/src/runner.py:30:37"
 ```
 
 The `Artifact` class is a typesafe wrapper around serialized data of any kind.
@@ -69,7 +69,7 @@ This attribute is set by the `ArtifactLoader` (which we will cover in a moment) 
 In our derived class, we have to override the `deserialize()` method to properly load the artifact value into memory.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:59"
+--8<-- "examples/artifact_benchmarking/src/runner.py:59"
 ```
 
 The `deserialize()` method has to set the `self._value` attribute to the value we want to access later.
@@ -78,7 +78,7 @@ In this case, we assign it a tuple containing the Huggingface Transformers model
 We do similar with the CoNLLpp dataset.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:30:37"
+--8<-- "examples/artifact_benchmarking/src/runner.py:30:37"
 ```
 
 In this case, we store the `datasets.Dataset` object as well ass a dictionary which maps the label id to a semantic string in the `_value` attribute. 
@@ -90,13 +90,13 @@ Upon instantiation of an `Artifact` or derived classes we need to supply an `Art
 For our models, we use the provided `LocalArtifactLoader` which consumes a path and passes it on later.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:52:54"
+--8<-- "examples/artifact_benchmarking/src/runner.py:52:54"
 ```
 
 We have a little more logic with respect to the dataset as we handle the train test split as well.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:19:27"
+--8<-- "examples/artifact_benchmarking/src/runner.py:19:27"
 ```
 
 ### Artifact Collections
@@ -104,12 +104,12 @@ The `ArtifactCollection` object is a convenient wrapper around `Artifact`s to al
 We can instantiate them by passing an iterable of `Artifact`s.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:56"
+--8<-- "examples/artifact_benchmarking/src/runner.py:56"
 ```
 
 We can then either iterate over the `ArtifactCollection` directly, using the lazy deserialization, or we use the `.values()` method to return whatever we assigned to the `._values` attribute of the `Artifact`s.
 We then execute the benchmark in the loop for the different models we have supplied to the `ArtifactCollection`.
 
 ```python
---8<-- "examples/artifact_benchmarking/runner.py:61:89"
+--8<-- "examples/artifact_benchmarking/src/runner.py:61:89"
 ```
