@@ -74,18 +74,15 @@ def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
 
 
 def test_filter_benchmarks_on_params(testfolder: str) -> None:
+    @nnbench.benchmark
+    def prod(a: int, b: int = 1) -> int:
+        return a * b
+
     r = nnbench.BenchmarkRunner()
-    results = r.run(testfolder, tags=("parametrized",))
-    print(results)
-    assert len(results.benchmarks) == 2
-    assert (
-        len(
-            list(
-                filter(
-                    lambda bm: bm["parameters"]["a"] == 1,
-                    results.benchmarks,
-                )
-            )
-        )
-        == 1
-    )
+    r.benchmarks.append(prod)
+    # TODO (nicholasjng): This is hacky
+    rec1 = r.run("", params={"a": 1, "b": 2})
+    assert rec1.benchmarks[0]["parameters"] == {"a": 1, "b": 2}
+    # Assert that the defaults are also present if not overridden.
+    rec2 = r.run("", params={"a": 1})
+    assert rec2.benchmarks[0]["parameters"] == {"a": 1, "b": 1}

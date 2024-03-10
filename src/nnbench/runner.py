@@ -264,7 +264,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
-                "parameters": {**bmdefaults, **bmparams},
+                "parameters": bmdefaults | bmparams,
             }
             try:
                 benchmark.setUp(**bmparams)
