@@ -71,3 +71,18 @@ def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
             params={"x": 1, "y": 1},
             context=context_providers,
         )
+
+
+def test_filter_benchmarks_on_params(testfolder: str) -> None:
+    @nnbench.benchmark
+    def prod(a: int, b: int = 1) -> int:
+        return a * b
+
+    r = nnbench.BenchmarkRunner()
+    r.benchmarks.append(prod)
+    # TODO (nicholasjng): This is hacky
+    rec1 = r.run("", params={"a": 1, "b": 2})
+    assert rec1.benchmarks[0]["parameters"] == {"a": 1, "b": 2}
+    # Assert that the defaults are also present if not overridden.
+    rec2 = r.run("", params={"a": 1})
+    assert rec2.benchmarks[0]["parameters"] == {"a": 1, "b": 1}

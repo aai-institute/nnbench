@@ -49,11 +49,11 @@ record = runner.run("__main__", params={"a": 2, "b": 10})
 rep = nnbench.BenchmarkReporter()
 rep.display(record)  # ...and print the results to the terminal.
 
-# results in a table like the following:
-# name     function    date                   value    time_ns
-# -------  ----------  -------------------  -------  ---------
-# product  product     2024-03-07T10:14:21       20       1000
-# power    power       2024-03-07T10:14:21     1024        750
+# results in a table look like the following:
+# name     function    date                 parameters         value    time_ns
+# -------  ----------  -------------------  -----------------  -------  ---------
+# product  product     2024-03-08T18:03:48  {'a': 2, 'b': 10}       20       1000
+# power    power       2024-03-08T18:03:48  {'a': 2, 'b': 10}     1024        750
 ```
 
 For a more realistic example of how to evaluate a trained model with a benchmark suite, check the [Quickstart](https://aai-institute.github.io/nnbench/latest/quickstart/).

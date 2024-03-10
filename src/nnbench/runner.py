@@ -255,6 +255,7 @@ class BenchmarkRunner:
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:
             bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
+            bmdefaults = {k: v for (k, _, v) in benchmark.interface.variables}
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
@@ -263,6 +264,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
+                "parameters": bmdefaults | bmparams,
             }
             try:
                 benchmark.setUp(**bmparams)
