@@ -12,12 +12,24 @@ from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Any, Callable, Generic, Iterable, Iterator, Literal, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    Iterator,
+    Literal,
+    TypeVar,
+)
 
 from nnbench.context import Context
 
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
+
+if TYPE_CHECKING:
+    import fsspec
 
 
 def NoOp(**kwargs: Any) -> None:
@@ -142,11 +154,6 @@ class FilePathArtifactLoader(ArtifactLoader):
         The local directory to which remote artifacts will be downloaded. If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
     storage_options : dict[str, Any] | None
         Storage options for remote storage.
-
-    Raises
-    ------
-    ImportError
-        When the fsspec module is not installed.
     """
 
     def __init__(
@@ -155,53 +162,50 @@ class FilePathArtifactLoader(ArtifactLoader):
         destination: str | os.PathLike[str] | None = None,
         storage_options: dict[str, Any] | None = None,
     ) -> None:
-        try:
-            from fsspec.core import get_fs_token_paths
-
-            self._get_fs_token_paths = get_fs_token_paths
-
-            from fsspec.implementations.local import LocalFileSystem
-
-            self._LocalFileSystem = LocalFileSystem
-
-            from fsspec.utils import get_protocol
-
-            self._get_protocol = get_protocol
-
-            from fsspec import filesystem
-
-            self._filesystem = filesystem
-        except ImportError:
-            raise ImportError(
-                "The FilePathArtifactLoader depends on fsspec. Do you have it installed?"
-            )
-
         self.source_path = str(path)
         if destination:
-            self.target_path = Path(destination)
+            self.target_path = str(Path(destination).resolve())
             delete = False
         else:
-            self.target_path = Path(mkdtemp())
+            self.target_path = str(Path(mkdtemp()).resolve())
             delete = True
         self._finalizer = weakref.finalize(self, self._cleanup, delete=delete)
         self.storage_options = storage_options or {}
 
+    def _get_protocol(self, path: str) -> str:
+        """Lazy loading of fsspec.utils.get_protocol"""
+        try:
+            from fsspec.utils import get_protocol
+
+            return get_protocol(path)
+        except ImportError:
+            raise ImportError(
+                "class {self.__class__.__name__} requires `fsspec` to be installed. You can install it by running `python -m pip install --upgrade fsspec`"
+            )
+
+    def _filesystem(self, protocol: str) -> fsspec.filesystem:
+        """Lazy loadfing of fsspec.filesystem"""
+        try:
+            from fsspec import filesystem
+
+            return filesystem(protocol, **self.storage_options)
+        except ImportError:
+            raise ImportError(
+                "class {self.__class__.__name__} requires `fsspec` to be installed. You can install it by running `python -m pip install --upgrade fsspec`"
+            )
+
     def load(self) -> Path:
         """
-        Loads the artifact, downloading it if necessary, and returns the local path.
+        Loads the artifact and returns the local path.
 
         Returns
         -------
         Path
             The path to the artifact on the local filesystem.
         """
-        fs, _, _ = self._get_fs_token_paths(self.source_path)
-        if isinstance(fs, self._LocalFileSystem):
-            return Path(self.source_path).resolve()
-        else:
-            fs = self._filesystem(self._get_protocol(self.source_path), **self.storage_options)
-            fs.get(self.source_path, self.target_path, recursive=True)
-            return Path(self.target_path).resolve()
+        fs = self._filesystem(self._get_protocol(self.source_path))
+        fs.get(self.source_path, self.target_path, recursive=True)
+        return Path(self.target_path).resolve()
 
     def _cleanup(self, delete: bool) -> None:
         if delete:

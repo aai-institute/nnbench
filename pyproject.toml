@@ -48,6 +48,7 @@ dev = [
     "psutil",
     "pyarrow",
     "pytest>=7.4.0",
+    "fsspec"
 ]
 docs = [
     "black",
