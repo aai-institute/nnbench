@@ -14,7 +14,6 @@ from pathlib import Path
 from tempfile import mkdtemp
 from typing import Any, Callable, Generic, Iterable, Iterator, Literal, TypeVar
 
-
 from nnbench.context import Context
 
 T = TypeVar("T")
@@ -143,6 +142,11 @@ class FilePathArtifactLoader(ArtifactLoader):
         The local directory to which remote artifacts will be downloaded. If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
     storage_options : dict[str, Any] | None
         Storage options for remote storage.
+
+    Raises
+    ------
+    ImportError
+        When the fsspec module is not installed.
     """
 
     def __init__(
@@ -195,9 +199,7 @@ class FilePathArtifactLoader(ArtifactLoader):
         if isinstance(fs, self._LocalFileSystem):
             return Path(self.source_path).resolve()
         else:
-            fs = self._filesystem(
-                self._get_protocol(self.source_path), **self.storage_options
-            )
+            fs = self._filesystem(self._get_protocol(self.source_path), **self.storage_options)
             fs.get(self.source_path, self.target_path, recursive=True)
             return Path(self.target_path).resolve()
 
