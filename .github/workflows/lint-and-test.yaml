@@ -58,7 +58,6 @@ jobs:
     - name: Run tests on oldest supported Python
       run: |
         python -m pip install ".[dev]"
-        pip install fsspec
         pytest
   docs:
     name: Publish latest documentation for nnbench

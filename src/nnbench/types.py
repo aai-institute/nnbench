@@ -13,7 +13,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import mkdtemp
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
     Generic,
@@ -25,11 +24,15 @@ from typing import (
 
 from nnbench.context import Context
 
+try:
+    import fsspec
+
+    HAS_FSSPEC = True
+except ImportError:
+    HAS_FSSPEC = False
+
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
-
-if TYPE_CHECKING:
-    import fsspec
 
 
 def NoOp(**kwargs: Any) -> None:
@@ -172,28 +175,6 @@ class FilePathArtifactLoader(ArtifactLoader):
         self._finalizer = weakref.finalize(self, self._cleanup, delete=delete)
         self.storage_options = storage_options or {}
 
-    def _get_protocol(self, path: str) -> str:
-        """Lazy loading of fsspec.utils.get_protocol"""
-        try:
-            from fsspec.utils import get_protocol
-
-            return get_protocol(path)
-        except ImportError:
-            raise ImportError(
-                "class {self.__class__.__name__} requires `fsspec` to be installed. You can install it by running `python -m pip install --upgrade fsspec`"
-            )
-
-    def _filesystem(self, protocol: str) -> fsspec.filesystem:
-        """Lazy loadfing of fsspec.filesystem"""
-        try:
-            from fsspec import filesystem
-
-            return filesystem(protocol, **self.storage_options)
-        except ImportError:
-            raise ImportError(
-                "class {self.__class__.__name__} requires `fsspec` to be installed. You can install it by running `python -m pip install --upgrade fsspec`"
-            )
-
     def load(self) -> Path:
         """
         Loads the artifact and returns the local path.
@@ -202,8 +183,17 @@ class FilePathArtifactLoader(ArtifactLoader):
         -------
         Path
             The path to the artifact on the local filesystem.
+
+        Raises
+        ------
+        ImportError
+            When fsspec is not installed.
         """
-        fs = self._filesystem(self._get_protocol(self.source_path))
+        if not HAS_FSSPEC:
+            raise ImportError(
+                "class {self.__class__.__name__} requires `fsspec` to be installed. You can install it by running `python -m pip install --upgrade fsspec`"
+            )
+        fs = fsspec.filesystem(fsspec.utils.get_protocol(self.source_path))
         fs.get(self.source_path, self.target_path, recursive=True)
         return Path(self.target_path).resolve()
 
