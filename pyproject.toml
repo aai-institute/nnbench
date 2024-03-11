@@ -48,6 +48,7 @@ dev = [
     "psutil",
     "pyarrow",
     "pytest>=7.4.0",
+    "fsspec"
 ]
 docs = [
     "black",
@@ -85,7 +86,7 @@ strict_optional = false
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["tabulate", "yaml"]
+module = ["tabulate", "yaml", "fsspec"]
 ignore_missing_imports = true
 
 [tool.ruff]
