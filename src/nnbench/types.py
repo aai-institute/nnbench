@@ -14,8 +14,6 @@ from pathlib import Path
 from tempfile import mkdtemp
 from typing import Any, Callable, Generic, Iterable, Iterator, Literal, TypeVar
 
-from fsspec import core, filesystem, utils
-from fsspec.implementations.local import LocalFileSystem
 
 from nnbench.context import Context
 
@@ -141,7 +139,7 @@ class FilePathArtifactLoader(ArtifactLoader):
     ----------
     path : str | os.PathLike[str]
         The path to the artifact, which can include a protocol specifier (like 's3://') for remote access.
-    to_localdir : str | os.PathLike[str] | None
+    destination : str | os.PathLike[str] | None
         The local directory to which remote artifacts will be downloaded. If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
     storage_options : dict[str, Any] | None
         Storage options for remote storage.
@@ -150,12 +148,33 @@ class FilePathArtifactLoader(ArtifactLoader):
     def __init__(
         self,
         path: str | os.PathLike[str],
-        to_localdir: str | os.PathLike[str] | None = None,
+        destination: str | os.PathLike[str] | None = None,
         storage_options: dict[str, Any] | None = None,
     ) -> None:
+        try:
+            from fsspec.core import get_fs_token_paths
+
+            self._get_fs_token_paths = get_fs_token_paths
+
+            from fsspec.implementations.local import LocalFileSystem
+
+            self._LocalFileSystem = LocalFileSystem
+
+            from fsspec.utils import get_protocol
+
+            self._get_protocol = get_protocol
+
+            from fsspec import filesystem
+
+            self._filesystem = filesystem
+        except ImportError:
+            raise ImportError(
+                "The FilePathArtifactLoader depends on fsspec. Do you have it installed?"
+            )
+
         self.source_path = str(path)
-        if to_localdir:
-            self.target_path = Path(to_localdir)
+        if destination:
+            self.target_path = Path(destination)
             delete = False
         else:
             self.target_path = Path(mkdtemp())
@@ -172,11 +191,13 @@ class FilePathArtifactLoader(ArtifactLoader):
         Path
             The path to the artifact on the local filesystem.
         """
-        fs, _, _ = core.get_fs_token_paths(self.source_path)
-        if isinstance(fs, LocalFileSystem):
+        fs, _, _ = self._get_fs_token_paths(self.source_path)
+        if isinstance(fs, self._LocalFileSystem):
             return Path(self.source_path).resolve()
         else:
-            fs = filesystem(utils.get_protocol(self.source_path), **self.storage_options)
+            fs = self._filesystem(
+                self._get_protocol(self.source_path), **self.storage_options
+            )
             fs.get(self.source_path, self.target_path, recursive=True)
             return Path(self.target_path).resolve()
 

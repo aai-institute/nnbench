@@ -31,7 +31,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-dependencies = ["tabulate", "fsspec"]
+dependencies = ["tabulate"]
 
 dynamic = ["version"]
 
