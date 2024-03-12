@@ -2,12 +2,11 @@
 With more complex benchmarking set-ups you will find yourself wanting to use static artifacts.
 These can be, for example, test and validation data, or serialized model files from a model registry.
 nnbench provides an artifact framework to handle these assets.
-This framework consists of the `ArtifactLoader`, the `Artifact`, and the `ArtifactCollection` base classes.
+This framework consists of the `ArtifactLoader`, and the `Artifact` base classes.
 
 Conceptually, they are intended to be used as follows:
 - `ArtifactLoader` to load the artifact onto the local filesystem,
 - `Artifact` to handle the artifact within nnbench and enable lazy loading into memory,
-- `ArtifactCollection` as a list wrapper around artifacts to enable iterations over artifacts.
 
 You can implement your own derivative classes to handle custom logic for artifact deserialization and loading.
 Additionally, we provide some derived classes out of the box to handle local filepaths using filesystems, which are covered by the fsspec package.
@@ -56,9 +55,3 @@ class NumpyArtifact(Artifact):
 array_artifact = NumpyArtifact(LocalArtifactLoader('path/to/array'))
 print(array_artifact.value)
 ```
-## Using the `ArtifactCollection`
-The `ArtifactCollection` does not need you to override any base class methods.
-Instead, it is a convenience wrapper around a `list` to enable you to iterate over the artifacts or their values using `ArtifactCollection.values()`.
-You can instantiate an `ArtifactCollection` by passing a single artifact or an iterable containing some upon instantiation.
-Then you can add more with the `add` method.
-To add an artifact to the collection, use the `ArtifactCollection.add()` method.
