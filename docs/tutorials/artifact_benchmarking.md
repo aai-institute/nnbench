@@ -69,7 +69,7 @@ This attribute is set by the `ArtifactLoader` (which we will cover in a moment) 
 In our derived class, we have to override the `deserialize()` method to properly load the artifact value into memory.
 
 ```python
---8<-- "examples/artifact_benchmarking/src/runner.py:57"
+--8<-- "examples/artifact_benchmarking/src/runner.py:56:57"
 ```
 
 The `deserialize()` method has to set the `self._value` attribute to the value we want to access later.
@@ -102,5 +102,5 @@ We have a little more logic with respect to the dataset as we handle the train t
 Now we execute the benchmark in the loop over the different models.
 
 ```python
---8<-- "examples/artifact_benchmarking/src/runner.py:59:87"
+--8<-- "examples/artifact_benchmarking/src/runner.py:59:88"
 ```

@@ -56,7 +56,8 @@ def main(model_paths: list[str]) -> None:
     conllpp = ConllValidationData(ConllppLoader("conllpp", split="validation"))
     conllpp.deserialize()
 
-    for model, tokenizer in [model.value for model in models]:
+    for mod in models:
+        model, tokenizer = mod.value
         dataset, id2label = conllpp.value
         tokenized_dataset = dataset.map(
             lambda examples: tokenize_and_align_labels(tokenizer, examples),
