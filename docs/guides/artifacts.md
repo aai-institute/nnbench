@@ -10,12 +10,12 @@ Conceptually, they are intended to be used as follows:
 - `ArtifactCollection` as a list wrapper around artifacts to enable iterations over artifacts.
 
 You can implement your own derivative classes to handle custom logic for artifact deserialization and loading.
-Additionally, we provide some derived classes out of the box to handle e.g. local filepaths or filesystems which are covered by pythons fsspec package.
+Additionally, we provide some derived classes out of the box to handle local filepaths using filesystems, which are covered by the fsspec package.
 Let us now discuss each class of the framework in detail.
 
 ## Using the `ArtifactLoader`
-The `ArtifactLoader` is an abstract base class for which you can implement your custom instance by overriding the `load()` method which needs to return a filepath either as a `PathLike` object or a string.
-You can see an example on how that is implemented in the implementation of the `LocalArtifactLoader` (that is also provided out of the box by nnbench).
+The `ArtifactLoader` is an abstract base class for which you can implement your custom instance by overriding the `load()` method, which needs to return a file path either as string or a path-like object.
+You can see an example of it in the `LocalArtifactLoader` implementation that is also provided out of the box by nnbench.
 ```python
 import os
 from pathlib import Path
@@ -32,19 +32,15 @@ class LocalArtifactLoader(ArtifactLoader):
 The use of these `ArtifactLoader` becomes apparent when you think about using it for remote artifact storage locations such as an S3 bucket. 
 Besides the barebones `LocalArtifactLoader`, nnbench also provides the `nnbench.types.FilePathArtifactLoader`.
 To use it you have to `pip install fsspec` as an additional dependency.
-The class is then able to handle different filepath formats such as S3 links (or links to lakeFS, should you have [lakeFS-spec](https://lakefs-spec.org/latest/), another project of ours, installed).
-
-Conceptually, we decided to separate the loading and deserialization logic to spare you from needing to rewrite your logic when you move different model types to different storage locations.
-This way, you need to only define one loader per storage location and one artifact class per artifact type instead of the product of the two. 
-Speaking of artifacts, let's continue with the artifact class.
+The class is then able to handle different filepaths, like S3 and GCS URIs.
 
 ## Using the `Artifact` class
-The main purpose of the `Artifact` class is to enable you to load (deserialize) artifacts in a type-safe way which also enables all sorts of autocompletion and security features in your IDE, thereby improving your developer experience.
-When implementing the custom `Artifact` you have to override the deserialization method, `deserialize` which needs to assign the deserialized object(s) to the `self._value` property..
+The main purpose of the `Artifact` class is to load (deserialize) artifacts in a type-safe way, enabling autocompletion and type inference for your IDE to improve your developer experience.
+When implementing a custom `Artifact` subclass, you only have to override the `deserialize` method, which assigns the loaded object(s) to the `Artifact._value` member.
 You can use the `self.path` attribute to access the local filepath to the serialized artifact. This is provided by the `.load()` method of the appropriate `ArtifactLoader` that you have to pass upon instantiation.
-The artifact then exposes the wrapped object with the `.value` attribute, which returns the value of the internal `self._value` property.
-Loading an artifact is lazy. 
-If you want to deserialize the artifact at a specific point, you can do so via the implemented `deserialize()` method.
+The artifact then exposes the wrapped object with the `.value` property, which returns the value of the internal `self._value` class member.
+Artifacts are loaded lazily.
+If you want to deserialize an artifact at a specific point, you can do so by calling the implemented `deserialize()` method.
 Otherwise, `deserialize()` is called internally when you first access the value. 
 To provide a minimal example, here is how you could implement an `Artifact` for loading `numpy` arrays. 
 
@@ -62,6 +58,7 @@ print(array_artifact.value)
 ```
 ## Using the `ArtifactCollection`
 The `ArtifactCollection` does not need you to override any base class methods.
-Instead it is a convenience wrapper around a `list` to enable you to iterate over the artifacts or their values using `ArtifactCollection.values()`.
+Instead, it is a convenience wrapper around a `list` to enable you to iterate over the artifacts or their values using `ArtifactCollection.values()`.
 You can instantiate an `ArtifactCollection` by passing a single artifact or an iterable containing some upon instantiation.
 Then you can add more with the `add` method.
+To add an artifact to the collection, use the `ArtifactCollection.add()` method.
