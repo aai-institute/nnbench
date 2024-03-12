@@ -22,6 +22,7 @@ nav:
     - guides/customization.md
     - guides/organization.md
     - guides/runners.md 
+    - guides/artifacts.md
   - Examples:
     - tutorials/index.md
     - tutorials/artifact_benchmarking.md
