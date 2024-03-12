@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/reference/nnbench/io/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/guides/artifacts/">
       
       
-        <link rel="prev" href="../core/">
+        <link rel="prev" href="../runners/">
       
       
-        <link rel="next" href="../reporter/">
+        <link rel="next" href="../../tutorials/">
       
       
-      <link rel="icon" href="../../../_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.13">
     
     
       
-        <title>io - nnbench</title>
+        <title>Using artifacts in nnbench - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -43,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="../../../assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../../_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="../../../_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="../../../_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nnbench.io" class="md-skip">
+        <a href="#using-artifacts-in-nnbench" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           <div class="md-banner__inner md-grid md-typeset">
             
             You are currently viewing <strong>pre-release</strong> documentation. This may contain features that have not yet been
-released. For the most accurate information, please <strong><a href="../../../..">access the latest
+released. For the most accurate information, please <strong><a href="../../..">access the latest
     release</a></strong>.
           </div>
           
@@ -114,7 +114,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://nnbench.github.io" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../../../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../../..
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              io
+              Using artifacts in nnbench
             
           </span>
         </div>
@@ -246,7 +246,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   <label class="md-nav__title" for="__drawer">
     <a href="https://nnbench.github.io" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../../../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -273,7 +273,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -293,7 +293,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -310,22 +310,24 @@ released. For the most accurate information, please <strong><a href="../../../..
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../guides/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -342,7 +344,7 @@ released. For the most accurate information, please <strong><a href="../../../..
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             User Guide
@@ -356,7 +358,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/benchmarks/" class="md-nav__link">
+      <a href="../benchmarks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -377,7 +379,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/customization/" class="md-nav__link">
+      <a href="../customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -398,7 +400,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/organization/" class="md-nav__link">
+      <a href="../organization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -419,7 +421,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/runners/" class="md-nav__link">
+      <a href="../runners/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -437,10 +439,30 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../guides/artifacts/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Using artifacts in nnbench
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -449,6 +471,44 @@ released. For the most accurate information, please <strong><a href="../../../..
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-artifactloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the ArtifactLoader
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-artifact-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Artifact class
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -480,7 +540,7 @@ released. For the most accurate information, please <strong><a href="../../../..
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../tutorials/" class="md-nav__link ">
+            <a href="../../tutorials/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -511,7 +571,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/artifact_benchmarking/" class="md-nav__link">
+      <a href="../../tutorials/artifact_benchmarking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -532,7 +592,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/mnist/" class="md-nav__link">
+      <a href="../../tutorials/mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -553,7 +613,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/prefect/" class="md-nav__link">
+      <a href="../../tutorials/prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -574,7 +634,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/streamlit/" class="md-nav__link">
+      <a href="../../tutorials/streamlit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -595,7 +655,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/bq/" class="md-nav__link">
+      <a href="../../tutorials/bq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -616,7 +676,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/duckdb/" class="md-nav__link">
+      <a href="../../tutorials/duckdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -641,19 +701,17 @@ released. For the most accurate information, please <strong><a href="../../../..
       
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -667,7 +725,7 @@ released. For the most accurate information, please <strong><a href="../../../..
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -678,24 +736,22 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -712,7 +768,7 @@ released. For the most accurate information, please <strong><a href="../../../..
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             nnbench
@@ -726,7 +782,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -747,7 +803,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -765,28 +821,10 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    io
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../reference/nnbench/io/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -795,33 +833,6 @@ released. For the most accurate information, please <strong><a href="../../../..
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.io" class="md-nav__link">
-    <span class="md-ellipsis">
-      io
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -846,7 +857,7 @@ released. For the most accurate information, please <strong><a href="../../../..
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reporter/" class="md-nav__link ">
+            <a href="../../reference/nnbench/reporter/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -877,7 +888,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../reporter/base/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/base/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -898,7 +909,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../reporter/duckdb_sql/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/duckdb_sql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -919,7 +930,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../reporter/file/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -940,7 +951,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../reporter/util/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -969,7 +980,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -990,7 +1001,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1011,7 +1022,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1047,7 +1058,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1077,6 +1088,8 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1085,9 +1098,18 @@ released. For the most accurate information, please <strong><a href="../../../..
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nnbench.io" class="md-nav__link">
+  <a href="#using-the-artifactloader" class="md-nav__link">
     <span class="md-ellipsis">
-      io
+      Using the ArtifactLoader
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-artifact-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Artifact class
     </span>
   </a>
   
@@ -1108,7 +1130,7 @@ released. For the most accurate information, please <strong><a href="../../../..
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/src/nnbench/io/__init__.py" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/guides/artifacts.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1116,18 +1138,55 @@ released. For the most accurate information, please <strong><a href="../../../..
   
 
 
-  <h1>io</h1>
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="nnbench.io"></a>
-  <div class="doc doc-contents first">
-
-  </div>
-
-</div>
+<h1 id="using-artifacts-in-nnbench">Using artifacts in nnbench<a class="headerlink" href="#using-artifacts-in-nnbench" title="Permanent link">&para;</a></h1>
+<p>With more complex benchmarking set-ups you will find yourself wanting to use static artifacts.
+These can be, for example, test and validation data, or serialized model files from a model registry.
+nnbench provides an artifact framework to handle these assets.
+This framework consists of the <code>ArtifactLoader</code>, and the <code>Artifact</code> base classes.</p>
+<p>Conceptually, they are intended to be used as follows:
+- <code>ArtifactLoader</code> to load the artifact onto the local filesystem,
+- <code>Artifact</code> to handle the artifact within nnbench and enable lazy loading into memory,</p>
+<p>You can implement your own derivative classes to handle custom logic for artifact deserialization and loading.
+Additionally, we provide some derived classes out of the box to handle local filepaths using filesystems, which are covered by the fsspec package.
+Let us now discuss each class of the framework in detail.</p>
+<h2 id="using-the-artifactloader">Using the <code>ArtifactLoader</code><a class="headerlink" href="#using-the-artifactloader" title="Permanent link">&para;</a></h2>
+<p>The <code>ArtifactLoader</code> is an abstract base class for which you can implement your custom instance by overriding the <code>load()</code> method, which needs to return a file path either as string or a path-like object.
+You can see an example of it in the <code>LocalArtifactLoader</code> implementation that is also provided out of the box by nnbench.
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">os</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">nnbench.types</span> <span class="kn">import</span> <span class="n">ArtifactLoader</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">class</span> <span class="nc">LocalArtifactLoader</span><span class="p">(</span><span class="n">ArtifactLoader</span><span class="p">):</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+</span></code></pre></div></p>
+<p>The use of these <code>ArtifactLoader</code> becomes apparent when you think about using it for remote artifact storage locations such as an S3 bucket. 
+Besides the barebones <code>LocalArtifactLoader</code>, nnbench also provides the <code>nnbench.types.FilePathArtifactLoader</code>.
+To use it you have to <code>pip install fsspec</code> as an additional dependency.
+The class is then able to handle different filepaths, like S3 and GCS URIs.</p>
+<h2 id="using-the-artifact-class">Using the <code>Artifact</code> class<a class="headerlink" href="#using-the-artifact-class" title="Permanent link">&para;</a></h2>
+<p>The main purpose of the <code>Artifact</code> class is to load (deserialize) artifacts in a type-safe way, enabling autocompletion and type inference for your IDE to improve your developer experience.
+When implementing a custom <code>Artifact</code> subclass, you only have to override the <code>deserialize</code> method, which assigns the loaded object(s) to the <code>Artifact._value</code> member.
+You can use the <code>self.path</code> attribute to access the local filepath to the serialized artifact. This is provided by the <code>.load()</code> method of the appropriate <code>ArtifactLoader</code> that you have to pass upon instantiation.
+The artifact then exposes the wrapped object with the <code>.value</code> property, which returns the value of the internal <code>self._value</code> class member.
+Artifacts are loaded lazily.
+If you want to deserialize an artifact at a specific point, you can do so by calling the implemented <code>deserialize()</code> method.
+Otherwise, <code>deserialize()</code> is called internally when you first access the value. 
+To provide a minimal example, here is how you could implement an <code>Artifact</code> for loading <code>numpy</code> arrays. </p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">nnbench.types</span> <span class="kn">import</span> <span class="n">Artifact</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">loaders</span> <span class="kn">import</span> <span class="n">LocalArtifactLoader</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">class</span> <span class="nc">NumpyArtifact</span><span class="p">(</span><span class="n">Artifact</span><span class="p">):</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">array_artifact</span> <span class="o">=</span> <span class="n">NumpyArtifact</span><span class="p">(</span><span class="n">LocalArtifactLoader</span><span class="p">(</span><span class="s1">&#39;path/to/array&#39;</span><span class="p">))</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">array_artifact</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</span></code></pre></div>
 
 
 
@@ -1220,10 +1279,10 @@ released. For the most accurate information, please <strong><a href="../../../..
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>
