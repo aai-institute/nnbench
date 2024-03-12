@@ -52,7 +52,7 @@ The benchmarking code is written to be executed as a script that consumes any nu
 The parsing of the arguments is handled by the last lines in the script which then calls the `main()` function:
 
 ```python
---8<-- "examples/artifact_benchmarking/src/runner.py:92:96"
+--8<-- "examples/artifact_benchmarking/src/runner.py:91:95"
 ```
 
 ### Artifact Classes
@@ -69,7 +69,7 @@ This attribute is set by the `ArtifactLoader` (which we will cover in a moment) 
 In our derived class, we have to override the `deserialize()` method to properly load the artifact value into memory.
 
 ```python
---8<-- "examples/artifact_benchmarking/src/runner.py:59"
+--8<-- "examples/artifact_benchmarking/src/runner.py:57"
 ```
 
 The `deserialize()` method has to set the `self._value` attribute to the value we want to access later.
@@ -99,17 +99,8 @@ We have a little more logic with respect to the dataset as we handle the train t
 --8<-- "examples/artifact_benchmarking/src/runner.py:19:27"
 ```
 
-### Artifact Collections
-The `ArtifactCollection` object is a convenient wrapper around `Artifact`s to allow for iteration and abstract away the `deserialize()` call. 
-We can instantiate them by passing an iterable of `Artifact`s.
+Now we execute the benchmark in the loop over the different models.
 
 ```python
---8<-- "examples/artifact_benchmarking/src/runner.py:56"
-```
-
-We can then either iterate over the `ArtifactCollection` directly, using the lazy deserialization, or we use the `.values()` method to return whatever we assigned to the `._values` attribute of the `Artifact`s.
-We then execute the benchmark in the loop for the different models we have supplied to the `ArtifactCollection`.
-
-```python
---8<-- "examples/artifact_benchmarking/src/runner.py:61:89"
+--8<-- "examples/artifact_benchmarking/src/runner.py:59:87"
 ```

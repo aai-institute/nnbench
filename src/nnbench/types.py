@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import collections.abc
 import copy
 import inspect
 import os
@@ -16,8 +15,6 @@ from typing import (
     Any,
     Callable,
     Generic,
-    Iterable,
-    Iterator,
     Literal,
     TypeVar,
 )
@@ -254,53 +251,6 @@ class Artifact(Generic[T], metaclass=ABCMeta):
         if self._value is None:
             self.deserialize()
         return self._value
-
-
-class ArtifactCollection(Generic[T], collections.abc.Iterable[Artifact[T]]):
-    """
-    A collection wrapper around multiple Artifact instances.
-    """
-
-    def __init__(self, *artifacts: Artifact[T]) -> None:
-        self._artifacts = [art for art in artifacts]
-
-    def add(self, artifacts: Artifact[T] | Iterable[Artifact[T]]) -> None:
-        """
-        Adds a single Artifact or an Iterable of Artifacts to the collection.
-
-        Parameters
-        ----------
-        artifacts : Artifact[T] | Iterable[Artifact[T]]
-            The Artifact instance(s) to add to the collection.
-        """
-        if isinstance(artifacts, Iterable):
-            self._artifacts.extend(artifacts)
-        else:
-            self._artifacts.append(artifacts)
-
-    def __iter__(self) -> Iterator[Artifact[T]]:
-        """
-        Iterator over deserialized artifacts in the collection.
-
-        Yields
-        -------
-        Iterator[Artifact[T]]
-            An iterator over deserialized artifacts in the collection.
-        """
-        for artifact in self._artifacts:
-            yield artifact
-
-    def values(self) -> Iterator[T]:
-        """
-        Iterator over the values of deserialized artifacts in the collection.
-
-        Yields
-        ------
-        Iterator[T]
-            An iterator over the values of the deserialized artifacts.
-        """
-        for artifact in self:
-            yield artifact.value
 
 
 @dataclass(init=False, frozen=True)
