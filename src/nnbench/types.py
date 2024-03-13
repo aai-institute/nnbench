@@ -21,13 +21,6 @@ from typing import (
 
 from nnbench.context import Context
 
-try:
-    import fsspec
-
-    HAS_FSSPEC = True
-except ImportError:
-    HAS_FSSPEC = False
-
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
@@ -115,8 +108,11 @@ class BenchmarkRecord:
 
 class ArtifactLoader:
     @abstractmethod
-    def load(self) -> os.PathLike[str]:
+    def load(self, checksum: str | None = None) -> os.PathLike[str]:
         """Load the artifact"""
+
+    def verify(self, expected: str, blocksize: int = 2**22) -> None:
+        return None
 
 
 class LocalArtifactLoader(ArtifactLoader):
@@ -130,12 +126,49 @@ class LocalArtifactLoader(ArtifactLoader):
     """
 
     def __init__(self, path: str | os.PathLike[str]) -> None:
-        self._path = path
+        import hashlib
 
-    def load(self) -> Path:
+        self._path = Path(path)
+        self._hash = hashlib.md5(usedforsecurity=False)
+
+    def verify(self, expected: str, blocksize: int = 2**22) -> None:
+        """Verify the integrity of the artifact path against an expected checksum."""
+        with open(self._path, "rb") as f:
+            chunk = f.read(blocksize)
+            while chunk:
+                self._hash.update(chunk)
+                chunk = f.read(blocksize)
+        calculated = self._hash.hexdigest()
+        if expected != calculated:
+            raise ValueError(
+                f"integrity check failed: file hashes do not match "
+                f"(expected {expected}, calculated {calculated} using "
+                f"algorithm {self._hash.name!r})"
+            )
+
+    def load(self, checksum: str | None = None) -> Path:
         """
         Returns the path to the artifact on the local file system.
+
+        Parameters
+        ----------
+        checksum: str | None
+            An optional checksum to verify the artifact integrity against.
+
+        Returns
+        -------
+        Path
+            The location of the artifact.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the given path does not exist locally.
         """
+        if not self._path.exists():
+            raise FileNotFoundError(self._path)
+        if checksum is not None:
+            self.verify(checksum)
         return Path(self._path).resolve()
 
 
@@ -149,11 +182,18 @@ class FilePathArtifactLoader(ArtifactLoader):
     Parameters
     ----------
     path : str | os.PathLike[str]
-        The path to the artifact, which can include a protocol specifier (like 's3://') for remote access.
+        The path to the artifact, which can include a protocol specifier
+        (like 's3://') for remote access.
     destination : str | os.PathLike[str] | None
-        The local directory to which remote artifacts will be downloaded. If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
+        The local directory to which remote artifacts will be downloaded.
+        If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
     storage_options : dict[str, Any] | None
         Storage options for remote storage.
+
+    Raises
+    ------
+    ModuleNotFoundError
+        If fsspec is not installed.
     """
 
     def __init__(
@@ -162,6 +202,13 @@ class FilePathArtifactLoader(ArtifactLoader):
         destination: str | os.PathLike[str] | None = None,
         storage_options: dict[str, Any] | None = None,
     ) -> None:
+        import importlib.util
+
+        if importlib.util.find_spec("fsspec") is None:  #
+            raise ModuleNotFoundError(
+                f"class {self.__class__.__name__}() requires `fsspec` to be installed. "
+                "You can install it by running `python -m pip install --upgrade fsspec`"
+            )
         self.source_path = str(path)
         if destination:
             target_path = str(Path(destination).resolve())
@@ -175,9 +222,14 @@ class FilePathArtifactLoader(ArtifactLoader):
         self.target_path = target_path
         self.storage_options = storage_options or {}
 
-    def load(self) -> Path:
+    def load(self, checksum: str | None = None) -> Path:
         """
         Loads the artifact and returns the local path.
+
+        Parameters
+        ----------
+        checksum: str | None
+            An optional checksum to verify the artifact integrity against.
 
         Returns
         -------
@@ -189,12 +241,17 @@ class FilePathArtifactLoader(ArtifactLoader):
         ImportError
             When fsspec is not installed.
         """
-        if not HAS_FSSPEC:
-            raise ImportError(
-                "class {self.__class__.__name__} requires `fsspec` to be installed. You can install it by running `python -m pip install --upgrade fsspec`"
-            )
-        fs = fsspec.filesystem(fsspec.utils.get_protocol(self.source_path))
+        from fsspec import AbstractFileSystem, filesystem
+        from fsspec.utils import get_protocol
+
+        fs: AbstractFileSystem = filesystem(get_protocol(self.source_path), **self.storage_options)
+
+        if not fs.exists(self.source_path):
+            raise FileNotFoundError(self.source_path)
+        if fs.isfile(self.source_path) and checksum is not None:
+            self.verify(checksum)
         fs.get(self.source_path, self.target_path, recursive=True)
+
         return Path(self.target_path).resolve()
 
 
@@ -216,11 +273,14 @@ class Artifact(Generic[T], metaclass=ABCMeta):
     ----------
     loader: ArtifactLoader
         Loader to get the artifact.
+    checksum: str | None
+        A checksum to optionally verify artifact integrity with before loading the artifact.
     """
 
-    def __init__(self, loader: ArtifactLoader) -> None:
+    def __init__(self, loader: ArtifactLoader, checksum: str | None = None) -> None:
         # Save the path for later just-in-time deserialization.
-        self.path = loader.load()  # fetch the artifact from wherever it resides
+        self.checksum = checksum
+        self.path = loader.load(checksum)  # fetch the artifact from wherever it resides
         self._value: T | None = None
 
     @abstractmethod
@@ -232,10 +292,14 @@ class Artifact(Generic[T], metaclass=ABCMeta):
         return self._value is not None
 
     def __str__(self) -> str:
-        return f"Artifact(path={self.path!r}, is_deserialized={self.is_deserialized()})"
+        return (
+            f"Artifact(path={self.path!r}, "
+            f"checksum={self.checksum or ''}, "
+            f"loaded={self.is_deserialized()})"
+        )
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(path={self.path!r}, is_deserialized={self.is_deserialized()})"
+        return f"{self.__class__.__name__}(path={self.path!r}, loaded={self.is_deserialized()})"
 
     @property
     def value(self) -> T:
