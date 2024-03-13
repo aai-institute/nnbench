@@ -1,3 +1,5 @@
+import pytest
+
 from nnbench.context import Context, CPUInfo, GitEnvironmentInfo, PythonInfo
 
 
@@ -71,17 +73,30 @@ def test_context_items():
     assert set(ctx.items()) == expected_items
 
 
+def test_context_update_with_key_collision():
+    ctx = Context({"a": 1, "b": 2})
+    with pytest.raises(ValueError, match=r".*multiple values for context.*"):
+        ctx.update(Context.make({"a": 3, "c": 4}))
+
+
+def test_context_update_duplicate_with_replace():
+    ctx = Context({"a": 1, "b": 2})
+    ctx.update(Context.make({"a": 3, "c": 4}), replace=True)
+    expected_dict = {"a": 3, "b": 2, "c": 4}
+    assert ctx._data == expected_dict
+
+
 def test_update_with_context():
     ctx = Context({"a": 1, "b": 2})
-    ctx.update(Context.make({"a": 3, "c": 4}))
-    expected_dict = {"a": 3, "b": 2, "c": 4}
+    ctx.update(Context.make({"c": 4}))
+    expected_dict = {"a": 1, "b": 2, "c": 4}
     assert ctx._data == expected_dict
 
 
 def test_add_with_provider():
     ctx = Context({"a": 1, "b": 2})
-    ctx.add(lambda: {"a": 3, "c": 4})
-    expected_dict = {"a": 3, "b": 2, "c": 4}
+    ctx.add(lambda: {"c": 4})
+    expected_dict = {"a": 1, "b": 2, "c": 4}
     assert ctx._data == expected_dict
 
 
