@@ -215,11 +215,6 @@ class BenchmarkRunner:
             A JSON output representing the benchmark results. Has two top-level keys, "context"
             holding the context information, and "benchmarks", holding an array with the
             benchmark results.
-
-        Raises
-        ------
-        ValueError
-            If any context value is provided more than once.
         """
         if not self.benchmarks:
             self.collect(path_or_module, tags)
@@ -241,16 +236,8 @@ class BenchmarkRunner:
             ctx = context
         else:
             ctx = Context()
-
             for provider in context:
-                ctx_cand = Context.make(provider())
-
-                # we do not allow multiple values for a context key.
-                duplicates = set(ctx.keys()) & set(ctx_cand.keys())
-                if duplicates:
-                    dupe, *_ = duplicates
-                    raise ValueError(f"got multiple values for context key {dupe!r}")
-                ctx.update(ctx_cand)
+                ctx.add(provider)
 
         results: list[dict[str, Any]] = []
         for benchmark in self.benchmarks:

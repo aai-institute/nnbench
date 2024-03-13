@@ -88,7 +88,10 @@ class GitEnvironmentInfo:
                 git = "git"
 
             return subprocess.run(  # nosec: B603
-                [git, *args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
+                [git, *args],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                encoding="utf-8",
             )
 
         result: dict[str, Any] = {
@@ -246,7 +249,7 @@ class Context:
         str
             Iterator over the context dictionary keys.
         """
-        for k, v in self._ctx_items(d=self._data, prefix="", sep=sep):
+        for k, _ in self._ctx_items(d=self._data, prefix="", sep=sep):
             yield k
 
     def values(self) -> Iterator[Any]:
@@ -258,7 +261,7 @@ class Context:
         Any
             Iterator over all values in the context dictionary.
         """
-        for k, v in self._ctx_items(d=self._data, prefix="", sep=""):
+        for _, v in self._ctx_items(d=self._data, prefix="", sep=""):
             yield v
 
     def items(self, sep: str = ".") -> Iterator[tuple[str, Any]]:
@@ -277,7 +280,7 @@ class Context:
         """
         yield from self._ctx_items(d=self._data, prefix="", sep=sep)
 
-    def add(self, provider: ContextProvider) -> None:
+    def add(self, provider: ContextProvider, replace: bool = False) -> None:
         """
         Adds data from a provider to the context.
 
@@ -285,10 +288,12 @@ class Context:
         ----------
         provider : ContextProvider
             The provider to inject into this context.
+        replace : bool
+            Whether to replace existing context values upon key collision. Raises ValueError otherwise.
         """
-        self._data.update(provider())
+        self.update(Context.make(provider()), replace=replace)
 
-    def update(self, other: "Context") -> None:
+    def update(self, other: "Context", replace: bool = False) -> None:
         """
         Updates the context.
 
@@ -296,7 +301,18 @@ class Context:
         ----------
         other : Context
             The other context to update this context with.
+        replace : bool
+            Whether to replace existing context values upon key collision. Raises ValueError otherwise.
+
+        Raises
+        ------
+        ValueError
+            If ``other contains top-level keys already present in the context and ``replace=False``.
         """
+        duplicates = set(self.keys()) & set(other.keys())
+        if not replace and duplicates:
+            dupe, *_ = duplicates
+            raise ValueError(f"got multiple values for context key {dupe!r}")
         self._data.update(other._data)
 
     @staticmethod
