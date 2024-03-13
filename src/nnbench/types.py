@@ -167,12 +167,15 @@ class FilePathArtifactLoader(ArtifactLoader):
     ) -> None:
         self.source_path = str(path)
         if destination:
-            self.target_path = str(Path(destination).resolve())
+            target_path = str(Path(destination).resolve())
             delete = False
         else:
-            self.target_path = str(Path(mkdtemp()).resolve())
+            target_path = str(Path(mkdtemp()).resolve())
             delete = True
-        self._finalizer = weakref.finalize(self, self._cleanup, delete=delete)
+        self._finalizer = weakref.finalize(
+            self, lambda d, t: shutil.rmtree(t) if d else None, d=delete, t=target_path
+        )
+        self.target_path = target_path
         self.storage_options = storage_options or {}
 
     def load(self) -> Path:
@@ -196,10 +199,6 @@ class FilePathArtifactLoader(ArtifactLoader):
         fs = fsspec.filesystem(fsspec.utils.get_protocol(self.source_path))
         fs.get(self.source_path, self.target_path, recursive=True)
         return Path(self.target_path).resolve()
-
-    def _cleanup(self, delete: bool) -> None:
-        if delete:
-            shutil.rmtree(self.target_path)
 
 
 class Artifact(Generic[T], metaclass=ABCMeta):
