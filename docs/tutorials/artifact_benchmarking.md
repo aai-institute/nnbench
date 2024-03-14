@@ -43,6 +43,9 @@ We are not walking through the whole file but instead point out certain design c
 If you are interested in a more detailed walkthrough on how to set up benchmarks, you can find it [here](../guides/benchmarks.md).
 Notable design choices in this benchmark are that we factored out the evaluation loop as it is necessary for all evaluation metrics. We cache it using the `functools.lru_cache` decorator so the evaluation loop runs only once per benchmark run instead of once per metric which greatly reduces runtime.
 We use `nnbench.parametrize` to get the per-class metrics. 
+As the parametrization method needs the same arguments for each benchmark, we use Python's builtin `functools.partial` to fill the arguments.
+One noteworthy subtlety here is that we need to call the partial immediately so it returns the pre-filled `nnbench.parametrize` decorators.
+If we don't do that, the `runner.collect` does not find the respective benchmarks. 
 
 ## Running Benchmarks with saved Artifacts
 Now that we have explained the example, let's jump into the benchmarking code.

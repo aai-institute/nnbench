@@ -1,7 +1,7 @@
 import os
 import tempfile
 import time
-from functools import lru_cache
+from functools import lru_cache, partial
 
 import torch
 from torch.nn import Module
@@ -48,7 +48,8 @@ def precision(model: Module, test_dataloader: DataLoader, padding_id: int = -100
     return torch.mean(precision).item()
 
 
-@nnbench.parametrize(
+parametrize_label = partial(
+    nnbench.parametrize,
     (
         {"class_label": "O"},
         {"class_label": "B-PER"},
@@ -61,7 +62,10 @@ def precision(model: Module, test_dataloader: DataLoader, padding_id: int = -100
         {"class_label": "I-MISC"},
     ),
     tags=("metric", "per-class"),
-)
+)()
+
+
+@parametrize_label
 def precision_per_class(
     class_label: str,
     model: Module,
@@ -84,20 +88,7 @@ def recall(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -
     return torch.mean(recall).item()
 
 
-@nnbench.parametrize(
-    (
-        {"class_label": "O"},
-        {"class_label": "B-PER"},
-        {"class_label": "I-PER"},
-        {"class_label": "B-ORG"},
-        {"class_label": "I-ORG"},
-        {"class_label": "B-LOC"},
-        {"class_label": "I-LOC"},
-        {"class_label": "B-MISC"},
-        {"class_label": "I-MISC"},
-    ),
-    tags=("metric", "per-class"),
-)
+@parametrize_label
 def recall_per_class(
     class_label: str,
     model: Module,
@@ -122,20 +113,7 @@ def f1(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -> fl
     return torch.mean(f1).item()
 
 
-@nnbench.parametrize(
-    (
-        {"class_label": "O"},
-        {"class_label": "B-PER"},
-        {"class_label": "I-PER"},
-        {"class_label": "B-ORG"},
-        {"class_label": "I-ORG"},
-        {"class_label": "B-LOC"},
-        {"class_label": "I-LOC"},
-        {"class_label": "B-MISC"},
-        {"class_label": "I-MISC"},
-    ),
-    tags=("metric", "per-class"),
-)
+@parametrize_label
 def f1_per_class(
     class_label: str,
     model: Module,
@@ -160,20 +138,7 @@ def accuracy(model: Module, test_dataloader: DataLoader, padding_id: int = -100)
     return torch.mean(accuracy).item()
 
 
-@nnbench.parametrize(
-    (
-        {"class_label": "O"},
-        {"class_label": "B-PER"},
-        {"class_label": "I-PER"},
-        {"class_label": "B-ORG"},
-        {"class_label": "I-ORG"},
-        {"class_label": "B-LOC"},
-        {"class_label": "I-LOC"},
-        {"class_label": "B-MISC"},
-        {"class_label": "I-MISC"},
-    ),
-    tags=("metric", "per-class"),
-)
+@parametrize_label
 def accuracy_per_class(
     class_label: str,
     model: Module,
