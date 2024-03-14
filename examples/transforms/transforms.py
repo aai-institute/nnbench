@@ -1,10 +1,10 @@
-import copy
 from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
 
 import nnbench
+from nnbench.io.transforms import OneToOneTransform
 from nnbench.reporter.file import FileIO
 from nnbench.types import BenchmarkRecord
 
@@ -30,29 +30,8 @@ def accuracy(model: MyModel, data: np.ndarray) -> float:
     return model.apply(data)
 
 
-# Or is a transform <-> inverse transform pair better?
-def transform_params(rec: BenchmarkRecord) -> BenchmarkRecord:
-    for b in rec.benchmarks:
-        params: dict[str, Any] = b["parameters"]
-        b["parameters"] = {
-            "model": params["model"].to_json(),
-            "data": params["data"].tolist(),
-        }
-    return rec
-
-
-def explode_params(rec: BenchmarkRecord) -> BenchmarkRecord:
-    for b in rec.benchmarks:
-        params: dict[str, Any] = b["parameters"]
-        b["parameters"] = {
-            "model": MyModel.from_json(params["model"]),
-            "data": np.asarray(params["data"]),
-        }
-    return rec
-
-
 # or, equivalently:
-class MyTransform:
+class MyTransform(OneToOneTransform):
     def apply(self, record: BenchmarkRecord) -> BenchmarkRecord:
         """Apply this transform on a record."""
         for b in record.benchmarks:
@@ -85,19 +64,15 @@ def main():
     m = MyModel(checksum="12345")
     data = np.random.random_sample((10,))
     params = MyParams(m, data)
-
     record = runner.run(__name__, params=params)
-    trecord = transform_params(copy.deepcopy(record))
-    # or:
-    # transform = MyTransform()
-    # trecord = transform.apply(record)
+
+    transform = MyTransform()
+    trecord = transform.apply(record)
     f = FileIO()
     f.write(trecord, "record.json")
 
     record2 = f.read("record.json")
-    # or:
-    # new_record = transform.iapply(record2)
-    new_record = explode_params(record2)
+    new_record = transform.iapply(record2)
 
 
 if __name__ == "__main__":
