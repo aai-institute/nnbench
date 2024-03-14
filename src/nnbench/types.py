@@ -127,9 +127,6 @@ class LocalArtifactLoader(ArtifactLoader):
     ----------
     path : str | os.PathLike[str]
         The file system path to the artifact.
-    hash_algorithm: str
-        The hash algorithm to use. To list all available hash algorithms,
-        refer to ``hashlib.algorithms_available``.
     """
 
     def __init__(self, path: str | os.PathLike[str]) -> None:
