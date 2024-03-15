@@ -1273,7 +1273,10 @@ Additionally, we obtain information about the model such as its memory footprint
 We are not walking through the whole file but instead point out certain design choices as an inspiration to you. 
 If you are interested in a more detailed walkthrough on how to set up benchmarks, you can find it <a href="../../guides/benchmarks/">here</a>.
 Notable design choices in this benchmark are that we factored out the evaluation loop as it is necessary for all evaluation metrics. We cache it using the <code>functools.lru_cache</code> decorator so the evaluation loop runs only once per benchmark run instead of once per metric which greatly reduces runtime.
-We use <code>nnbench.parametrize</code> to get the per-class metrics. </p>
+We use <code>nnbench.parametrize</code> to get the per-class metrics. 
+As the parametrization method needs the same arguments for each benchmark, we use Python's builtin <code>functools.partial</code> to fill the arguments.
+One noteworthy subtlety here is that we need to call the partial immediately so it returns the pre-filled <code>nnbench.parametrize</code> decorators.
+If we don't do that, the <code>runner.collect</code> does not find the respective benchmarks. </p>
 <h2 id="running-benchmarks-with-saved-artifacts">Running Benchmarks with saved Artifacts<a class="headerlink" href="#running-benchmarks-with-saved-artifacts" title="Permanent link">&para;</a></h2>
 <p>Now that we have explained the example, let's jump into the benchmarking code.
 You find it in the nnbench repository in <code>examples/artifact_benchmarking/src/runner.py</code>.</p>
