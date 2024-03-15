@@ -20,7 +20,7 @@ This case is common when mapping records to an equivalent but more easily digest
 The following is an example of a 1->1 transform, which maps the benchmark parameters to representations that are JSON-serializable.
 
 ```python
---8<-- "examples/transforms/transforms.py:34:54"
+--8<-- "examples/transforms/transforms.py:33:54"
 ```
 
 In the `MyTransform.apply()` method, the NumPy array is serialized as a list by calling `array.tolist()`, while the model is saved by its checksum only.
@@ -29,7 +29,7 @@ In real applications, parametrizing the model with basic Python values will like
 The transform is applied on the resulting record, and allows writing the record to JSON without any errors that would normally occur.
 
 ```python
---8<-- "examples/transforms/transforms.py:69:75"
+--8<-- "examples/transforms/transforms.py:68:75"
 ```
 
 ## Invertible transforms
@@ -49,5 +49,13 @@ A transform is signalled to be invertible if the `Transform.invertible` attribut
 A few points are useful to keep in mind while writing transforms:
 
 * It is in general not advised to inject arbitrary metadata into records via a transform. If you find yourself needing to supply more metadata, consider using a `ContextProvider` instead.
-* When serializing Python values (like the benchmark parameters), be careful to choose a unique representation, otherwise you might not be able to reconstruct model and data versions from written records.
+* When serializing Python values (like the benchmark parameters), be careful to choose a unique representation, otherwise you might not be able to reconstruct model and data versions from written records in a reproducible manner.
 * When designing a transform that is not invertible, consider raising a `NotImplementedError` in the `iapply()` method to prevent accidental calls to the (ill-defined) inverse.
+
+## Appendix: The full example code
+
+Here is the full example on how to use transforms for record-to-file serialization:
+
+```python
+--8<-- "examples/transforms/transforms.py"
+```

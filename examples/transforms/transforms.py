@@ -30,7 +30,6 @@ def accuracy(model: MyModel, data: np.ndarray) -> float:
     return model.apply(data)
 
 
-# or, equivalently:
 class MyTransform(OneToOneTransform):
     def apply(self, record: BenchmarkRecord) -> BenchmarkRecord:
         """Apply this transform on a record."""
