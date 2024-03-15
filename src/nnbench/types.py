@@ -108,50 +108,30 @@ class BenchmarkRecord:
 
 class ArtifactLoader:
     @abstractmethod
-    def load(self, checksum: str | None = None) -> os.PathLike[str]:
-        """Load the artifact"""
+    def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> os.PathLike[str]:
+        """Load the artifact."""
 
-    def verify(self, expected: str, blocksize: int = 2**22) -> None:
-        return None
+    def verify(self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22) -> None:
+        """Verify an artifact path checksum against an expected value."""
 
 
 class LocalArtifactLoader(ArtifactLoader):
     """
     ArtifactLoader for loading artifacts from a local file system.
-
-    Parameters
-    ----------
-    path : str | os.PathLike[str]
-        The file system path to the artifact.
     """
 
-    def __init__(self, path: str | os.PathLike[str]) -> None:
+    def __init__(self) -> None:
         import hashlib
-
-        self._path = Path(path)
         self._hash = hashlib.md5(usedforsecurity=False)
 
-    def verify(self, expected: str, blocksize: int = 2**22) -> None:
-        """Verify the integrity of the artifact path against an expected checksum."""
-        with open(self._path, "rb") as f:
-            chunk = f.read(blocksize)
-            while chunk:
-                self._hash.update(chunk)
-                chunk = f.read(blocksize)
-        calculated = self._hash.hexdigest()
-        if expected != calculated:
-            raise ValueError(
-                f"integrity check failed: file hashes do not match "
-                f"(expected {expected}, calculated {calculated} using "
-                f"algorithm {self._hash.name!r})"
-            )
-
-    def load(self, checksum: str | None = None) -> Path:
+    def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> Path:
         """
         Returns the path to the artifact on the local file system.
 
         Parameters
         ----------
+        rpath: str | os.PathLike[str]
+            Local file system path to the artifact.
         checksum: str | None
             An optional checksum to verify the artifact integrity against.
 
@@ -165,12 +145,37 @@ class LocalArtifactLoader(ArtifactLoader):
         FileNotFoundError
             If the given path does not exist locally.
         """
-        if not self._path.exists():
-            raise FileNotFoundError(self._path)
+        if not Path(rpath).exists():
+            raise FileNotFoundError(rpath)
         if checksum is not None:
-            self.verify(checksum)
-        return Path(self._path).resolve()
+            self.verify(rpath, checksum)
+        return Path(rpath).resolve()
 
+    def verify(self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22) -> None:
+        """Verify the integrity of the artifact path against an expected checksum."""
+        with open(rpath, "rb") as f:
+            chunk = f.read(blocksize)
+            while chunk:
+                self._hash.update(chunk)
+                chunk = f.read(blocksize)
+        calculated = self._hash.hexdigest()
+        if expected != calculated:
+            raise ValueError(
+                f"integrity check failed: file hashes do not match "
+                f"(expected {expected}, calculated {calculated} using "
+                f"algorithm {self._hash.name!r})"
+            )
+
+
+# TODO(m.mynter): Merge LocalLoader and FilePathArtifactLoader on the following grounds:
+#  0. In __init__(): get status of "fsspec installed" via importlib and save as instance attribute.
+#   Pretty solution: functools.cached_property.
+#  1. If importlib.util.find_spec("fsspec") is None: -> local path only.
+#   -> In this case, check for leading protocols on rpath, raise if not None or "file://"
+#  1b. verify() computes the checksum as seen in LocalLoader.verify() (above).
+#  2. If importlib.util.find_spec("fsspec") is not None: -> all paths
+#   -> Use logic from FilePathLoader.load()
+#  3. verify() checksum against fs.checksum(rpath).
 
 class FilePathArtifactLoader(ArtifactLoader):
     """
@@ -222,7 +227,9 @@ class FilePathArtifactLoader(ArtifactLoader):
         self.target_path = target_path
         self.storage_options = storage_options or {}
 
-    def load(self, checksum: str | None = None) -> Path:
+    # TODO(m.mynter): Use functools.cache on this guy.
+    #  Write test with a cache lookup of an artifact, goal: time(second deser) << time(first deser).
+    def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> Path:
         """
         Loads the artifact and returns the local path.
 
@@ -255,6 +262,11 @@ class FilePathArtifactLoader(ArtifactLoader):
         return Path(self.target_path).resolve()
 
 
+# TODO(n.junge): Check for simplifications of `Artifact.deserialize()`:
+#  Automatic passing of lpath = loader.load(rpath, checksum)?
+#  -> Remove auto-deserialization in Artifact.value.
+#  Implement just-in-time deserialization of artifacts in the inner loop of runner.run() (runner.py->L243ff.)
+#  Write tests for just-in-time deser and pre-fetching by hand.
 class Artifact(Generic[T], metaclass=ABCMeta):
     """
     A base artifact class for loading (materializing) artifacts from disk or from remote storage.
@@ -271,35 +283,26 @@ class Artifact(Generic[T], metaclass=ABCMeta):
 
     Parameters
     ----------
-    loader: ArtifactLoader
-        Loader to get the artifact.
+    path: str | os.PathLike[str]
+        Path to the serialized artifact.
     checksum: str | None
         A checksum to optionally verify artifact integrity with before loading the artifact.
     """
 
-    def __init__(self, loader: ArtifactLoader, checksum: str | None = None) -> None:
-        # Save the path for later just-in-time deserialization.
-        self.checksum = checksum
-        self.path = loader.load(checksum)  # fetch the artifact from wherever it resides
+    def __init__(self, path: str | os.PathLike[str], checksum: str | None = None) -> None:
+        self._path = path
+        self._checksum = checksum
+        # self.path = loader.load(checksum)  # fetch the artifact from wherever it resides
+        # artifact value, to be instantiated by `self.deserialize()`.
         self._value: T | None = None
 
     @abstractmethod
-    def deserialize(self) -> None:
+    def deserialize(self, loader: ArtifactLoader) -> None:
         """Deserialize the artifact."""
 
     def is_deserialized(self) -> bool:
         """Checks if the artifact is already deserialized."""
         return self._value is not None
-
-    def __str__(self) -> str:
-        return (
-            f"Artifact(path={self.path!r}, "
-            f"checksum={self.checksum or ''}, "
-            f"loaded={self.is_deserialized()})"
-        )
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(path={self.path!r}, loaded={self.is_deserialized()})"
 
     @property
     def value(self) -> T:

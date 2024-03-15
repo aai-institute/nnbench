@@ -243,6 +243,9 @@ class BenchmarkRunner:
         for benchmark in self.benchmarks:
             bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
             bmdefaults = {k: v for (k, _, v) in benchmark.interface.variables}
+            # for k, v in bmparams:
+            #     if isinstance(v, Artifact):
+            #         v.deserialize(loader) <- loader.load(v.path) -> download or cache lookup.
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
