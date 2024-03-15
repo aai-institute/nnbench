@@ -5,10 +5,13 @@ from __future__ import annotations
 import copy
 import inspect
 import os
+import re
 import shutil
 import weakref
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
+from functools import cache, cached_property
+from importlib import util
 from pathlib import Path
 from tempfile import mkdtemp
 from typing import (
@@ -108,51 +111,76 @@ class BenchmarkRecord:
 
 class ArtifactLoader:
     @abstractmethod
-    def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> os.PathLike[str]:
+    def load(
+        self, rpath: str | os.PathLike[str], checksum: str | None = None
+    ) -> os.PathLike[str]:
         """Load the artifact."""
 
-    def verify(self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22) -> None:
+    def verify(
+        self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22
+    ) -> None:
         """Verify an artifact path checksum against an expected value."""
 
 
-class LocalArtifactLoader(ArtifactLoader):
-    """
-    ArtifactLoader for loading artifacts from a local file system.
-    """
-
-    def __init__(self) -> None:
+class PathArtifactLoader(ArtifactLoader):
+    def __init__(
+        self,
+        storage_options: dict[str, Any] | None = None,
+    ) -> None:
         import hashlib
+
+        # Keep variable "target" unbound to pass into weakref.finalize;
+        # with a reference to class in finalize arguments the class is never garbage collected.
+        target = str(Path(mkdtemp()).resolve())
+        self.lpath = target
+        self._finalizer = weakref.finalize(self, lambda t: shutil.rmtree(t), t=target)
+        self.storage_options = storage_options or {}
         self._hash = hashlib.md5(usedforsecurity=False)
 
+    @cached_property
+    def has_fsspec(self) -> bool:
+        return util.find_spec("fsspec") is not None
+
     def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> Path:
-        """
-        Returns the path to the artifact on the local file system.
+        return self._cached_load(rpath=str(rpath), checksum=checksum)
 
-        Parameters
-        ----------
-        rpath: str | os.PathLike[str]
-            Local file system path to the artifact.
-        checksum: str | None
-            An optional checksum to verify the artifact integrity against.
+    @cache
+    def _cached_load(self, rpath: str, checksum: str | None = None) -> Path:
+        if self.has_fsspec:
+            from fsspec import AbstractFileSystem, filesystem
+            from fsspec.utils import get_protocol
 
-        Returns
-        -------
-        Path
-            The location of the artifact.
+            fs: AbstractFileSystem = filesystem(
+                get_protocol(str(rpath)), **self.storage_options
+            )
 
-        Raises
-        ------
-        FileNotFoundError
-            If the given path does not exist locally.
-        """
-        if not Path(rpath).exists():
-            raise FileNotFoundError(rpath)
-        if checksum is not None:
-            self.verify(rpath, checksum)
-        return Path(rpath).resolve()
+            if not fs.exists(rpath):
+                raise FileNotFoundError(rpath)
+            if fs.isfile(rpath) and checksum is not None:
+                rchecksum = fs.checksum(rpath)
+                if rchecksum != checksum:
+                    raise ValueError(
+                        f"integrity check failed: file hashes do not match "
+                        f"(expected {checksum}, got {rchecksum}."
+                    )
+            fs.get(rpath, self.lpath, recursive=True)
 
-    def verify(self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22) -> None:
-        """Verify the integrity of the artifact path against an expected checksum."""
+            return (Path(self.lpath) / Path(rpath).name).resolve()
+        else:
+            # Ensure rpath is local file
+            if not re.match(r"^(?!.*://|file://).*", str(rpath)):
+                raise ValueError(
+                    f"class {self.__class__.__name__}() requires `fsspec` to handle non-local files. You can install it by running `python -m pip install --upgrade fsspec`"
+                )
+            if not Path(rpath).exists():
+                raise FileNotFoundError(rpath)
+            if checksum is not None:
+                self.verify(rpath, checksum)
+            return Path(rpath).resolve()
+
+    def verify(
+        self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22
+    ) -> None:
         with open(rpath, "rb") as f:
             chunk = f.read(blocksize)
             while chunk:
@@ -165,101 +193,6 @@ class LocalArtifactLoader(ArtifactLoader):
                 f"(expected {expected}, calculated {calculated} using "
                 f"algorithm {self._hash.name!r})"
             )
-
-
-# TODO(m.mynter): Merge LocalLoader and FilePathArtifactLoader on the following grounds:
-#  0. In __init__(): get status of "fsspec installed" via importlib and save as instance attribute.
-#   Pretty solution: functools.cached_property.
-#  1. If importlib.util.find_spec("fsspec") is None: -> local path only.
-#   -> In this case, check for leading protocols on rpath, raise if not None or "file://"
-#  1b. verify() computes the checksum as seen in LocalLoader.verify() (above).
-#  2. If importlib.util.find_spec("fsspec") is not None: -> all paths
-#   -> Use logic from FilePathLoader.load()
-#  3. verify() checksum against fs.checksum(rpath).
-
-class FilePathArtifactLoader(ArtifactLoader):
-    """
-    ArtifactLoader for loading artifacts using fsspec-supported file systems.
-
-    This allows for loading from various file systems like local, S3, GCS, etc.,
-    by using a unified API provided by fsspec.
-
-    Parameters
-    ----------
-    path : str | os.PathLike[str]
-        The path to the artifact, which can include a protocol specifier
-        (like 's3://') for remote access.
-    destination : str | os.PathLike[str] | None
-        The local directory to which remote artifacts will be downloaded.
-        If provided, the model data will be persisted. Otherwise, local artifacts are cleaned.
-    storage_options : dict[str, Any] | None
-        Storage options for remote storage.
-
-    Raises
-    ------
-    ModuleNotFoundError
-        If fsspec is not installed.
-    """
-
-    def __init__(
-        self,
-        path: str | os.PathLike[str],
-        destination: str | os.PathLike[str] | None = None,
-        storage_options: dict[str, Any] | None = None,
-    ) -> None:
-        import importlib.util
-
-        if importlib.util.find_spec("fsspec") is None:  #
-            raise ModuleNotFoundError(
-                f"class {self.__class__.__name__}() requires `fsspec` to be installed. "
-                "You can install it by running `python -m pip install --upgrade fsspec`"
-            )
-        self.source_path = str(path)
-        if destination:
-            target_path = str(Path(destination).resolve())
-            delete = False
-        else:
-            target_path = str(Path(mkdtemp()).resolve())
-            delete = True
-        self._finalizer = weakref.finalize(
-            self, lambda d, t: shutil.rmtree(t) if d else None, d=delete, t=target_path
-        )
-        self.target_path = target_path
-        self.storage_options = storage_options or {}
-
-    # TODO(m.mynter): Use functools.cache on this guy.
-    #  Write test with a cache lookup of an artifact, goal: time(second deser) << time(first deser).
-    def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> Path:
-        """
-        Loads the artifact and returns the local path.
-
-        Parameters
-        ----------
-        checksum: str | None
-            An optional checksum to verify the artifact integrity against.
-
-        Returns
-        -------
-        Path
-            The path to the artifact on the local filesystem.
-
-        Raises
-        ------
-        ImportError
-            When fsspec is not installed.
-        """
-        from fsspec import AbstractFileSystem, filesystem
-        from fsspec.utils import get_protocol
-
-        fs: AbstractFileSystem = filesystem(get_protocol(self.source_path), **self.storage_options)
-
-        if not fs.exists(self.source_path):
-            raise FileNotFoundError(self.source_path)
-        if fs.isfile(self.source_path) and checksum is not None:
-            self.verify(checksum)
-        fs.get(self.source_path, self.target_path, recursive=True)
-
-        return Path(self.target_path).resolve()
 
 
 # TODO(n.junge): Check for simplifications of `Artifact.deserialize()`:
@@ -289,7 +222,9 @@ class Artifact(Generic[T], metaclass=ABCMeta):
         A checksum to optionally verify artifact integrity with before loading the artifact.
     """
 
-    def __init__(self, path: str | os.PathLike[str], checksum: str | None = None) -> None:
+    def __init__(
+        self, path: str | os.PathLike[str], checksum: str | None = None
+    ) -> None:
         self._path = path
         self._checksum = checksum
         # self.path = loader.load(checksum)  # fetch the artifact from wherever it resides
