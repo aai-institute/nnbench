@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/guides/artifacts/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/guides/transforms/">
       
       
-        <link rel="prev" href="../runners/">
+        <link rel="prev" href="../artifacts/">
       
       
-        <link rel="next" href="../transforms/">
+        <link rel="next" href="../../tutorials/">
       
       
       <link rel="icon" href="../../_images/aai-favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Using artifacts in nnbench - nnbench</title>
+        <title>Using transforms to manipulate benchmark records - nnbench</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#using-artifacts-in-nnbench" class="md-skip">
+        <a href="#using-transforms-to-manipulate-benchmark-records" class="md-skip">
           Skip to content
         </a>
       
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Using artifacts in nnbench
+              Using transforms to manipulate benchmark records
             
           </span>
         </div>
@@ -439,6 +439,27 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../artifacts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using artifacts in nnbench
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -455,7 +476,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
           
   
   <span class="md-ellipsis">
-    Using artifacts in nnbench
+    Using transforms to manipulate benchmark records
   </span>
   
 
@@ -466,7 +487,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
         
   
   <span class="md-ellipsis">
-    Using artifacts in nnbench
+    Using transforms to manipulate benchmark records
   </span>
   
 
@@ -488,18 +509,36 @@ released. For the most accurate information, please <strong><a href="../../..">a
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#using-the-artifactloader" class="md-nav__link">
+  <a href="#types-of-transforms-1-1-vs-n-1-vs-n-n" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the ArtifactLoader
+      Types of transforms: 1-&gt;1 vs. N-&gt;1 vs. N-&gt;N
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-artifact-class" class="md-nav__link">
+  <a href="#invertible-transforms" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the Artifact class
+      Invertible transforms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general-considerations-for-writing-and-using-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      General considerations for writing and using transforms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-the-full-example-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix: The full example code
     </span>
   </a>
   
@@ -509,27 +548,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../transforms/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Using transforms to manipulate benchmark records
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1170,18 +1188,36 @@ released. For the most accurate information, please <strong><a href="../../..">a
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#using-the-artifactloader" class="md-nav__link">
+  <a href="#types-of-transforms-1-1-vs-n-1-vs-n-n" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the ArtifactLoader
+      Types of transforms: 1-&gt;1 vs. N-&gt;1 vs. N-&gt;N
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-artifact-class" class="md-nav__link">
+  <a href="#invertible-transforms" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the Artifact class
+      Invertible transforms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general-considerations-for-writing-and-using-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      General considerations for writing and using transforms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-the-full-example-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix: The full example code
     </span>
   </a>
   
@@ -1202,7 +1238,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/guides/artifacts.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/guides/transforms.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1210,54 +1246,148 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
 
-<h1 id="using-artifacts-in-nnbench">Using artifacts in nnbench<a class="headerlink" href="#using-artifacts-in-nnbench" title="Permanent link">&para;</a></h1>
-<p>With more complex benchmarking set-ups you will find yourself wanting to use static artifacts.
-These can be, for example, test and validation data, or serialized model files from a model registry.
-nnbench provides an artifact framework to handle these assets.
-This framework consists of the <code>ArtifactLoader</code>, and the <code>Artifact</code> base classes.</p>
-<p>Conceptually, they are intended to be used as follows:
-- <code>ArtifactLoader</code> to load the artifact onto the local filesystem,
-- <code>Artifact</code> to handle the artifact within nnbench and enable lazy loading into memory,</p>
-<p>You can implement your own derivative classes to handle custom logic for artifact deserialization and loading.
-Additionally, we provide some derived classes out of the box to handle local filepaths using filesystems, which are covered by the fsspec package.
-Let us now discuss each class of the framework in detail.</p>
-<h2 id="using-the-artifactloader">Using the <code>ArtifactLoader</code><a class="headerlink" href="#using-the-artifactloader" title="Permanent link">&para;</a></h2>
-<p>The <code>ArtifactLoader</code> is an abstract base class for which you can implement your custom instance by overriding the <code>load()</code> method, which needs to return a file path either as string or a path-like object.
-You can see an example of it in the <code>LocalArtifactLoader</code> implementation that is also provided out of the box by nnbench.
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">os</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">nnbench.types</span> <span class="kn">import</span> <span class="n">ArtifactLoader</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">class</span> <span class="nc">LocalArtifactLoader</span><span class="p">(</span><span class="n">ArtifactLoader</span><span class="p">):</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-</span></code></pre></div></p>
-<p>The use of these <code>ArtifactLoader</code> becomes apparent when you think about using it for remote artifact storage locations such as an S3 bucket. 
-Besides the barebones <code>LocalArtifactLoader</code>, nnbench also provides the <code>nnbench.types.FilePathArtifactLoader</code>.
-To use it you have to <code>pip install fsspec</code> as an additional dependency.
-The class is then able to handle different filepaths, like S3 and GCS URIs.</p>
-<h2 id="using-the-artifact-class">Using the <code>Artifact</code> class<a class="headerlink" href="#using-the-artifact-class" title="Permanent link">&para;</a></h2>
-<p>The main purpose of the <code>Artifact</code> class is to load (deserialize) artifacts in a type-safe way, enabling autocompletion and type inference for your IDE to improve your developer experience.
-When implementing a custom <code>Artifact</code> subclass, you only have to override the <code>deserialize</code> method, which assigns the loaded object(s) to the <code>Artifact._value</code> member.
-You can use the <code>self.path</code> attribute to access the local filepath to the serialized artifact. This is provided by the <code>.load()</code> method of the appropriate <code>ArtifactLoader</code> that you have to pass upon instantiation.
-The artifact then exposes the wrapped object with the <code>.value</code> property, which returns the value of the internal <code>self._value</code> class member.
-Artifacts are loaded lazily.
-If you want to deserialize an artifact at a specific point, you can do so by calling the implemented <code>deserialize()</code> method.
-Otherwise, <code>deserialize()</code> is called internally when you first access the value. 
-To provide a minimal example, here is how you could implement an <code>Artifact</code> for loading <code>numpy</code> arrays. </p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">nnbench.types</span> <span class="kn">import</span> <span class="n">Artifact</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">loaders</span> <span class="kn">import</span> <span class="n">LocalArtifactLoader</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">class</span> <span class="nc">NumpyArtifact</span><span class="p">(</span><span class="n">Artifact</span><span class="p">):</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">array_artifact</span> <span class="o">=</span> <span class="n">NumpyArtifact</span><span class="p">(</span><span class="n">LocalArtifactLoader</span><span class="p">(</span><span class="s1">&#39;path/to/array&#39;</span><span class="p">))</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">array_artifact</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<h1 id="using-transforms-to-manipulate-benchmark-records">Using transforms to manipulate benchmark records<a class="headerlink" href="#using-transforms-to-manipulate-benchmark-records" title="Permanent link">&para;</a></h1>
+<p>After a successful benchmark run execution, you end up with your metrics, context, and parameters in a single benchmark record struct.
+In general, this data is a best-effort representation of the environment and configuration the benchmarks are run in.</p>
+<p>However, in some situations, manual editing and transformation of these records is required.
+nnbench exposes the <code>nnbench.io.transforms</code> module to facilitate these transforms.</p>
+<h2 id="types-of-transforms-1-1-vs-n-1-vs-n-n">Types of transforms: 1-&gt;1 vs. N-&gt;1 vs. N-&gt;N<a class="headerlink" href="#types-of-transforms-1-1-vs-n-1-vs-n-n" title="Permanent link">&para;</a></h2>
+<p>In nnbench, transforms are grouped by the functional relationship between inputs and outputs.
+The easiest case is a 1-&gt;1 (one-to-one) transform, which takes a record and produces another.</p>
+<p>In the N-&gt;1 (N-to-one) case, the transform takes a collection of records and produces a single output record.
+This case is very common when computing statistics on records, like mean and variance of target metrics.</p>
+<p>In the N-&gt;N (N-to-N) case, the transform maps the input record collection to an output collection, generally assumed to be of the same length.
+This case is common when mapping records to an equivalent but more easily digestible record format.</p>
+<p>The following is an example of a 1-&gt;1 transform, which maps the benchmark parameters to representations that are JSON-serializable.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span> <span class="nc">MyTransform</span><span class="p">(</span><span class="n">OneToOneTransform</span><span class="p">):</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">BenchmarkRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BenchmarkRecord</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply this transform on a record.&quot;&quot;&quot;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">benchmarks</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_json</span><span class="p">(),</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>            <span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="k">return</span> <span class="n">record</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">def</span> <span class="nf">iapply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">BenchmarkRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BenchmarkRecord</span><span class="p">:</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the inverse of this transform.&quot;&quot;&quot;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">benchmarks</span><span class="p">:</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>            <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]),</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]),</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="p">}</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="k">return</span> <span class="n">record</span>
+</span></code></pre></div>
+<p>In the <code>MyTransform.apply()</code> method, the NumPy array is serialized as a list by calling <code>array.tolist()</code>, while the model is saved by its checksum only.
+In real applications, parametrizing the model with basic Python values will likely take more effort, but this is a first example of how to do it.</p>
+<p>The transform is applied on the resulting record, and allows writing the record to JSON without any errors that would normally occur.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>    <span class="n">transform</span> <span class="o">=</span> <span class="n">MyTransform</span><span class="p">()</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">trecord</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">f</span> <span class="o">=</span> <span class="n">FileIO</span><span class="p">()</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">trecord</span><span class="p">,</span> <span class="s2">&quot;record.json&quot;</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">record2</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;record.json&quot;</span><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">new_record</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">iapply</span><span class="p">(</span><span class="n">record2</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="invertible-transforms">Invertible transforms<a class="headerlink" href="#invertible-transforms" title="Permanent link">&para;</a></h2>
+<p>Borrowing from the same concept in linear algebra, an nnbench <code>Transform</code> is said to be <strong>invertible</strong> if there is a function that restores the original record when applied on the transformed record.
+For simplicity, the inverse of a transform can be directly defined in the class with the <code>Transform.iapply()</code> method.</p>
+<p>In general, when designing an invertible transform, it should hold that for any benchmark record <code>r</code>, <code>T.iapply(T.apply(r)) == r</code>.
+A transform is signalled to be invertible if the <code>Transform.invertible</code> attribute is set to <code>True</code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>While this framework is useful for designing and thinking about transforms, it is not actually enforced by nnbench.
+nnbench will not take any steps to ensure invertibility of transforms, so any transforms should be tested against expected benchmark record data.</p>
+</div>
+<h2 id="general-considerations-for-writing-and-using-transforms">General considerations for writing and using transforms<a class="headerlink" href="#general-considerations-for-writing-and-using-transforms" title="Permanent link">&para;</a></h2>
+<p>A few points are useful to keep in mind while writing transforms:</p>
+<ul>
+<li>It is in general not advised to inject arbitrary metadata into records via a transform. If you find yourself needing to supply more metadata, consider using a <code>ContextProvider</code> instead.</li>
+<li>When serializing Python values (like the benchmark parameters), be careful to choose a unique representation, otherwise you might not be able to reconstruct model and data versions from written records in a reproducible manner.</li>
+<li>When designing a transform that is not invertible, consider raising a <code>NotImplementedError</code> in the <code>iapply()</code> method to prevent accidental calls to the (ill-defined) inverse.</li>
+</ul>
+<h2 id="appendix-the-full-example-code">Appendix: The full example code<a class="headerlink" href="#appendix-the-full-example-code" title="Permanent link">&para;</a></h2>
+<p>Here is the full example on how to use transforms for record-to-file serialization:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kn">import</span> <span class="nn">nnbench</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kn">from</span> <span class="nn">nnbench.io.transforms</span> <span class="kn">import</span> <span class="n">OneToOneTransform</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kn">from</span> <span class="nn">nnbench.reporter.file</span> <span class="kn">import</span> <span class="n">FileIO</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kn">from</span> <span class="nn">nnbench.types</span> <span class="kn">import</span> <span class="n">BenchmarkRecord</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">class</span> <span class="nc">MyModel</span><span class="p">:</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checksum</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">checksum</span> <span class="o">=</span> <span class="n">checksum</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;checksum&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">checksum</span><span class="p">}</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="nd">@classmethod</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MyModel&quot;</span><span class="p">:</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="c1"># intentionally fail if no checksum is given.</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">checksum</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;checksum&quot;</span><span class="p">])</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">MyModel</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="k">class</span> <span class="nc">MyTransform</span><span class="p">(</span><span class="n">OneToOneTransform</span><span class="p">):</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">BenchmarkRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BenchmarkRecord</span><span class="p">:</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply this transform on a record.&quot;&quot;&quot;</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">benchmarks</span><span class="p">:</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>            <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_json</span><span class="p">(),</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>            <span class="p">}</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>        <span class="k">return</span> <span class="n">record</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>    <span class="k">def</span> <span class="nf">iapply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">BenchmarkRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BenchmarkRecord</span><span class="p">:</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the inverse of this transform.&quot;&quot;&quot;</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">benchmarks</span><span class="p">:</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>            <span class="n">b</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]),</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]),</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>            <span class="p">}</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>        <span class="k">return</span> <span class="n">record</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>    <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>    <span class="k">class</span> <span class="nc">MyParams</span><span class="p">(</span><span class="n">nnbench</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>        <span class="n">model</span><span class="p">:</span> <span class="n">MyModel</span>
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a>    <span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a>    <span class="n">m</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">(</span><span class="n">checksum</span><span class="o">=</span><span class="s2">&quot;12345&quot;</span><span class="p">)</span>
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">10</span><span class="p">,))</span>
+</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>    <span class="n">params</span> <span class="o">=</span> <span class="n">MyParams</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>    <span class="n">record</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a>
+</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>    <span class="n">transform</span> <span class="o">=</span> <span class="n">MyTransform</span><span class="p">()</span>
+</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a>    <span class="n">trecord</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>    <span class="n">f</span> <span class="o">=</span> <span class="n">FileIO</span><span class="p">()</span>
+</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">trecord</span><span class="p">,</span> <span class="s2">&quot;record.json&quot;</span><span class="p">)</span>
+</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>
+</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>    <span class="n">record2</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;record.json&quot;</span><span class="p">)</span>
+</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>    <span class="n">new_record</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">iapply</span><span class="p">(</span><span class="n">record2</span><span class="p">)</span>
+</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a>
+</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a>
+</span><span id="__span-2-77"><a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="__span-2-78"><a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a>    <span class="n">main</span><span class="p">()</span>
 </span></code></pre></div>
 
 
