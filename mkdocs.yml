@@ -23,6 +23,7 @@ nav:
     - guides/organization.md
     - guides/runners.md 
     - guides/artifacts.md
+    - guides/transforms.md
   - Examples:
     - tutorials/index.md
     - tutorials/artifact_benchmarking.md
