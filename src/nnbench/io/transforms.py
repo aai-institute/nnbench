@@ -1,5 +1,6 @@
 """Metaclasses for defining transforms acting on benchmark records."""
 
+from abc import ABC, abstractmethod
 from typing import Sequence
 
 from nnbench.types import BenchmarkRecord
@@ -8,19 +9,18 @@ from nnbench.types import BenchmarkRecord
 class Transform:
     """The basic transform which every transform has to inherit from."""
 
-    pass
-
-
-class OneToOneTransform(Transform):
     invertible: bool = True
     """
     Whether this transform is invertible,
     i.e. records can be converted back and forth with no changes or data loss.
     """
+    pass
 
+
+class OneToOneTransform(ABC, Transform):
+    @abstractmethod
     def apply(self, record: BenchmarkRecord) -> BenchmarkRecord:
-        """
-        Apply this transform to a benchmark record.
+        """Apply this transform to a benchmark record.
 
         Parameters
         ----------
@@ -34,8 +34,7 @@ class OneToOneTransform(Transform):
         """
 
     def iapply(self, record: BenchmarkRecord) -> BenchmarkRecord:
-        """
-        Apply the inverse of this transform.
+        """Apply the inverse of this transform.
 
         In general, applying the inverse on a record not previously transformed
         may yield unexpected results.
@@ -49,25 +48,26 @@ class OneToOneTransform(Transform):
         -------
         BenchmarkRecord
             The inversely transformed benchmark record.
+
+        Raises
+        ------
+        RuntimeError
+            If the `Transform.invertible` attribute is set to `False`.
         """
+        if not self.invertible:
+            raise RuntimeError(f"{self.__class__.__name__}() is marked as not invertible")
+        raise NotImplementedError
 
 
 class ManyToOneTransform(Transform):
-    """
-    A many-to-one transform reducing a collection of records to a single record.
+    """A many-to-one transform reducing a collection of records to a single record.
 
     This is useful for computing statistics on a collection of runs.
     """
 
-    invertible: bool = True
-    """
-    Whether this transform is invertible,
-    i.e. records can be converted back and forth with no changes or data loss.
-    """
-
+    @abstractmethod
     def apply(self, record: Sequence[BenchmarkRecord]) -> BenchmarkRecord:
-        """
-        Apply this transform to a benchmark record.
+        """Apply this transform to a benchmark record.
 
         Parameters
         ----------
@@ -82,8 +82,7 @@ class ManyToOneTransform(Transform):
         """
 
     def iapply(self, record: BenchmarkRecord) -> Sequence[BenchmarkRecord]:
-        """
-        Apply the inverse of this transform.
+        """Apply the inverse of this transform.
 
         In general, applying the inverse on a record not previously transformed
         may yield unexpected results.
@@ -97,31 +96,32 @@ class ManyToOneTransform(Transform):
         -------
         Sequence[BenchmarkRecord]
             The inversely transformed benchmark record sequence.
+
+        Raises
+        ------
+        RuntimeError
+            If the `Transform.invertible` attribute is set to `False`.
         """
-        # TODO: Does this even make sense? Can't hurt to allow it on paper, though.
+        if not self.invertible:
+            raise RuntimeError(f"{self.__class__.__name__}() is marked as not invertible")
+        raise NotImplementedError
 
 
 class ManyToManyTransform(Transform):
-    """
-    A many-to-many transform mapping an input record collection to an output collection.
+    """A many-to-many transform mapping an input record collection to an output collection.
 
     Use this to programmatically wrangle metadata or types in records, or to
     convert parameters into database-ready representations.
     """
 
-    invertible: bool = True
-    """
-    Whether this transform is invertible,
-    i.e. records can be converted back and forth with no changes or data loss.
-    """
     length_invariant: bool = True
     """
     Whether this transform preserves the number of records, i.e. no records are dropped.
     """
 
+    @abstractmethod
     def apply(self, record: Sequence[BenchmarkRecord]) -> Sequence[BenchmarkRecord]:
-        """
-        Apply this transform to a benchmark record.
+        """Apply this transform to a benchmark record.
 
         Parameters
         ----------
@@ -135,8 +135,7 @@ class ManyToManyTransform(Transform):
         """
 
     def iapply(self, record: Sequence[BenchmarkRecord]) -> Sequence[BenchmarkRecord]:
-        """
-        Apply the inverse of this transform.
+        """Apply the inverse of this transform.
 
         In general, applying the inverse on a record not previously transformed
         may yield unexpected results.
@@ -150,4 +149,12 @@ class ManyToManyTransform(Transform):
         -------
         Sequence[BenchmarkRecord]
             The inversely transformed benchmark record sequence.
+
+        Raises
+        ------
+        RuntimeError
+            If the `Transform.invertible` attribute is set to `False`.
         """
+        if not self.invertible:
+            raise RuntimeError(f"{self.__class__.__name__}() is marked as not invertible")
+        raise NotImplementedError
