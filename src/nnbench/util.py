@@ -30,21 +30,27 @@ def ismodule(name: str | os.PathLike[str]) -> bool:
 
 def modulename(file: str | os.PathLike[str]) -> str:
     """Convert a file name to its corresponding Python module name."""
-    fpath = Path(file)
+    fpath = Path(file).with_suffix("")
     if len(fpath.parts) == 1:
         return str(fpath)
 
-    filename = fpath.with_suffix("").as_posix()
+    filename = fpath.as_posix()
     return filename.replace("/", ".")
 
 
 def import_file_as_module(file: str | os.PathLike[str]) -> ModuleType:
-    fpath = Path(file)
+    fpath = Path(file).resolve()  # Python module __file__ paths are absolute.
     if not fpath.is_file() or fpath.suffix != ".py":
         raise ValueError(f"path {str(file)!r} is not a Python file")
 
-    # TODO: For absolute paths, the resulting module name will be horrifying
-    #  -> find a sensible cutoff point (project root)
+    # TODO: Recomputing this map in a loop can be expensive if many modules are loaded.
+    modmap = {m.__file__: m for m in sys.modules.values() if getattr(m, "__file__", None)}
+    spath = str(fpath)
+    if spath in modmap:
+        # if the module under "file" has already been loaded, return it,
+        # otherwise we get nasty type errors in collection.
+        return modmap[spath]
+
     modname = modulename(fpath)
     if modname in sys.modules:
         # return already loaded module
