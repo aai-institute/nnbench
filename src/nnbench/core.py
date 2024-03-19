@@ -7,7 +7,6 @@ import itertools
 import sys
 import types
 import warnings
-from functools import partial, update_wrapper
 from typing import Any, Callable, Iterable, Union, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
@@ -173,8 +172,7 @@ def parametrize(
                 )
             names.add(name)
 
-            wrapper = update_wrapper(partial(fn, **params), fn)
-            bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
+            bm = Benchmark(fn, name=name, params=params, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
         return benchmarks
 
@@ -232,8 +230,7 @@ def product(
                 )
             names.add(name)
 
-            wrapper = update_wrapper(partial(fn, **params), fn)
-            bm = Benchmark(wrapper, name=name, setUp=setUp, tearDown=tearDown, tags=tags)
+            bm = Benchmark(fn, name=name, params=params, setUp=setUp, tearDown=tearDown, tags=tags)
             benchmarks.append(bm)
         return benchmarks
 
