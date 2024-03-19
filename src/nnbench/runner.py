@@ -48,12 +48,28 @@ def timer(bm: dict[str, Any]) -> Generator[None, None, None]:
 
 
 class BenchmarkRunner:
-    """An abstract benchmark runner class."""
+    """
+    An abstract benchmark runner class.
+
+    Collects benchmarks from a module or file using the collect() method.
+    Runs a previously collected benchmark workload with parameters in the run() method,
+    outputting the results to a JSON-like document.
+
+    Optionally checks input parameters against the benchmark function's interfaces,
+    raising an error if the input types do not match the expected types.
+
+    Parameters
+    ----------
+    typecheck: bool
+        Whether to check parameter types against the expected benchmark input types.
+        Type mismatches will result in an error before the workload is run.
+    """
 
     benchmark_type = Benchmark
 
-    def __init__(self):
+    def __init__(self, typecheck: bool = True):
         self.benchmarks: list[Benchmark] = list()
+        self.typecheck = typecheck
 
     def _check(self, params: dict[str, Any]) -> None:
         param_types = {k: type(v) for k, v in params.items()}
@@ -63,17 +79,11 @@ class BenchmarkRunner:
         def _issubtype(t1: type, t2: type) -> bool:
             """Small helper to make typechecks work on generics."""
 
-            def _canonicalize(t: type) -> type:
-                t_origin = get_origin(t)
-                if t_origin is not None:
-                    return t_origin
-                return t
-
             if t1 == t2:
                 return True
 
-            t1 = _canonicalize(t1)
-            t2 = _canonicalize(t2)
+            t1 = get_origin(t1) or t1
+            t2 = get_origin(t2) or t2
             if not inspect.isclass(t1):
                 return False
             # TODO: Extend typing checks to args.
@@ -85,13 +95,13 @@ class BenchmarkRunner:
                 if name in params and default != empty:
                     logger.debug(
                         f"using given value {params[name]} over default value {default} "
-                        f"for parameter {name!r} in benchmark {bm.fn.__name__}()"
+                        f"for parameter {name!r} in benchmark {bm.name}()"
                     )
 
                 if typ == empty:
-                    logger.debug(f"parameter {name!r} untyped in benchmark {bm.fn.__name__}().")
+                    logger.debug(f"parameter {name!r} untyped in benchmark {bm.name}().")
 
-                if name in allvars:
+                if name in allvars and self.typecheck:
                     currvar = allvars[name]
                     orig_type, orig_val = new_type, new_val = currvar
                     # If a benchmark has a variable without a default value,
@@ -121,8 +131,9 @@ class BenchmarkRunner:
             if name not in param_types and default == empty:
                 raise ValueError(f"missing value for required parameter {name!r}")
 
-            # skip the subsequent type check if the variable is untyped.
-            if typ == empty:
+            # skip the subsequent type check if the variable is untyped,
+            # or if typechecks are disabled.
+            if typ == empty or not self.typecheck:
                 continue
             # type-check parameter value against the narrowest hinted type.
             if name in param_types and not _issubtype(param_types[name], typ):
