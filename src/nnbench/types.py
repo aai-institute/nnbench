@@ -111,14 +111,10 @@ class BenchmarkRecord:
 
 class ArtifactLoader:
     @abstractmethod
-    def load(
-        self, rpath: str | os.PathLike[str], checksum: str | None = None
-    ) -> os.PathLike[str]:
+    def load(self, rpath: str | os.PathLike[str], checksum: str | None = None) -> os.PathLike[str]:
         """Load the artifact."""
 
-    def verify(
-        self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22
-    ) -> None:
+    def verify(self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22) -> None:
         """Verify an artifact path checksum against an expected value."""
 
 
@@ -150,9 +146,7 @@ class PathArtifactLoader(ArtifactLoader):
             from fsspec import AbstractFileSystem, filesystem
             from fsspec.utils import get_protocol
 
-            fs: AbstractFileSystem = filesystem(
-                get_protocol(str(rpath)), **self.storage_options
-            )
+            fs: AbstractFileSystem = filesystem(get_protocol(str(rpath)), **self.storage_options)
 
             if not fs.exists(rpath):
                 raise FileNotFoundError(rpath)
@@ -178,9 +172,7 @@ class PathArtifactLoader(ArtifactLoader):
                 self.verify(rpath, checksum)
             return Path(rpath).resolve()
 
-    def verify(
-        self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22
-    ) -> None:
+    def verify(self, rpath: str | os.PathLike[str], expected: str, blocksize: int = 2**22) -> None:
         with open(rpath, "rb") as f:
             chunk = f.read(blocksize)
             while chunk:
@@ -222,9 +214,7 @@ class Artifact(Generic[T], metaclass=ABCMeta):
         A checksum to optionally verify artifact integrity with before loading the artifact.
     """
 
-    def __init__(
-        self, path: str | os.PathLike[str], checksum: str | None = None
-    ) -> None:
+    def __init__(self, path: str | os.PathLike[str], checksum: str | None = None) -> None:
         self._path = path
         self._checksum = checksum
         # self.path = loader.load(checksum)  # fetch the artifact from wherever it resides
