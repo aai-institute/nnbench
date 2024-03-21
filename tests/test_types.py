@@ -1,13 +1,13 @@
 import inspect
 
-from nnbench import types
+from nnbench.types.types import Interface
 
 
 def test_interface_with_no_arguments():
     def fn() -> None:
         pass
 
-    interface = types.Interface.from_callable(fn)
+    interface = Interface.from_callable(fn, {})
     assert interface.names == ()
     assert interface.types == ()
     assert interface.defaults == ()
@@ -19,7 +19,7 @@ def test_interface_with_multiple_arguments():
     def fn(a: int, b, c: str = "hello", d: float = 10.0) -> None:  # type: ignore
         pass
 
-    interface = types.Interface.from_callable(fn)
+    interface = Interface.from_callable(fn, {})
     empty = inspect.Parameter.empty
     assert interface.names == ("a", "b", "c", "d")
     assert interface.types == (int, empty, str, float)
