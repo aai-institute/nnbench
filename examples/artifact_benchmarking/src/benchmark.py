@@ -1,13 +1,100 @@
 import os
 import tempfile
 import time
-from functools import lru_cache, partial
+from functools import cache, lru_cache, partial
+from typing import Sequence
 
 import torch
+from datasets import Dataset, load_dataset
 from torch.nn import Module
 from torch.utils.data import DataLoader
+from training.training import tokenize_and_align_labels
+from transformers import (
+    AutoModelForTokenClassification,
+    AutoTokenizer,
+    DataCollatorForTokenClassification,
+)
+from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 import nnbench
+from nnbench.types import Memo
+
+
+class TokenClassificationModelMemo(Memo[Module]):
+    def __init__(self, path: str):
+        self.path = path
+
+    @cache
+    def __call__(self) -> Module:
+        model: Module = AutoModelForTokenClassification.from_pretrained(
+            self.path, use_safetensors=True
+        )
+        return model
+
+    def __str__(self):
+        return self.path
+
+
+class TokenizerMemo(Memo[PreTrainedTokenizerBase]):
+    def __init__(self, path: str):
+        self.path = path
+
+    @cache
+    def __call__(self) -> PreTrainedTokenizerBase:
+        tokenizer: PreTrainedTokenizerBase = AutoTokenizer.from_pretrained(self.path)
+        return tokenizer
+
+    def __str__(self):
+        return self.path
+
+
+class ConllValidationMemo(Memo[Dataset]):
+    def __init__(self, path: str, split: str):
+        self.path = path
+        self.split = split
+
+    @cache
+    def __call__(self) -> Dataset:
+        dataset = load_dataset(self.path)
+        path = dataset.cache_files[self.split][0]["filename"]
+        dataset = Dataset.from_file(path)
+        return dataset
+
+    def __str__(self):
+        return self.path + "/" + self.split
+
+
+class IndexLabelMapMemo(Memo[dict[int, str]]):
+    def __init__(self, path: str, split: str):
+        self.path = path
+        self.split = split
+
+    @cache
+    def __call__(self) -> dict[int, str]:
+        dataset = load_dataset(self.path)
+        path = dataset.cache_files[self.split][0]["filename"]
+        dataset = Dataset.from_file(path)
+        label_names: Sequence[str] = dataset.features["ner_tags"].feature.names
+        id2label = {i: label for i, label in enumerate(label_names)}
+        return id2label
+
+    def __str__(self):
+        return self.path + "/" + self.split
+
+
+@cache
+def make_dataloader(tokenizer, dataset):
+    tokenized_dataset = dataset.map(
+        lambda examples: tokenize_and_align_labels(tokenizer, examples),
+        batched=True,
+        remove_columns=dataset.column_names,
+    )
+    return DataLoader(
+        tokenized_dataset,
+        shuffle=False,
+        collate_fn=DataCollatorForTokenClassification(tokenizer, padding=True),
+        batch_size=8,
+    )
 
 
 @lru_cache
@@ -41,39 +128,42 @@ def run_eval_loop(model, dataloader, padding_id=-100):
     return true_positives, false_positives, true_negatives, false_negatives
 
 
-@nnbench.benchmark(tags=("metric", "aggregate"))
-def precision(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
-    precision = tp / (tp + fp + 1e-6)
-    return torch.mean(precision).item()
-
-
 parametrize_label = partial(
-    nnbench.parametrize,
-    (
-        {"class_label": "O"},
-        {"class_label": "B-PER"},
-        {"class_label": "I-PER"},
-        {"class_label": "B-ORG"},
-        {"class_label": "I-ORG"},
-        {"class_label": "B-LOC"},
-        {"class_label": "I-LOC"},
-        {"class_label": "B-MISC"},
-        {"class_label": "I-MISC"},
-    ),
+    nnbench.product,
+    model=[TokenClassificationModelMemo("dslim/distilbert-NER")],
+    tokenizer=[TokenizerMemo("dslim/distilbert-NER")],
+    valdata=[ConllValidationMemo(path="conllpp", split="validation")],
+    index_label_mapping=[IndexLabelMapMemo(path="conllpp", split="validation")],
+    class_label=["O", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC", "B-MISC", "I-MISC"],
     tags=("metric", "per-class"),
 )()
+
+
+@nnbench.benchmark(tags=("metric", "aggregate"))
+def precision(
+    model: Module,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
+    padding_id: int = -100,
+) -> float:
+    dataloader = make_dataloader(tokenizer, valdata)
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
+    precision = tp / (tp + fp + 1e-6)
+    return torch.mean(precision).item()
 
 
 @parametrize_label
 def precision_per_class(
     class_label: str,
     model: Module,
-    test_dataloader: DataLoader,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
     index_label_mapping: dict[int, str],
     padding_id: int = -100,
 ) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     precision_values = tp / (tp + fp + 1e-6)
     for idx, lbl in index_label_mapping.items():
         if lbl == class_label:
@@ -82,8 +172,15 @@ def precision_per_class(
 
 
 @nnbench.benchmark(tags=("metric", "aggregate"))
-def recall(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+def recall(
+    model: Module,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
+    padding_id: int = -100,
+) -> float:
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     recall = tp / (tp + fn + 1e-6)
     return torch.mean(recall).item()
 
@@ -92,11 +189,14 @@ def recall(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -
 def recall_per_class(
     class_label: str,
     model: Module,
-    test_dataloader: DataLoader,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
     index_label_mapping: dict[int, str],
     padding_id: int = -100,
 ) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     recall_values = tp / (tp + fn + 1e-6)
     for idx, lbl in index_label_mapping.items():
         if lbl == class_label:
@@ -105,8 +205,15 @@ def recall_per_class(
 
 
 @nnbench.benchmark(tags=("metric", "aggregate"))
-def f1(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+def f1(
+    model: Module,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
+    padding_id: int = -100,
+) -> float:
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     precision = tp / (tp + fp + 1e-6)
     recall = tp / (tp + fn + 1e-6)
     f1 = 2 * (precision * recall) / (precision + recall + 1e-6)
@@ -117,11 +224,14 @@ def f1(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -> fl
 def f1_per_class(
     class_label: str,
     model: Module,
-    test_dataloader: DataLoader,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
     index_label_mapping: dict[int, str],
     padding_id: int = -100,
 ) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     precision = tp / (tp + fp + 1e-6)
     recall = tp / (tp + fn + 1e-6)
     f1_values = 2 * (precision * recall) / (precision + recall + 1e-6)
@@ -132,8 +242,15 @@ def f1_per_class(
 
 
 @nnbench.benchmark(tags=("metric", "aggregate"))
-def accuracy(model: Module, test_dataloader: DataLoader, padding_id: int = -100) -> float:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+def accuracy(
+    model: Module,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
+    padding_id: int = -100,
+) -> float:
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     accuracy = (tp + tn) / (tp + tn + fp + fn + 1e-6)
     return torch.mean(accuracy).item()
 
@@ -142,11 +259,14 @@ def accuracy(model: Module, test_dataloader: DataLoader, padding_id: int = -100)
 def accuracy_per_class(
     class_label: str,
     model: Module,
-    test_dataloader: DataLoader,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
     index_label_mapping: dict[int, str],
     padding_id: int = -100,
 ) -> dict[str, float]:
-    tp, fp, tn, fn = run_eval_loop(model, test_dataloader, padding_id)
+    dataloader = make_dataloader(tokenizer, valdata)
+
+    tp, fp, tn, fn = run_eval_loop(model, dataloader, padding_id)
     accuracy_values = (tp + tn) / (tp + tn + fp + fn + 1e-6)
     for idx, lbl in index_label_mapping.items():
         if lbl == class_label:
@@ -162,12 +282,19 @@ def model_configuration(model: Module) -> dict:
 
 
 @nnbench.benchmark(tags=("model-meta", "inference-time"))
-def avg_inference_time_ns(model: Module, test_dataloader: DataLoader, avg_n: int = 100) -> float:
+def avg_inference_time_ns(
+    model: Module,
+    tokenizer: PreTrainedTokenizerBase,
+    valdata: Dataset,
+    avg_n: int = 100,
+) -> float:
+    dataloader = make_dataloader(tokenizer, valdata)
+
     start_time = time.perf_counter()
     model.eval()
     num_datapoints = 0
     with torch.no_grad():
-        for batch in test_dataloader:
+        for batch in dataloader:
             if num_datapoints >= avg_n:
                 break
             num_datapoints += len(batch)

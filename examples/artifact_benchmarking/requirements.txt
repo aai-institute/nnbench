@@ -22,7 +22,6 @@ mpmath==1.3.0
 multidict==6.0.5
 multiprocess==0.70.16
 networkx==3.2.1
-nnbench @ git+https://github.com/aai-institute/nnbench.git
 numpy==1.26.4
 packaging==23.2
 pandas==2.2.1
