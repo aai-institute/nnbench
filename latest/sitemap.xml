@@ -76,11 +76,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nnbench.github.io/latest/reference/nnbench/types/</loc>
-         <lastmod>2024-03-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/util/</loc>
          <lastmod>2024-03-21</lastmod>
          <changefreq>daily</changefreq>
@@ -127,6 +122,21 @@
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/transforms/params/</loc>
+         <lastmod>2024-03-21</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/types/</loc>
+         <lastmod>2024-03-21</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/types/types/</loc>
+         <lastmod>2024-03-21</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/types/util/</loc>
          <lastmod>2024-03-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
