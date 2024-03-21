@@ -10,6 +10,7 @@ import warnings
 from typing import Any, Callable, Iterable, Union, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
+from nnbench.types.util import is_memo, is_memo_type
 
 
 def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
@@ -35,6 +36,11 @@ def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
         union_type = Union if sys.version_info < (3, 10) else types.UnionType
         if expected_type is union_type:
             expected_type = get_args(fvtype)
+        if is_memo(v) and not is_memo_type(fvtype):
+            expected_type = inspect.signature(v).return_annotation
+            # in the memo case, we can compare only types, not values.
+            if expected_type == fvtype:
+                continue
         if not isinstance(v, expected_type):
             raise TypeError(
                 f"benchmark {fun.__name__}(): expected type {fvtype}, "

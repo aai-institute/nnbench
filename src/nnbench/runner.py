@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import collections.abc
 import contextlib
 import inspect
 import logging
@@ -13,10 +12,11 @@ import warnings
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Generator, Sequence, get_args, get_origin
+from typing import Any, Callable, Generator, Sequence, get_origin
 
 from nnbench.context import Context, ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters
+from nnbench.types.util import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
@@ -28,14 +28,6 @@ def iscontainer(s: Any) -> bool:
 
 def isdunder(s: str) -> bool:
     return s.startswith("__") and s.endswith("__")
-
-
-def is_thunk(v: Any) -> bool:
-    return callable(v) and len(inspect.signature(v).parameters) == 0
-
-
-def is_thunk_type(t: type) -> bool:
-    return get_origin(t) is collections.abc.Callable and get_args(t)[0] == []
 
 
 def qualname(fn: Callable) -> str:
@@ -158,7 +150,7 @@ class BenchmarkRunner:
                 continue
 
             vtype = type(v)
-            if is_thunk(v) and not is_thunk_type(typ):
+            if is_memo(v) and not is_memo_type(typ):
                 # in case of a thunk, check the result type of __call__() instead.
                 vtype = inspect.signature(v).return_annotation
 
@@ -275,8 +267,9 @@ class BenchmarkRunner:
         self._check(dparams)
         results: list[dict[str, Any]] = []
 
-        def _maybe_dethunk(v, expected_type):
-            if is_thunk(v) and not is_thunk_type(expected_type):
+        def _maybe_dememo(v, expected_type):
+            """Compute and memoize a value if a memo is given for a variable."""
+            if is_memo(v) and not is_memo_type(expected_type):
                 return v()
             return v
 
@@ -285,7 +278,7 @@ class BenchmarkRunner:
             bmparams = dict(zip(benchmark.interface.names, benchmark.interface.defaults))
             # TODO: Does this need a copy.deepcopy()?
             bmparams |= {k: v for k, v in dparams.items() if k in bmparams}
-            bmparams = {k: _maybe_dethunk(v, bmtypes[k]) for k, v in bmparams.items()}
+            bmparams = {k: _maybe_dememo(v, bmtypes[k]) for k, v in bmparams.items()}
 
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {

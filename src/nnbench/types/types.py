@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import functools
 import inspect
 from dataclasses import dataclass, field
 from typing import (
@@ -100,7 +101,20 @@ class BenchmarkRecord:
     #  context data.
 
 
-class Thunk(Generic[T]):
+class Memo(Generic[T]):
+    @functools.cache
+    # TODO: Swap this out for a local type-wide memo cache.
+    #  Could also be a decorator, should look a bit like this:
+    # global memo_cache, memo_cache_lock
+    # _tid = id(self)
+    # val: T
+    # with memocache_lock:
+    #     if _tid in memo_cache:
+    #         val = memo_cache[_tid]
+    #         return val
+    #     val = self.compute()
+    #     memo_cache[_tid] = val
+    #     return val
     def __call__(self) -> T:
         raise NotImplementedError
 
@@ -130,6 +144,9 @@ class Benchmark:
     name: str | None
         A name to display for the given benchmark. If not given, will be constructed from the
         function name and given parameters.
+    params: dict[str, Any]
+        A partial parametrization to apply to the benchmark function. Internal only,
+        you should not need to set this yourself.
     setUp: Callable[..., None]
         A setup hook run before the benchmark. Must take all members of `params` as inputs.
     tearDown: Callable[..., None]
@@ -138,9 +155,6 @@ class Benchmark:
         Additional tags to attach for bookkeeping and selective filtering during runs.
     interface: Interface
         Interface of the benchmark function.
-    params: dict[str, Any]
-        A partial parametrization to apply to the benchmark function. Internal only,
-        you should not need to set this yourself.
     """
 
     fn: Callable[..., Any]
