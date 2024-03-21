@@ -52,6 +52,7 @@ dev = [
 ]
 docs = [
     "black",
+    "docstring-parser",
     "mike",
     "mkdocs",
     "mkdocs-callouts",
