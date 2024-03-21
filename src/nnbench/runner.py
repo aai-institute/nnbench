@@ -16,6 +16,7 @@ from typing import Any, Callable, Generator, Sequence, get_origin
 
 from nnbench.context import Context, ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters
+from nnbench.types.util import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
@@ -30,11 +31,9 @@ def isdunder(s: str) -> bool:
 
 
 def qualname(fn: Callable) -> str:
-    fnname = fn.__name__
-    fnqualname = fn.__qualname__
-    if fnname == fnqualname:
-        return fnname
-    return f"{fnqualname}.{fnname}"
+    if fn.__name__ == fn.__qualname__:
+        return fn.__name__
+    return f"{fn.__qualname__}.{fn.__name__}"
 
 
 @contextlib.contextmanager
@@ -48,48 +47,64 @@ def timer(bm: dict[str, Any]) -> Generator[None, None, None]:
 
 
 class BenchmarkRunner:
-    """An abstract benchmark runner class."""
+    """
+    An abstract benchmark runner class.
+
+    Collects benchmarks from a module or file using the collect() method.
+    Runs a previously collected benchmark workload with parameters in the run() method,
+    outputting the results to a JSON-like document.
+
+    Optionally checks input parameters against the benchmark function's interfaces,
+    raising an error if the input types do not match the expected types.
+
+    Parameters
+    ----------
+    typecheck: bool
+        Whether to check parameter types against the expected benchmark input types.
+        Type mismatches will result in an error before the workload is run.
+    """
 
     benchmark_type = Benchmark
 
-    def __init__(self):
+    def __init__(self, typecheck: bool = True):
         self.benchmarks: list[Benchmark] = list()
+        self.typecheck = typecheck
 
     def _check(self, params: dict[str, Any]) -> None:
-        param_types = {k: type(v) for k, v in params.items()}
+        if not self.typecheck:
+            return
+
         allvars: dict[str, tuple[type, Any]] = {}
+        required: set[str] = set()
         empty = inspect.Parameter.empty
 
         def _issubtype(t1: type, t2: type) -> bool:
             """Small helper to make typechecks work on generics."""
 
-            def _canonicalize(t: type) -> type:
-                t_origin = get_origin(t)
-                if t_origin is not None:
-                    return t_origin
-                return t
-
             if t1 == t2:
                 return True
 
-            t1 = _canonicalize(t1)
-            t2 = _canonicalize(t2)
+            t1 = get_origin(t1) or t1
+            t2 = get_origin(t2) or t2
             if not inspect.isclass(t1):
                 return False
             # TODO: Extend typing checks to args.
             return issubclass(t1, t2)
 
+        # stitch together the union interface comprised of all benchmarks.
         for bm in self.benchmarks:
             for var in bm.interface.variables:
                 name, typ, default = var
+                if default == empty:
+                    required.add(name)
                 if name in params and default != empty:
                     logger.debug(
                         f"using given value {params[name]} over default value {default} "
-                        f"for parameter {name!r} in benchmark {bm.fn.__name__}()"
+                        f"for parameter {name!r} in benchmark {bm.name}()"
                     )
 
                 if typ == empty:
-                    logger.debug(f"parameter {name!r} untyped in benchmark {bm.fn.__name__}().")
+                    logger.debug(f"parameter {name!r} untyped in benchmark {bm.name}().")
 
                 if name in allvars:
                     currvar = allvars[name]
@@ -116,19 +131,32 @@ class BenchmarkRunner:
                 else:
                     allvars[name] = (typ, default)
 
-        for name, (typ, default) in allvars.items():
-            # check if a no-default variable has no parameter.
-            if name not in param_types and default == empty:
-                raise ValueError(f"missing value for required parameter {name!r}")
+        # check if any required variable has no parameter.
+        missing = required - params.keys()
+        if missing:
+            msng, *_ = missing
+            raise ValueError(f"missing value for required parameter {msng!r}")
 
+        for k, v in params.items():
+            if k not in allvars:
+                warnings.warn(
+                    f"ignoring parameter {k!r} since it is not part of any benchmark interface."
+                )
+                continue
+
+            typ, default = allvars[k]
             # skip the subsequent type check if the variable is untyped.
             if typ == empty:
                 continue
+
+            vtype = type(v)
+            if is_memo(v) and not is_memo_type(typ):
+                # in case of a thunk, check the result type of __call__() instead.
+                vtype = inspect.signature(v).return_annotation
+
             # type-check parameter value against the narrowest hinted type.
-            if name in param_types and not _issubtype(param_types[name], typ):
-                raise TypeError(
-                    f"expected type {typ} for parameter {name!r}, got {param_types[name]}"
-                )
+            if not _issubtype(vtype, typ):
+                raise TypeError(f"expected type {typ} for parameter {k!r}, got {vtype}")
 
     def clear(self) -> None:
         """Clear all registered benchmarks."""
@@ -219,19 +247,6 @@ class BenchmarkRunner:
         if not self.benchmarks:
             self.collect(path_or_module, tags)
 
-        # if we still have no benchmarks after collection, warn and return an empty record.
-        if not self.benchmarks:
-            warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
-            return BenchmarkRecord(context=Context(), benchmarks=[])
-
-        params = params or {}
-        if isinstance(params, Parameters):
-            dparams = asdict(params)
-        else:
-            dparams = params
-
-        self._check(dparams)
-
         if isinstance(context, Context):
             ctx = context
         else:
@@ -239,10 +254,32 @@ class BenchmarkRunner:
             for provider in context:
                 ctx.add(provider)
 
+        # if we didn't find any benchmarks, warn and return an empty record.
+        if not self.benchmarks:
+            warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
+            return BenchmarkRecord(context=ctx, benchmarks=[])
+
+        if isinstance(params, Parameters):
+            dparams = asdict(params)
+        else:
+            dparams = params or {}
+
+        self._check(dparams)
         results: list[dict[str, Any]] = []
+
+        def _maybe_dememo(v, expected_type):
+            """Compute and memoize a value if a memo is given for a variable."""
+            if is_memo(v) and not is_memo_type(expected_type):
+                return v()
+            return v
+
         for benchmark in self.benchmarks:
-            bmparams = {k: v for k, v in dparams.items() if k in benchmark.interface.names}
-            bmdefaults = {k: v for (k, _, v) in benchmark.interface.variables}
+            bmtypes = dict(zip(benchmark.interface.names, benchmark.interface.types))
+            bmparams = dict(zip(benchmark.interface.names, benchmark.interface.defaults))
+            # TODO: Does this need a copy.deepcopy()?
+            bmparams |= {k: v for k, v in dparams.items() if k in bmparams}
+            bmparams = {k: _maybe_dememo(v, bmtypes[k]) for k, v in bmparams.items()}
+
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
@@ -251,7 +288,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
-                "parameters": bmdefaults | bmparams,
+                "parameters": bmparams,
             }
             try:
                 benchmark.setUp(**bmparams)

@@ -30,9 +30,9 @@ def test_parametrize():
 
     assert len(parametrized_benchmark) == 2
     assert has_expected_args(parametrized_benchmark[0].fn, {"param": 1})
-    assert parametrized_benchmark[0].fn() == 1
+    assert parametrized_benchmark[0].fn(**parametrized_benchmark[0].params) == 1
     assert has_expected_args(parametrized_benchmark[1].fn, {"param": 2})
-    assert parametrized_benchmark[1].fn() == 2
+    assert parametrized_benchmark[1].fn(**parametrized_benchmark[1].params) == 2
 
 
 def test_parametrize_with_duplicate_parameters():
@@ -50,13 +50,13 @@ def test_product():
 
     assert len(product_benchmark) == 4
     assert has_expected_args(product_benchmark[0].fn, {"iter1": 1, "iter2": "a"})
-    assert product_benchmark[0].fn() == (1, "a")
+    assert product_benchmark[0].fn(**product_benchmark[0].params) == (1, "a")
     assert has_expected_args(product_benchmark[1].fn, {"iter1": 1, "iter2": "b"})
-    assert product_benchmark[1].fn() == (1, "b")
+    assert product_benchmark[1].fn(**product_benchmark[1].params) == (1, "b")
     assert has_expected_args(product_benchmark[2].fn, {"iter1": 2, "iter2": "a"})
-    assert product_benchmark[2].fn() == (2, "a")
+    assert product_benchmark[2].fn(**product_benchmark[2].params) == (2, "a")
     assert has_expected_args(product_benchmark[3].fn, {"iter1": 2, "iter2": "b"})
-    assert product_benchmark[3].fn() == (2, "b")
+    assert product_benchmark[3].fn(**product_benchmark[3].params) == (2, "b")
 
 
 def test_product_with_duplicate_parameters():
