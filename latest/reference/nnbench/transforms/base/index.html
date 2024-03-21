@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/reference/nnbench/io/transforms/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/reference/nnbench/transforms/base/">
       
       
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../reporter/">
+        <link rel="next" href="../params/">
       
       
       <link rel="icon" href="../../../../_images/aai-favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>transforms - nnbench</title>
+        <title>base - nnbench</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nnbench.io.transforms" class="md-skip">
+        <a href="#nnbench.transforms.base" class="md-skip">
           Skip to content
         </a>
       
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../../..
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              transforms
+              base
             
           </span>
         </div>
@@ -786,248 +786,18 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
-    
   
   
-  
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
+    <li class="md-nav__item">
+      <a href="../../io/" class="md-nav__link">
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_3" checked>
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
-              
   
   <span class="md-ellipsis">
     io
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5_1_3" id="__nav_5_1_3_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5_1_3">
-            <span class="md-nav__icon md-icon"></span>
-            io
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    transforms
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    transforms
-  </span>
-  
-
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.io.transforms" class="md-nav__link">
-    <span class="md-ellipsis">
-      transforms
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.Transform" class="md-nav__link">
-    <span class="md-ellipsis">
-      Transform
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Transform">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.Transform.invertible" class="md-nav__link">
-    <span class="md-ellipsis">
-      invertible
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.OneToOneTransform" class="md-nav__link">
-    <span class="md-ellipsis">
-      OneToOneTransform
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="OneToOneTransform">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.OneToOneTransform.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.OneToOneTransform.iapply" class="md-nav__link">
-    <span class="md-ellipsis">
-      iapply
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToOneTransform" class="md-nav__link">
-    <span class="md-ellipsis">
-      ManyToOneTransform
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="ManyToOneTransform">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToOneTransform.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToOneTransform.iapply" class="md-nav__link">
-    <span class="md-ellipsis">
-      iapply
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform" class="md-nav__link">
-    <span class="md-ellipsis">
-      ManyToManyTransform
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="ManyToManyTransform">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform.length_invariant" class="md-nav__link">
-    <span class="md-ellipsis">
-      length_invariant
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform.iapply" class="md-nav__link">
-    <span class="md-ellipsis">
-      iapply
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1193,6 +963,278 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_6" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    transforms
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_1_6" id="__nav_5_1_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            transforms
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    base
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    base
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#nnbench.transforms.base" class="md-nav__link">
+    <span class="md-ellipsis">
+      base
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.Transform" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.Transform.invertible" class="md-nav__link">
+    <span class="md-ellipsis">
+      invertible
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.OneToOneTransform" class="md-nav__link">
+    <span class="md-ellipsis">
+      OneToOneTransform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OneToOneTransform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.OneToOneTransform.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      apply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.OneToOneTransform.iapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      iapply
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToOneTransform" class="md-nav__link">
+    <span class="md-ellipsis">
+      ManyToOneTransform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ManyToOneTransform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToOneTransform.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      apply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToOneTransform.iapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      iapply
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToManyTransform" class="md-nav__link">
+    <span class="md-ellipsis">
+      ManyToManyTransform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ManyToManyTransform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToManyTransform.length_invariant" class="md-nav__link">
+    <span class="md-ellipsis">
+      length_invariant
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToManyTransform.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      apply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nnbench.transforms.base.ManyToManyTransform.iapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      iapply
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../params/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    params
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
@@ -1291,16 +1333,16 @@ released. For the most accurate information, please <strong><a href="../../../..
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nnbench.io.transforms" class="md-nav__link">
+  <a href="#nnbench.transforms.base" class="md-nav__link">
     <span class="md-ellipsis">
-      transforms
+      base
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.Transform" class="md-nav__link">
+  <a href="#nnbench.transforms.base.Transform" class="md-nav__link">
     <span class="md-ellipsis">
       Transform
     </span>
@@ -1310,7 +1352,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.Transform.invertible" class="md-nav__link">
+  <a href="#nnbench.transforms.base.Transform.invertible" class="md-nav__link">
     <span class="md-ellipsis">
       invertible
     </span>
@@ -1324,7 +1366,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.OneToOneTransform" class="md-nav__link">
+  <a href="#nnbench.transforms.base.OneToOneTransform" class="md-nav__link">
     <span class="md-ellipsis">
       OneToOneTransform
     </span>
@@ -1334,7 +1376,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.OneToOneTransform.apply" class="md-nav__link">
+  <a href="#nnbench.transforms.base.OneToOneTransform.apply" class="md-nav__link">
     <span class="md-ellipsis">
       apply
     </span>
@@ -1343,7 +1385,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.OneToOneTransform.iapply" class="md-nav__link">
+  <a href="#nnbench.transforms.base.OneToOneTransform.iapply" class="md-nav__link">
     <span class="md-ellipsis">
       iapply
     </span>
@@ -1357,7 +1399,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToOneTransform" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToOneTransform" class="md-nav__link">
     <span class="md-ellipsis">
       ManyToOneTransform
     </span>
@@ -1367,7 +1409,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToOneTransform.apply" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToOneTransform.apply" class="md-nav__link">
     <span class="md-ellipsis">
       apply
     </span>
@@ -1376,7 +1418,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToOneTransform.iapply" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToOneTransform.iapply" class="md-nav__link">
     <span class="md-ellipsis">
       iapply
     </span>
@@ -1390,7 +1432,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToManyTransform" class="md-nav__link">
     <span class="md-ellipsis">
       ManyToManyTransform
     </span>
@@ -1400,7 +1442,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform.length_invariant" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToManyTransform.length_invariant" class="md-nav__link">
     <span class="md-ellipsis">
       length_invariant
     </span>
@@ -1409,7 +1451,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform.apply" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToManyTransform.apply" class="md-nav__link">
     <span class="md-ellipsis">
       apply
     </span>
@@ -1418,7 +1460,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </li>
         
           <li class="md-nav__item">
-  <a href="#nnbench.io.transforms.ManyToManyTransform.iapply" class="md-nav__link">
+  <a href="#nnbench.transforms.base.ManyToManyTransform.iapply" class="md-nav__link">
     <span class="md-ellipsis">
       iapply
     </span>
@@ -1446,7 +1488,7 @@ released. For the most accurate information, please <strong><a href="../../../..
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/src/nnbench/io/transforms.py" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/src/nnbench/transforms/base.py" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1454,13 +1496,13 @@ released. For the most accurate information, please <strong><a href="../../../..
   
 
 
-  <h1>transforms</h1>
+  <h1>base</h1>
 
 <div class="doc doc-object doc-module">
 
 
 
-<a id="nnbench.io.transforms"></a>
+<a id="nnbench.transforms.base"></a>
   <div class="doc doc-contents first">
   
       <p>Metaclasses for defining transforms acting on benchmark records.</p>
@@ -1480,11 +1522,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
-<h2 id="nnbench.io.transforms.Transform" class="doc doc-heading">
+<h2 id="nnbench.transforms.base.Transform" class="doc doc-heading">
           <span class="doc doc-object-name doc-class-name">Transform</span>
 
 
-<a href="#nnbench.io.transforms.Transform" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#nnbench.transforms.base.Transform" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1493,7 +1535,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <p>The basic transform which every transform has to inherit from.</p>
 
             <details class="quote">
-              <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+              <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
 <span class="normal"><a href="#__codelineno-0-10">10</a></span>
 <span class="normal"><a href="#__codelineno-0-11">11</a></span>
@@ -1528,7 +1570,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
-<h3 id="nnbench.io.transforms.Transform.invertible" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.Transform.invertible" class="doc doc-heading">
           <span class="doc doc-object-name doc-attribute-name">invertible</span>
 
   
@@ -1537,7 +1579,7 @@ released. For the most accurate information, please <strong><a href="../../../..
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
-<a href="#nnbench.io.transforms.Transform.invertible" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.Transform.invertible" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">invertible</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="kc">True</span>
 </span></code></pre></div>
 
@@ -1564,20 +1606,20 @@ i.e. records can be converted back and forth with no changes or data loss.</p>
 
 
 
-<h2 id="nnbench.io.transforms.OneToOneTransform" class="doc doc-heading">
+<h2 id="nnbench.transforms.base.OneToOneTransform" class="doc doc-heading">
           <span class="doc doc-object-name doc-class-name">OneToOneTransform</span>
 
 
-<a href="#nnbench.io.transforms.OneToOneTransform" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#nnbench.transforms.base.OneToOneTransform" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
           <p class="doc doc-class-bases">
-            Bases: <code><span title="abc.ABC">ABC</span></code>, <code><a class="autorefs autorefs-internal" title="nnbench.io.transforms.Transform" href="#nnbench.io.transforms.Transform">Transform</a></code></p>
+            Bases: <code><span title="abc.ABC">ABC</span></code>, <code><a class="autorefs autorefs-internal" title="nnbench.transforms.base.Transform" href="#nnbench.transforms.base.Transform">Transform</a></code></p>
 
 
             <details class="quote">
-              <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+              <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-20">20</a></span>
 <span class="normal"><a href="#__codelineno-0-21">21</a></span>
 <span class="normal"><a href="#__codelineno-0-22">22</a></span>
@@ -1677,7 +1719,7 @@ i.e. records can be converted back and forth with no changes or data loss.</p>
 
 
 
-<h3 id="nnbench.io.transforms.OneToOneTransform.apply" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.OneToOneTransform.apply" class="doc doc-heading">
           <span class="doc doc-object-name doc-function-name">apply</span>
 
   
@@ -1685,7 +1727,7 @@ i.e. records can be converted back and forth with no changes or data loss.</p>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
-<a href="#nnbench.io.transforms.OneToOneTransform.apply" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.OneToOneTransform.apply" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span>
 </span></code></pre></div>
 
@@ -1746,7 +1788,7 @@ i.e. records can be converted back and forth with no changes or data loss.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+            <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
             <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-21">21</a></span>
 <span class="normal"><a href="#__codelineno-0-22">22</a></span>
 <span class="normal"><a href="#__codelineno-0-23">23</a></span>
@@ -1785,11 +1827,11 @@ i.e. records can be converted back and forth with no changes or data loss.</p>
 
 
 
-<h3 id="nnbench.io.transforms.OneToOneTransform.iapply" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.OneToOneTransform.iapply" class="doc doc-heading">
           <span class="doc doc-object-name doc-function-name">iapply</span>
 
 
-<a href="#nnbench.io.transforms.OneToOneTransform.iapply" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.OneToOneTransform.iapply" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">iapply</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span>
 </span></code></pre></div>
 
@@ -1877,7 +1919,7 @@ may yield unexpected results.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+            <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
             <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
 <span class="normal"><a href="#__codelineno-0-37">37</a></span>
 <span class="normal"><a href="#__codelineno-0-38">38</a></span>
@@ -1944,23 +1986,23 @@ may yield unexpected results.</p>
 
 
 
-<h2 id="nnbench.io.transforms.ManyToOneTransform" class="doc doc-heading">
+<h2 id="nnbench.transforms.base.ManyToOneTransform" class="doc doc-heading">
           <span class="doc doc-object-name doc-class-name">ManyToOneTransform</span>
 
 
-<a href="#nnbench.io.transforms.ManyToOneTransform" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#nnbench.transforms.base.ManyToOneTransform" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
           <p class="doc doc-class-bases">
-            Bases: <code><a class="autorefs autorefs-internal" title="nnbench.io.transforms.Transform" href="#nnbench.io.transforms.Transform">Transform</a></code></p>
+            Bases: <code><a class="autorefs autorefs-internal" title="nnbench.transforms.base.Transform" href="#nnbench.transforms.base.Transform">Transform</a></code></p>
 
   
       <p>A many-to-one transform reducing a collection of records to a single record.</p>
 <p>This is useful for computing statistics on a collection of runs.</p>
 
             <details class="quote">
-              <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+              <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-62"> 62</a></span>
 <span class="normal"><a href="#__codelineno-0-63"> 63</a></span>
 <span class="normal"><a href="#__codelineno-0-64"> 64</a></span>
@@ -2072,7 +2114,7 @@ may yield unexpected results.</p>
 
 
 
-<h3 id="nnbench.io.transforms.ManyToOneTransform.apply" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.ManyToOneTransform.apply" class="doc doc-heading">
           <span class="doc doc-object-name doc-function-name">apply</span>
 
   
@@ -2080,7 +2122,7 @@ may yield unexpected results.</p>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
-<a href="#nnbench.io.transforms.ManyToOneTransform.apply" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.ManyToOneTransform.apply" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span>
 </span></code></pre></div>
 
@@ -2142,7 +2184,7 @@ yielding a single resulting record.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+            <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
             <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-68">68</a></span>
 <span class="normal"><a href="#__codelineno-0-69">69</a></span>
 <span class="normal"><a href="#__codelineno-0-70">70</a></span>
@@ -2183,11 +2225,11 @@ yielding a single resulting record.</p>
 
 
 
-<h3 id="nnbench.io.transforms.ManyToOneTransform.iapply" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.ManyToOneTransform.iapply" class="doc doc-heading">
           <span class="doc doc-object-name doc-function-name">iapply</span>
 
 
-<a href="#nnbench.io.transforms.ManyToOneTransform.iapply" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.ManyToOneTransform.iapply" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">iapply</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">]</span>
 </span></code></pre></div>
 
@@ -2275,7 +2317,7 @@ may yield unexpected results.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+            <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
             <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
 <span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
 <span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
@@ -2342,16 +2384,16 @@ may yield unexpected results.</p>
 
 
 
-<h2 id="nnbench.io.transforms.ManyToManyTransform" class="doc doc-heading">
+<h2 id="nnbench.transforms.base.ManyToManyTransform" class="doc doc-heading">
           <span class="doc doc-object-name doc-class-name">ManyToManyTransform</span>
 
 
-<a href="#nnbench.io.transforms.ManyToManyTransform" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#nnbench.transforms.base.ManyToManyTransform" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
           <p class="doc doc-class-bases">
-            Bases: <code><a class="autorefs autorefs-internal" title="nnbench.io.transforms.Transform" href="#nnbench.io.transforms.Transform">Transform</a></code></p>
+            Bases: <code><a class="autorefs autorefs-internal" title="nnbench.transforms.base.Transform" href="#nnbench.transforms.base.Transform">Transform</a></code></p>
 
   
       <p>A many-to-many transform mapping an input record collection to an output collection.</p>
@@ -2359,7 +2401,7 @@ may yield unexpected results.</p>
 convert parameters into database-ready representations.</p>
 
             <details class="quote">
-              <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+              <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-110">110</a></span>
 <span class="normal"><a href="#__codelineno-0-111">111</a></span>
 <span class="normal"><a href="#__codelineno-0-112">112</a></span>
@@ -2478,7 +2520,7 @@ convert parameters into database-ready representations.</p>
 
 
 
-<h3 id="nnbench.io.transforms.ManyToManyTransform.length_invariant" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.ManyToManyTransform.length_invariant" class="doc doc-heading">
           <span class="doc doc-object-name doc-attribute-name">length_invariant</span>
 
   
@@ -2487,7 +2529,7 @@ convert parameters into database-ready representations.</p>
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
-<a href="#nnbench.io.transforms.ManyToManyTransform.length_invariant" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.ManyToManyTransform.length_invariant" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">length_invariant</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="kc">True</span>
 </span></code></pre></div>
 
@@ -2505,7 +2547,7 @@ convert parameters into database-ready representations.</p>
 
 
 
-<h3 id="nnbench.io.transforms.ManyToManyTransform.apply" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.ManyToManyTransform.apply" class="doc doc-heading">
           <span class="doc doc-object-name doc-function-name">apply</span>
 
   
@@ -2513,7 +2555,7 @@ convert parameters into database-ready representations.</p>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
-<a href="#nnbench.io.transforms.ManyToManyTransform.apply" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.ManyToManyTransform.apply" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">]</span>
 </span></code></pre></div>
 
@@ -2574,7 +2616,7 @@ convert parameters into database-ready representations.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+            <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
             <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-122">122</a></span>
 <span class="normal"><a href="#__codelineno-0-123">123</a></span>
 <span class="normal"><a href="#__codelineno-0-124">124</a></span>
@@ -2613,11 +2655,11 @@ convert parameters into database-ready representations.</p>
 
 
 
-<h3 id="nnbench.io.transforms.ManyToManyTransform.iapply" class="doc doc-heading">
+<h3 id="nnbench.transforms.base.ManyToManyTransform.iapply" class="doc doc-heading">
           <span class="doc doc-object-name doc-function-name">iapply</span>
 
 
-<a href="#nnbench.io.transforms.ManyToManyTransform.iapply" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#nnbench.transforms.base.ManyToManyTransform.iapply" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">iapply</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Sequence">Sequence</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.BenchmarkRecord" href="../../types/#nnbench.types.BenchmarkRecord">BenchmarkRecord</a></span><span class="p">]</span>
 </span></code></pre></div>
 
@@ -2705,7 +2747,7 @@ may yield unexpected results.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>src/nnbench/io/transforms.py</code></summary>
+            <summary>Source code in <code>src/nnbench/transforms/base.py</code></summary>
             <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-137">137</a></span>
 <span class="normal"><a href="#__codelineno-0-138">138</a></span>
 <span class="normal"><a href="#__codelineno-0-139">139</a></span>

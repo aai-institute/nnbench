@@ -862,67 +862,16 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
   
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
+    <li class="md-nav__item">
+      <a href="../../reference/nnbench/io/" class="md-nav__link">
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_3" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../reference/nnbench/io/" class="md-nav__link ">
-              
   
   <span class="md-ellipsis">
     io
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5_1_3" id="__nav_5_1_3_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_1_3">
-            <span class="md-nav__icon md-icon"></span>
-            io
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/nnbench/io/transforms/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    transforms
-  </span>
-  
-
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1079,6 +1028,99 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/nnbench/transforms/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    transforms
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_1_6" id="__nav_5_1_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            transforms
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/nnbench/transforms/base/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    base
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/nnbench/transforms/params/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    params
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1250,7 +1292,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
 <p>After a successful benchmark run execution, you end up with your metrics, context, and parameters in a single benchmark record struct.
 In general, this data is a best-effort representation of the environment and configuration the benchmarks are run in.</p>
 <p>However, in some situations, manual editing and transformation of these records is required.
-nnbench exposes the <code>nnbench.io.transforms</code> module to facilitate these transforms.</p>
+nnbench exposes the <code>nnbench.transforms</code> module to facilitate these transforms.</p>
 <h2 id="types-of-transforms-1-1-vs-n-1-vs-n-n">Types of transforms: 1-&gt;1 vs. N-&gt;1 vs. N-&gt;N<a class="headerlink" href="#types-of-transforms-1-1-vs-n-1-vs-n-n" title="Permanent link">&para;</a></h2>
 <p>In nnbench, transforms are grouped by the functional relationship between inputs and outputs.
 The easiest case is a 1-&gt;1 (one-to-one) transform, which takes a record and produces another.</p>
@@ -1316,8 +1358,8 @@ nnbench will not take any steps to ensure invertibility of transforms, so any tr
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kn">import</span> <span class="nn">nnbench</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kn">from</span> <span class="nn">nnbench.io.transforms</span> <span class="kn">import</span> <span class="n">OneToOneTransform</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kn">from</span> <span class="nn">nnbench.reporter.file</span> <span class="kn">import</span> <span class="n">FileIO</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kn">from</span> <span class="nn">nnbench.reporter.file</span> <span class="kn">import</span> <span class="n">FileIO</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kn">from</span> <span class="nn">nnbench.transforms</span> <span class="kn">import</span> <span class="n">OneToOneTransform</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kn">from</span> <span class="nn">nnbench.types</span> <span class="kn">import</span> <span class="n">BenchmarkRecord</span>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
 </span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
