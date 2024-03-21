@@ -4,8 +4,8 @@ from typing import Any
 import numpy as np
 
 import nnbench
-from nnbench.io.transforms import OneToOneTransform
 from nnbench.reporter.file import FileIO
+from nnbench.transforms import OneToOneTransform
 from nnbench.types import BenchmarkRecord
 
 

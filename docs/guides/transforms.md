@@ -4,7 +4,7 @@ After a successful benchmark run execution, you end up with your metrics, contex
 In general, this data is a best-effort representation of the environment and configuration the benchmarks are run in.
 
 However, in some situations, manual editing and transformation of these records is required.
-nnbench exposes the `nnbench.io.transforms` module to facilitate these transforms.
+nnbench exposes the `nnbench.transforms` module to facilitate these transforms.
 
 ## Types of transforms: 1->1 vs. N->1 vs. N->N
 
