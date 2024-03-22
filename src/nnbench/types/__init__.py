@@ -1,1 +1,1 @@
-from .types import Benchmark, BenchmarkRecord, Memo, Parameters
+from .types import Benchmark, BenchmarkRecord, Memo, Parameters, State

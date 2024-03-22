@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import collections
 import contextlib
 import inspect
 import logging
@@ -15,7 +16,7 @@ from pathlib import Path
 from typing import Any, Callable, Generator, Sequence, get_origin
 
 from nnbench.context import Context, ContextProvider
-from nnbench.types import Benchmark, BenchmarkRecord, Parameters
+from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
 from nnbench.types.util import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
@@ -247,6 +248,9 @@ class BenchmarkRunner:
         if not self.benchmarks:
             self.collect(path_or_module, tags)
 
+        family_sizes: dict[str, Any] = collections.defaultdict(int)
+        family_indices: dict[str, Any] = collections.defaultdict(int)
+
         if isinstance(context, Context):
             ctx = context
         else:
@@ -258,6 +262,9 @@ class BenchmarkRunner:
         if not self.benchmarks:
             warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
             return BenchmarkRecord(context=ctx, benchmarks=[])
+
+        for bm in self.benchmarks:
+            family_sizes[bm.fn.__name__] += 1
 
         if isinstance(params, Parameters):
             dparams = asdict(params)
@@ -274,6 +281,14 @@ class BenchmarkRunner:
             return v
 
         for benchmark in self.benchmarks:
+            bm_family = benchmark.fn.__name__
+            state = State(
+                name=benchmark.name,
+                family=bm_family,
+                family_size=family_sizes[bm_family],
+                family_index=family_indices[bm_family],
+            )
+            family_indices[bm_family] += 1
             bmtypes = dict(zip(benchmark.interface.names, benchmark.interface.types))
             bmparams = dict(zip(benchmark.interface.names, benchmark.interface.defaults))
             # TODO: Does this need a copy.deepcopy()?
@@ -291,14 +306,14 @@ class BenchmarkRunner:
                 "parameters": bmparams,
             }
             try:
-                benchmark.setUp(**bmparams)
+                benchmark.setUp(state, bmparams)
                 with timer(res):
                     res["value"] = benchmark.fn(**bmparams)
             except Exception as e:
                 res["error_occurred"] = True
                 res["error_message"] = str(e)
             finally:
-                benchmark.tearDown(**bmparams)
+                benchmark.tearDown(state, bmparams)
                 results.append(res)
 
         return BenchmarkRecord(
