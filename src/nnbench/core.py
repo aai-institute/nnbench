@@ -10,6 +10,7 @@ import warnings
 from typing import Any, Callable, Iterable, Union, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
+from nnbench.types.types import NoOp
 from nnbench.types.util import is_memo, is_memo_type
 
 
@@ -50,10 +51,6 @@ def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
 
 def _default_namegen(fn: Callable, **kwargs: Any) -> str:
     return fn.__name__ + "_" + "_".join(f"{k}={v}" for k, v in kwargs.items())
-
-
-def NoOp(**kwargs: Any) -> None:
-    pass
 
 
 # Overloads for the ``benchmark`` decorator.
@@ -178,7 +175,14 @@ def parametrize(
                 )
             names.add(name)
 
-            bm = Benchmark(fn, name=name, params=params, setUp=setUp, tearDown=tearDown, tags=tags)
+            bm = Benchmark(
+                fn,
+                name=name,
+                params=params,
+                setUp=setUp,
+                tearDown=tearDown,
+                tags=tags,
+            )
             benchmarks.append(bm)
         return benchmarks
 
@@ -236,7 +240,14 @@ def product(
                 )
             names.add(name)
 
-            bm = Benchmark(fn, name=name, params=params, setUp=setUp, tearDown=tearDown, tags=tags)
+            bm = Benchmark(
+                fn,
+                name=name,
+                params=params,
+                setUp=setUp,
+                tearDown=tearDown,
+                tags=tags,
+            )
             benchmarks.append(bm)
         return benchmarks
 

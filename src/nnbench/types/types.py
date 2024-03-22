@@ -6,13 +6,8 @@ import copy
 import functools
 import inspect
 from dataclasses import dataclass, field
-from typing import (
-    Any,
-    Callable,
-    Generic,
-    Literal,
-    TypeVar,
-)
+from types import MappingProxyType
+from typing import Any, Callable, Generic, Literal, Mapping, Protocol, TypeVar
 
 from nnbench.context import Context
 
@@ -20,8 +15,12 @@ T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
 
-def NoOp(**kwargs: Any) -> None:
+def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None:
     pass
+
+
+class CallbackProtocol(Protocol):
+    def __call__(self, state: State, params: Mapping[str, Any]) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -101,6 +100,14 @@ class BenchmarkRecord:
     #  context data.
 
 
+@dataclass(frozen=True)
+class State:
+    name: str
+    family: str
+    family_size: int
+    family_index: int
+
+
 class Memo(Generic[T]):
     @functools.cache
     # TODO: Swap this out for a local type-wide memo cache.
@@ -158,10 +165,10 @@ class Benchmark:
     """
 
     fn: Callable[..., Any]
-    name: str | None = field(default=None)
+    name: str = field(default="")
     params: dict[str, Any] = field(default_factory=dict)
-    setUp: Callable[..., None] = field(repr=False, default=NoOp)
-    tearDown: Callable[..., None] = field(repr=False, default=NoOp)
+    setUp: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
+    tearDown: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
     interface: Interface = field(init=False, repr=False)
 
