@@ -3,16 +3,10 @@
 from __future__ import annotations
 
 import copy
-import functools
 import inspect
+import threading
 from dataclasses import dataclass, field
-from typing import (
-    Any,
-    Callable,
-    Generic,
-    Literal,
-    TypeVar,
-)
+from typing import Any, Callable, Generic, Literal, TypeVar
 
 from nnbench.context import Context
 
@@ -101,22 +95,59 @@ class BenchmarkRecord:
     #  context data.
 
 
+class MemoCache:
+    _cache: dict[int, Any] = {}
+    _lock = threading.Lock()
+
+    def __new__(cls) -> "MemoCache":
+        raise NotImplementedError(
+            "MemoCache is a module-level singleton utility. It cannot be instantiated."
+        )
+
+    @classmethod
+    def set(cls, key: int, value: Any) -> None:
+        with cls._lock:
+            cls._cache[key] = value
+
+    @classmethod
+    def clear(cls) -> None:
+        with cls._lock:
+            cls._cache.clear()
+
+    @classmethod
+    def drop(cls, key: int) -> None:
+        with cls._lock:
+            del cls._cache[key]
+
+    @classmethod
+    def get(cls, key: int) -> Any:
+        with cls._lock:
+            if key in cls._cache:
+                return cls._cache[key]
+            else:
+                return None
+
+
 class Memo(Generic[T]):
-    @functools.cache
-    # TODO: Swap this out for a local type-wide memo cache.
-    #  Could also be a decorator, should look a bit like this:
-    # global memo_cache, memo_cache_lock
-    # _tid = id(self)
-    # val: T
-    # with memocache_lock:
-    #     if _tid in memo_cache:
-    #         val = memo_cache[_tid]
-    #         return val
-    #     val = self.compute()
-    #     memo_cache[_tid] = val
-    #     return val
-    def __call__(self) -> T:
+    def __init__(self, content: Callable[..., T]) -> None:
+        self._tid = id(self)
+        self.content = content
+
+    def compute(self, *args: Any, **kwargs: Any) -> T:
         raise NotImplementedError
+
+    def __call__(self, *args: Any, **kwargs: Any) -> T:
+        val = MemoCache.get(self._tid)
+        if val is None:
+            val = self.compute(*args, **kwargs)
+            MemoCache.set(self._tid, val)
+        return val
+
+    def __del__(self) -> None:
+        try:
+            MemoCache.drop((self._tid))
+        except KeyError:
+            pass
 
 
 @dataclass(init=False, frozen=True)
