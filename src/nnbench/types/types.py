@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import copy
+import functools
 import inspect
+import logging
 import threading
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Literal, TypeVar
@@ -15,6 +17,39 @@ Variable = tuple[str, type, Any]
 
 _memo_cache: dict[int, Any] = {}
 _cache_lock = threading.Lock()
+
+logger = logging.getLogger(__name__)
+
+
+def memo_cache_size() -> int:
+    return len(_memo_cache)
+
+
+def clear_memo_cache() -> None:
+    with _cache_lock:
+        _memo_cache.clear()
+
+
+def evict_memo(_id: int) -> Any:
+    with _cache_lock:
+        return _memo_cache.pop(_id)
+
+
+def cached_memo(fn):
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        _tid = id(self)
+        with _cache_lock:
+            if _tid in _memo_cache:
+                logger.debug(f"Returning memoized value from cache with ID {_tid}")
+                return _memo_cache[_tid]
+        logger.debug(f"Computing value on memo with ID {_tid} (cache miss)")
+        value = fn(self, *args, **kwargs)
+        with _cache_lock:
+            _memo_cache[_tid] = value
+        return value
+
+    return wrapper
 
 
 def NoOp(**kwargs: Any) -> None:
@@ -99,26 +134,21 @@ class BenchmarkRecord:
 
 
 class Memo(Generic[T]):
-    def __init__(self, content: Callable[..., T]) -> None:
-        self._tid = id(self)
-        self.content = content
+    """Abstract base class for memoized values in benchmark runs."""
 
-    def compute(self) -> T:
+    # TODO: Make this better than the decorator application
+    #  -> _Cached metaclass like in fsspec's AbstractFileSystem (maybe vendor with license)
+
+    @cached_memo
+    def __call__(self) -> T:
         raise NotImplementedError
 
-    def __call__(self, *args: Any, **kwargs: Any) -> T:
-        global _memo_cache, _cache_lock
-        with _cache_lock:
-            if self._tid not in _memo_cache:
-                val = self.compute(*args, **kwargs)
-                _memo_cache[self._tid] = val
-            return _memo_cache[self._tid]
-
     def __del__(self) -> None:
-        global _memo_cache, _cache_lock
         with _cache_lock:
-            if self._tid in _memo_cache:
-                del _memo_cache[self._tid]
+            sid = id(self)
+            if sid in _memo_cache:
+                logger.debug(f"Deleting cached value for memo with ID {sid}")
+                del _memo_cache[sid]
 
 
 @dataclass(init=False, frozen=True)
