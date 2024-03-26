@@ -13,6 +13,9 @@ from nnbench.context import Context
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
 
+_memo_cache: dict[int, Any] = {}
+_cache_lock = threading.Lock()
+
 
 def NoOp(**kwargs: Any) -> None:
     pass
@@ -95,59 +98,27 @@ class BenchmarkRecord:
     #  context data.
 
 
-class MemoCache:
-    _cache: dict[int, Any] = {}
-    _lock = threading.Lock()
-
-    def __new__(cls) -> "MemoCache":
-        raise NotImplementedError(
-            "MemoCache is a module-level singleton utility. It cannot be instantiated."
-        )
-
-    @classmethod
-    def set(cls, key: int, value: Any) -> None:
-        with cls._lock:
-            cls._cache[key] = value
-
-    @classmethod
-    def clear(cls) -> None:
-        with cls._lock:
-            cls._cache.clear()
-
-    @classmethod
-    def drop(cls, key: int) -> None:
-        with cls._lock:
-            del cls._cache[key]
-
-    @classmethod
-    def get(cls, key: int) -> Any:
-        with cls._lock:
-            if key in cls._cache:
-                return cls._cache[key]
-            else:
-                return None
-
-
 class Memo(Generic[T]):
     def __init__(self, content: Callable[..., T]) -> None:
         self._tid = id(self)
         self.content = content
 
-    def compute(self, *args: Any, **kwargs: Any) -> T:
+    def compute(self) -> T:
         raise NotImplementedError
 
     def __call__(self, *args: Any, **kwargs: Any) -> T:
-        val = MemoCache.get(self._tid)
-        if val is None:
-            val = self.compute(*args, **kwargs)
-            MemoCache.set(self._tid, val)
-        return val
+        global _memo_cache, _cache_lock
+        with _cache_lock:
+            if self._tid not in _memo_cache:
+                val = self.compute(*args, **kwargs)
+                _memo_cache[self._tid] = val
+            return _memo_cache[self._tid]
 
     def __del__(self) -> None:
-        try:
-            MemoCache.drop((self._tid))
-        except KeyError:
-            pass
+        global _memo_cache, _cache_lock
+        with _cache_lock:
+            if self._tid in _memo_cache:
+                del _memo_cache[self._tid]
 
 
 @dataclass(init=False, frozen=True)
