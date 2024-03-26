@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 
-from nnbench.types.types import Memo, cached_memo, clear_memo_cache, memo_cache_size
+from nnbench.types.memo import Memo, cached_memo, clear_memo_cache, memo_cache_size
 
 
 @pytest.fixture
