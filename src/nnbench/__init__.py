@@ -11,4 +11,4 @@ except PackageNotFoundError:
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter
 from .runner import BenchmarkRunner
-from .types import Parameters
+from .types import Memo, Parameters
