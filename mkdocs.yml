@@ -26,7 +26,7 @@ nav:
     - guides/transforms.md
   - Examples:
     - tutorials/index.md
-    - tutorials/artifact_benchmarking.md
+    - tutorials/huggingface.md
     - tutorials/mnist.md
     - tutorials/prefect.md
     - tutorials/streamlit.md
