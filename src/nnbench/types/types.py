@@ -23,20 +23,58 @@ logger = logging.getLogger(__name__)
 
 
 def memo_cache_size() -> int:
+    """
+    Get the current size of the memo cache.
+
+    Returns
+    -------
+    int
+        The number of items currently stored in the memo cache.
+    """
     return len(_memo_cache)
 
 
 def clear_memo_cache() -> None:
+    """
+    Clear all items from memo cache in a thread_safe manner.
+    """
     with _cache_lock:
         _memo_cache.clear()
 
 
 def evict_memo(_id: int) -> Any:
+    """
+    Pop cached item with key `_id` from the memo cache.
+
+    Parameters
+    ----------
+    _id : int
+        The unique identifier (usually the id assigned by the Python interpreter) of the item to be evicted.
+
+    Returns
+    -------
+    Any
+        The value that was associated with the removed cache entry. If no item is found with the given `_id`, a KeyError is raised.
+    """
     with _cache_lock:
         return _memo_cache.pop(_id)
 
 
-def cached_memo(fn):
+def cached_memo(fn: Callable) -> Callable:
+    """
+    Decorator that caches the result of a method call based on the instance ID.
+
+    Parameters
+    ----------
+    fn: Callable
+        The method to memoize.
+
+    Returns
+    -------
+    Callable
+        A wrapped version of the method that caches its result.
+    """
+
     @functools.wraps(fn)
     def wrapper(self, *args, **kwargs):
         _tid = id(self)
@@ -154,9 +192,11 @@ class Memo(Generic[T]):
 
     @cached_memo
     def __call__(self) -> T:
+        """Placeholder to override when subclassing. The call should return the to be cached object."""
         raise NotImplementedError
 
     def __del__(self) -> None:
+        """Delete the cached object and clear it from the cache."""
         with _cache_lock:
             sid = id(self)
             if sid in _memo_cache:
@@ -206,9 +246,7 @@ class Benchmark:
     name: str = field(default="")
     params: dict[str, Any] = field(default_factory=dict)
     setUp: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
-    tearDown: Callable[[State, Mapping[str, Any]], None] = field(
-        repr=False, default=NoOp
-    )
+    tearDown: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
     tags: tuple[str, ...] = field(repr=False, default=())
     interface: Interface = field(init=False, repr=False)
 
