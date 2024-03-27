@@ -124,3 +124,8 @@ public/
 
 # NumPy zip archives created by the examples.
 *.npz
+
+# Memray flamegraphs and their HTML views
+*.bin
+*.html
+!docs/**/*.html

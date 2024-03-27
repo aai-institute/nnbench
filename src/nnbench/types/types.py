@@ -238,8 +238,6 @@ class Benchmark:
         A teardown hook run after the benchmark. Must take all members of `params` as inputs.
     tags: tuple[str, ...]
         Additional tags to attach for bookkeeping and selective filtering during runs.
-    interface: Interface
-        Interface of the benchmark function.
     """
 
     fn: Callable[..., Any]
