@@ -63,13 +63,23 @@ class BenchmarkRunner:
     typecheck: bool
         Whether to check parameter types against the expected benchmark input types.
         Type mismatches will result in an error before the workload is run.
+    params_repr_hooks: dict[type, Callable]
+        A mapping of data types to functions computing a compressed representation
+        of benchmark parameters of said types. Used in self.params_repr().
     """
 
     benchmark_type = Benchmark
 
-    def __init__(self, typecheck: bool = True):
+    def __init__(self, typecheck: bool = True, params_repr_hooks: dict[type, Callable] = None):
         self.benchmarks: list[Benchmark] = list()
         self.typecheck = typecheck
+        self._params_repr_hooks = params_repr_hooks or {}
+
+    def register_repr_hook(self, typ: type, fn: Callable) -> None:
+        self._params_repr_hooks[typ] = fn
+
+    def deregister_repr_hook(self, typ: type) -> Callable | None:
+        return self._params_repr_hooks.pop(typ, None)
 
     def _check(self, params: dict[str, Any]) -> None:
         if not self.typecheck:
@@ -158,6 +168,48 @@ class BenchmarkRunner:
             # type-check parameter value against the narrowest hinted type.
             if not _issubtype(vtype, typ):
                 raise TypeError(f"expected type {typ} for parameter {k!r}, got {vtype}")
+
+    def params_repr(self, params: dict[str, Any]) -> dict[str, Any]:
+        """
+        Compute a compressed representation of benchmark parameters.
+
+        This is necessary to break reference cycles from the parameters to the records,
+        which prevent garbage collection of memory-intensive values.
+
+        Parameters
+        ----------
+        params: dict[str, Any]
+            Benchmark parameters to compute a compressed representation of.
+
+        Returns
+        -------
+        dict[str, Any]
+            A compressed representation of the benchmark input parameters.
+        """
+        containers = (tuple, list, set, frozenset)
+        natives = (float, int, str, bool, bytes, complex)
+        compressed: dict[str, Any] = {}
+
+        def _compress_impl(val):
+            vtype = type(val)
+            if vtype in self._params_repr_hooks:
+                return self._params_repr_hooks[vtype](val)
+            if isinstance(val, natives):
+                # save native types without modification...
+                return val
+            else:
+                # ... or return the string repr.
+                return repr(val)
+
+        for k, v in params.items():
+            if isinstance(v, containers):
+                container_type = type(v)
+                compressed[k] = container_type(_compress_impl(vv) for vv in v)
+            elif isinstance(v, dict):
+                compressed[k] = self.params_repr(v)
+            else:
+                compressed[k] = _compress_impl(v)
+        return compressed
 
     def clear(self) -> None:
         """Clear all registered benchmarks."""
@@ -303,7 +355,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
-                "parameters": bmparams,
+                "parameters": self.params_repr(bmparams),
             }
             try:
                 benchmark.setUp(state, bmparams)
