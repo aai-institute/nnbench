@@ -8,7 +8,7 @@ import torch
 from datasets import Dataset, load_dataset
 from torch.nn import Module
 from torch.utils.data import DataLoader
-from training.training import tokenize_and_align_labels
+from training import tokenize_and_align_labels
 from transformers import (
     AutoModelForTokenClassification,
     AutoTokenizer,
@@ -17,14 +17,14 @@ from transformers import (
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 import nnbench
-from nnbench.types import Memo
+from nnbench.types import Memo, cached_memo
 
 
 class TokenClassificationModelMemo(Memo[Module]):
     def __init__(self, path: str):
         self.path = path
 
-    @cache
+    @cached_memo
     def __call__(self) -> Module:
         model: Module = AutoModelForTokenClassification.from_pretrained(
             self.path, use_safetensors=True
@@ -39,7 +39,7 @@ class TokenizerMemo(Memo[PreTrainedTokenizerBase]):
     def __init__(self, path: str):
         self.path = path
 
-    @cache
+    @cached_memo
     def __call__(self) -> PreTrainedTokenizerBase:
         tokenizer: PreTrainedTokenizerBase = AutoTokenizer.from_pretrained(self.path)
         return tokenizer
@@ -53,7 +53,7 @@ class ConllValidationMemo(Memo[Dataset]):
         self.path = path
         self.split = split
 
-    @cache
+    @cached_memo
     def __call__(self) -> Dataset:
         dataset = load_dataset(self.path)
         path = dataset.cache_files[self.split][0]["filename"]
@@ -69,7 +69,7 @@ class IndexLabelMapMemo(Memo[dict[int, str]]):
         self.path = path
         self.split = split
 
-    @cache
+    @cached_memo
     def __call__(self) -> dict[int, str]:
         dataset = load_dataset(self.path)
         path = dataset.cache_files[self.split][0]["filename"]
