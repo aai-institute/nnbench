@@ -1,2 +1,2 @@
 from .benchmark import Benchmark, BenchmarkRecord, Parameters, State
-from .memo import Memo
+from .memo import Memo, cached_memo
