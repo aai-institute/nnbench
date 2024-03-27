@@ -131,12 +131,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nnbench.github.io/latest/reference/nnbench/types/types/</loc>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/types/benchmark/</loc>
          <lastmod>2024-03-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nnbench.github.io/latest/reference/nnbench/types/util/</loc>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/types/interface/</loc>
+         <lastmod>2024-03-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/types/memo/</loc>
          <lastmod>2024-03-27</lastmod>
          <changefreq>daily</changefreq>
     </url>

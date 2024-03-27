@@ -1174,11 +1174,11 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../types/types/" class="md-nav__link">
+      <a href="../types/benchmark/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    types
+    benchmark
   </span>
   
 
@@ -1195,11 +1195,32 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../types/util/" class="md-nav__link">
+      <a href="../types/interface/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    util
+    interface
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../types/memo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    memo
   </span>
   
 
@@ -1391,11 +1412,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 <a href="#nnbench.core.benchmark" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">benchmark</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">func</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a></span> <span class="o">|</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="typing.Callable">Callable</span></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a></span><span class="p">]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span> <span class="o">|</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="typing.Callable">Callable</span></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
@@ -1443,11 +1464,11 @@ without parentheses, you should never fill it explicitly.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
-                    <code>str | None</code>
+                    <code>str</code>
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code>None</code>
+                    <code>&#39;&#39;</code>
                 </span>
             </p>
           </td>
@@ -1465,7 +1486,7 @@ without parentheses, you should never fill it explicitly.</p>
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code><a class="autorefs autorefs-internal" title="nnbench.types.types.NoOp" href="../types/types/#nnbench.types.types.NoOp">NoOp</a></code>
+                    <code><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></code>
                 </span>
             </p>
           </td>
@@ -1483,7 +1504,7 @@ without parentheses, you should never fill it explicitly.</p>
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code><a class="autorefs autorefs-internal" title="nnbench.types.types.NoOp" href="../types/types/#nnbench.types.types.NoOp">NoOp</a></code>
+                    <code><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></code>
                 </span>
             </p>
           </td>
@@ -1522,7 +1543,7 @@ without parentheses, you should never fill it explicitly.</p>
         <tr>
           <td>
               <span class="doc-returns-annotation">
-                  <code><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a> | <span title="typing.Callable">Callable</span>[[<span title="typing.Callable">Callable</span>], <a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a>]</code>
+                  <code><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a> | <span title="typing.Callable">Callable</span>[[<span title="typing.Callable">Callable</span>], <a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a>]</code>
               </span>
           </td>
           <td class="doc-returns-details">
@@ -1580,7 +1601,7 @@ returning the benchmark.</p>
 <span class="normal"><a href="#__codelineno-0-125">125</a></span>
 <span class="normal"><a href="#__codelineno-0-126">126</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="k">def</span> <span class="nf">benchmark</span><span class="p">(</span>
 </span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
 </span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
 </span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
 </span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="n">tags</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
@@ -1597,7 +1618,7 @@ returning the benchmark.</p>
 </span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="sd">    func: Callable[..., Any] | None</span>
 </span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="sd">        The function to benchmark. This slot only exists to allow application of the decorator</span>
 </span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="sd">        without parentheses, you should never fill it explicitly.</span>
-</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">    name: str | None</span>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">    name: str</span>
 </span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="sd">        A display name to give to the benchmark. Useful in summaries and reports.</span>
 </span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="sd">    setUp: Callable[..., None]</span>
 </span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="sd">        A setup hook to run before the benchmark.</span>
@@ -1642,7 +1663,7 @@ returning the benchmark.</p>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">namegen</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_default_namegen</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="typing.Callable">Callable</span></span><span class="p">],</span> <span class="n">list</span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a></span><span class="p">]]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="typing.Callable">Callable</span></span><span class="p">],</span> <span class="n">list</span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
@@ -1689,7 +1710,7 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code><a class="autorefs autorefs-internal" title="nnbench.types.types.NoOp" href="../types/types/#nnbench.types.types.NoOp">NoOp</a></code>
+                    <code><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></code>
                 </span>
             </p>
           </td>
@@ -1707,7 +1728,7 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code><a class="autorefs autorefs-internal" title="nnbench.types.types.NoOp" href="../types/types/#nnbench.types.types.NoOp">NoOp</a></code>
+                    <code><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></code>
                 </span>
             </p>
           </td>
@@ -1766,7 +1787,7 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
         <tr>
           <td>
               <span class="doc-returns-annotation">
-                  <code><span title="typing.Callable">Callable</span>[[<span title="typing.Callable">Callable</span>], list[<a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a>]]</code>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="typing.Callable">Callable</span>], list[<a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a>]]</code>
               </span>
           </td>
           <td class="doc-returns-details">
@@ -1923,7 +1944,7 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">namegen</span><span class="p">:</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_default_namegen</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="o">**</span><span class="n">iterables</span><span class="p">:</span> <span class="n"><span title="typing.Iterable">Iterable</span></span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="typing.Callable">Callable</span></span><span class="p">],</span> <span class="n">list</span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a></span><span class="p">]]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="typing.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="typing.Callable">Callable</span></span><span class="p">],</span> <span class="n">list</span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]]</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents ">
@@ -1956,7 +1977,7 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code><a class="autorefs autorefs-internal" title="nnbench.types.types.NoOp" href="../types/types/#nnbench.types.types.NoOp">NoOp</a></code>
+                    <code><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></code>
                 </span>
             </p>
           </td>
@@ -1974,7 +1995,7 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
                 </span>
                 <span class="doc-param-default">
                   <b>DEFAULT:</b> 
-                    <code><a class="autorefs autorefs-internal" title="nnbench.types.types.NoOp" href="../types/types/#nnbench.types.types.NoOp">NoOp</a></code>
+                    <code><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></code>
                 </span>
             </p>
           </td>
@@ -2051,7 +2072,7 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
         <tr>
           <td>
               <span class="doc-returns-annotation">
-                  <code><span title="typing.Callable">Callable</span>[[<span title="typing.Callable">Callable</span>], list[<a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/types/#nnbench.types.types.Benchmark">Benchmark</a>]]</code>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="typing.Callable">Callable</span>], list[<a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a>]]</code>
               </span>
           </td>
           <td class="doc-returns-details">
