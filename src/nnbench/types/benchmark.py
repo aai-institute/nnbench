@@ -124,7 +124,7 @@ class Benchmark:
     """
 
     fn: Callable[..., Any]
-    name: str = field(default="")
+    name: str = ""
     params: dict[str, Any] = field(default_factory=dict)
     setUp: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
     tearDown: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
