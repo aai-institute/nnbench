@@ -62,6 +62,13 @@ def evict_memo(_id: int) -> Any:
         return _memo_cache.pop(_id)
 
 
+def get_memo_by_value(val: Any) -> int | None:
+    for k, v in _memo_cache.items():
+        if v is val:
+            return k
+    return None
+
+
 def cached_memo(fn: Callable) -> Callable:
     """
     Decorator that caches the result of a method call based on the instance ID.
