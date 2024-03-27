@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import collections
 import functools
+import inspect
 import logging
 import threading
-from typing import Any, Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar, get_args, get_origin
 
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
@@ -12,6 +14,14 @@ _memo_cache: dict[int, Any] = {}
 _cache_lock = threading.Lock()
 
 logger = logging.getLogger(__name__)
+
+
+def is_memo(v: Any) -> bool:
+    return callable(v) and len(inspect.signature(v).parameters) == 0
+
+
+def is_memo_type(t: type) -> bool:
+    return get_origin(t) is collections.abc.Callable and get_args(t)[0] == []
 
 
 def memo_cache_size() -> int:

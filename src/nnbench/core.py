@@ -11,7 +11,7 @@ from typing import Any, Callable, Iterable, Union, get_args, get_origin, overloa
 
 from nnbench.types import Benchmark
 from nnbench.types.benchmark import NoOp
-from nnbench.types.util import is_memo, is_memo_type
+from nnbench.types.memo import is_memo, is_memo_type
 
 
 def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
