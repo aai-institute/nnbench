@@ -17,7 +17,7 @@ from typing import Any, Callable, Generator, Sequence, get_origin
 
 from nnbench.context import Context, ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
-from nnbench.types.util import is_memo, is_memo_type
+from nnbench.types.memo import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)

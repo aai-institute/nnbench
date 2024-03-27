@@ -10,8 +10,8 @@ import warnings
 from typing import Any, Callable, Iterable, Union, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
-from nnbench.types.types import NoOp
-from nnbench.types.util import is_memo, is_memo_type
+from nnbench.types.benchmark import NoOp
+from nnbench.types.memo import is_memo, is_memo_type
 
 
 def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
@@ -61,7 +61,7 @@ def _default_namegen(fn: Callable, **kwargs: Any) -> str:
 @overload
 def benchmark(
     func: None = None,
-    name: str | None = None,
+    name: str = "",
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -75,7 +75,7 @@ def benchmark(
 @overload
 def benchmark(
     func: Callable[..., Any],
-    name: str | None = None,
+    name: str = "",
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -84,7 +84,7 @@ def benchmark(
 
 def benchmark(
     func: Callable[..., Any] | None = None,
-    name: str | None = None,
+    name: str = "",
     setUp: Callable[..., None] = NoOp,
     tearDown: Callable[..., None] = NoOp,
     tags: tuple[str, ...] = (),
@@ -101,7 +101,7 @@ def benchmark(
     func: Callable[..., Any] | None
         The function to benchmark. This slot only exists to allow application of the decorator
         without parentheses, you should never fill it explicitly.
-    name: str | None
+    name: str
         A display name to give to the benchmark. Useful in summaries and reports.
     setUp: Callable[..., None]
         A setup hook to run before the benchmark.
