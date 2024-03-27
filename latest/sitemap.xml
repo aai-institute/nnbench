@@ -151,17 +151,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nnbench.github.io/latest/tutorials/artifact_benchmarking/</loc>
-         <lastmod>2024-03-27</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://nnbench.github.io/latest/tutorials/bq/</loc>
          <lastmod>2024-03-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/duckdb/</loc>
+         <lastmod>2024-03-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://nnbench.github.io/latest/tutorials/huggingface/</loc>
          <lastmod>2024-03-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
