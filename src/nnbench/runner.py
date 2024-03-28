@@ -106,7 +106,7 @@ class BenchmarkRunner:
         for bm in self.benchmarks:
             for var in bm.interface.variables:
                 name, typ, default = var
-                if default == empty:
+                if default is empty:
                     required.add(name)
                 if name in params and default != empty:
                     logger.debug(
@@ -122,7 +122,7 @@ class BenchmarkRunner:
                     orig_type, orig_val = new_type, new_val = currvar
                     # If a benchmark has a variable without a default value,
                     # that variable is taken into the combined interface as no-default.
-                    if default == empty:
+                    if default is empty:
                         new_val = default
                     # These types need not be exact matches, just compatible.
                     # Two types are compatible iff either is a subtype of the other.
