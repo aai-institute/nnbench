@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import itertools
+import logging
 import platform
 import sys
 from typing import Any, Callable, Iterator, Literal
@@ -164,29 +165,39 @@ class CPUInfo:
             )
 
         result: dict[str, Any] = dict()
+        logger = logging.getLogger(__name__)
+
+        def safe_set(key: str, value: Callable) -> None:
+            try:
+                result[key] = value()
+            except Exception as e:
+                logger.warning(f"Failed saving value for {key}: {e}")
+                result[key] = None
 
         # first, the platform info.
-        result["architecture"] = platform.machine()
-        result["bitness"] = platform.architecture()[0]
-        result["processor"] = platform.processor()
-        result["system"] = platform.system()
-        result["system-version"] = platform.release()
+        safe_set("architecture", platform.machine)
+        safe_set("bitness", lambda: platform.architecture()[0])
+        safe_set("processor", platform.processor)
+        safe_set("system", platform.system)
+        safe_set("system-version", platform.release)
 
-        freq_struct = psutil.cpu_freq()
-        freq_conversion = self.conversion_table[self.frequnit[0]]
-        # result is in MHz, so we convert to Hz and apply the conversion factor.
-        result["frequency"] = freq_struct.current * 1e6 / freq_conversion
-        result["frequency_unit"] = self.frequnit
-        result["min_frequency"] = freq_struct.min
-        result["max_frequency"] = freq_struct.max
-        result["num_cpus"] = psutil.cpu_count(logical=False)
-        result["num_logical_cpus"] = psutil.cpu_count()
+        safe_set(
+            "frequency",
+            # result is in MHz, so we convert to Hz and apply the conversion factor.
+            lambda: psutil.cpu_freq().current * 1e6 / self.conversion_table[self.frequnit[0]],
+        )
+        safe_set("frequency_unit", lambda: self.frequnit)
+        safe_set("min_frequency", lambda: psutil.cpu_freq().min)
+        safe_set("max_frequency", lambda: psutil.cpu_freq().max)
+        safe_set("num_cpus", lambda: psutil.cpu_count(logical=False))
+        safe_set("num_logical_cpus", psutil.cpu_count)
 
-        mem_struct = psutil.virtual_memory()
-        mem_conversion = self.conversion_table[self.memunit[0]]
-        # result is in bytes, so no need for base conversion.
-        result["total_memory"] = mem_struct.total / mem_conversion
-        result["memory_unit"] = self.memunit
+        safe_set(
+            "total_memory",
+            # result is in bytes, so no need for base conversion.
+            lambda: psutil.virtual_memory().total / self.conversion_table[self.memunit[0]],
+        )
+        safe_set("memory_unit", lambda: self.memunit)
         # TODO: Lacks CPU cache info, which requires a solution other than psutil.
         return {self.key: result}
 
