@@ -55,6 +55,9 @@ rep.display(record)  # ...and print the results to the terminal.
 # product  product     2024-03-08T18:03:48  {'a': 2, 'b': 10}       20       1000
 # power    power       2024-03-08T18:03:48  {'a': 2, 'b': 10}     1024        750
 ```
+Watch the following video for a high level overview of the capabilities and inner workings of nnbench.
+
+[![nnbench overview video thumbnail](https://img.youtube.com/vi/CT9bKq-U8ZQ/0.jpg)](https://www.youtube.com/watch?v=CT9bKq-U8ZQ)
 
 For a more realistic example of how to evaluate a trained model with a benchmark suite, check the [Quickstart](https://aai-institute.github.io/nnbench/latest/quickstart/).
 For even more advanced usages of the library, you can check out the [Examples](https://aai-institute.github.io/nnbench/latest/tutorials/) in the documentation.
