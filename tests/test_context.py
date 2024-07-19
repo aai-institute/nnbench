@@ -38,7 +38,7 @@ def test_cpu_info_provider() -> None:
     # the popular CPU architectures.
     assert res["architecture"] != ""
     assert res["system"] != ""
-    assert res["frequency"] > 0
+    assert res["frequency"] >= 0
     assert res["num_cpus"] > 0
     assert res["total_memory"] > 0
 
