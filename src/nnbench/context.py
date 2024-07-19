@@ -180,7 +180,7 @@ class CPUInfo:
             freq_conversion = self.conversion_table[self.frequnit[0]]
             # result is in MHz, so we convert to Hz and apply the conversion factor.
             result["frequency"] = freq_struct.current * 1e6 / freq_conversion
-        except Exception:
+        except RuntimeError:
             result["frequency"] = 0
             result["min_frequency"] = 0
             result["max_frequency"] = 0
