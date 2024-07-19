@@ -172,13 +172,20 @@ class CPUInfo:
         result["system"] = platform.system()
         result["system-version"] = platform.release()
 
-        freq_struct = psutil.cpu_freq()
-        freq_conversion = self.conversion_table[self.frequnit[0]]
-        # result is in MHz, so we convert to Hz and apply the conversion factor.
-        result["frequency"] = freq_struct.current * 1e6 / freq_conversion
+        try:
+            # The CPU frequency is not available on some ARM devices
+            freq_struct = psutil.cpu_freq()
+            result["min_frequency"] = freq_struct.min
+            result["max_frequency"] = freq_struct.max
+            freq_conversion = self.conversion_table[self.frequnit[0]]
+            # result is in MHz, so we convert to Hz and apply the conversion factor.
+            result["frequency"] = freq_struct.current * 1e6 / freq_conversion
+        except RuntimeError:
+            result["frequency"] = 0
+            result["min_frequency"] = 0
+            result["max_frequency"] = 0
+
         result["frequency_unit"] = self.frequnit
-        result["min_frequency"] = freq_struct.min
-        result["max_frequency"] = freq_struct.max
         result["num_cpus"] = psutil.cpu_count(logical=False)
         result["num_logical_cpus"] = psutil.cpu_count()
 
