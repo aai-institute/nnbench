@@ -1,18 +1,15 @@
 """Type interfaces for benchmarks and benchmark collections."""
 
-from __future__ import annotations
-
 import copy
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Any, Callable, Literal, Mapping
+from typing import Any, Literal
+
+from typing_extensions import Self
 
 from nnbench.context import Context
 from nnbench.types.interface import Interface
-
-
-def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None:
-    pass
 
 
 @dataclass(frozen=True)
@@ -21,6 +18,10 @@ class State:
     family: str
     family_size: int
     family_index: int
+
+
+def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None:
+    pass
 
 
 @dataclass(frozen=True)
@@ -68,7 +69,7 @@ class BenchmarkRecord:
         return result
 
     @classmethod
-    def expand(cls, bms: list[dict[str, Any]]) -> BenchmarkRecord:
+    def expand(cls, bms: list[dict[str, Any]]) -> Self:
         """
         Expand a list of deserialized JSON-like objects into a benchmark record.
         This is equivalent to extracting the context given by the method it was

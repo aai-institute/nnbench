@@ -1,7 +1,5 @@
 """Various utilities related to benchmark collection, filtering, and more."""
 
-from __future__ import annotations
-
 import importlib
 import importlib.util
 import os

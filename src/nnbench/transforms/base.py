@@ -1,7 +1,7 @@
 """Metaclasses for defining transforms acting on benchmark records."""
 
 from abc import ABC, abstractmethod
-from typing import Sequence
+from collections.abc import Sequence
 
 from nnbench.types import BenchmarkRecord
 

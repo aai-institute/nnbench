@@ -1,11 +1,10 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
 
-from __future__ import annotations
-
 import itertools
 import platform
 import sys
-from typing import Any, Callable, Iterator, Literal
+from collections.abc import Callable, Iterator
+from typing import Any, Literal
 
 ContextProvider = Callable[[], dict[str, Any]]
 """A function providing a dictionary of context values."""
@@ -89,8 +88,7 @@ class GitEnvironmentInfo:
 
             return subprocess.run(  # nosec: B603
                 [git, *args],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
                 encoding="utf-8",
             )
 

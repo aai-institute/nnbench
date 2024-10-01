@@ -7,9 +7,9 @@ Source: https://github.com/google/flax/blob/main/examples/mnist
 """
 
 import random
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping
 
 import flax.linen as nn
 import fsspec
