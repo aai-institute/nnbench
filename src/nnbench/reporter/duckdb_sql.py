@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import os
 import shutil
 import sys
@@ -130,6 +128,6 @@ class DuckDBReporter(FileReporter):
 
         return BenchmarkRecord(context=context, benchmarks=benchmarks)
 
-    def raw_sql(self, query: str) -> duckdb.DuckDBPyRelation:
+    def raw_sql(self, query: str) -> "duckdb.DuckDBPyRelation":
         rel = self.conn.sql(query=query)
         return rel

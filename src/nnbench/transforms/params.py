@@ -1,4 +1,5 @@
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from nnbench.transforms import ManyToManyTransform, OneToOneTransform
 from nnbench.types import BenchmarkRecord

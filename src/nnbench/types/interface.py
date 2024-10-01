@@ -1,10 +1,11 @@
 """Type interface for the function interface"""
 
-from __future__ import annotations
-
 import inspect
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
+
+from typing_extensions import Self
 
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
@@ -37,7 +38,7 @@ class Interface:
     returntype: type
 
     @classmethod
-    def from_callable(cls, fn: Callable, defaults: dict[str, Any]) -> Interface:
+    def from_callable(cls, fn: Callable, defaults: dict[str, Any]) -> Self:
         """
         Creates an interface instance from the given callable.
         """

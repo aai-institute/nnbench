@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 import collections
 import functools
 import inspect
 import logging
 import threading
-from typing import Any, Callable, Generic, TypeVar, get_args, get_origin
+from collections.abc import Callable
+from typing import Any, Generic, TypeVar, get_args, get_origin
 
 T = TypeVar("T")
 Variable = tuple[str, type, Any]

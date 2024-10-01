@@ -1,10 +1,9 @@
-from __future__ import annotations
-
 import os
 import threading
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import IO, Any, Callable, Literal, Sequence, cast
+from typing import IO, Any, Literal, cast
 
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord

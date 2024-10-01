@@ -1,7 +1,5 @@
 """The abstract benchmark runner interface, which can be overridden for custom benchmark workloads."""
 
-from __future__ import annotations
-
 import collections
 import contextlib
 import inspect
@@ -10,10 +8,11 @@ import os
 import sys
 import time
 import warnings
+from collections.abc import Callable, Generator, Sequence
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Generator, Sequence, get_origin
+from typing import Any, get_origin
 
 from nnbench.context import Context, ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
@@ -24,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 def iscontainer(s: Any) -> bool:
-    return isinstance(s, (tuple, list))
+    return isinstance(s, tuple | list)
 
 
 def isdunder(s: str) -> bool:

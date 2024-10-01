@@ -1,13 +1,12 @@
 """Data model, registration, and parametrization facilities for defining benchmarks."""
 
-from __future__ import annotations
-
 import inspect
 import itertools
 import sys
 import types
 import warnings
-from typing import Any, Callable, Iterable, Union, get_args, get_origin, overload
+from collections.abc import Callable, Iterable
+from typing import Any, Union, get_args, get_origin, overload
 
 from nnbench.types import Benchmark
 from nnbench.types.benchmark import NoOp

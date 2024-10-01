@@ -1,8 +1,8 @@
 import os
 import tempfile
 import time
+from collections.abc import Sequence
 from functools import cache, lru_cache, partial
-from typing import Sequence
 
 import torch
 from datasets import Dataset, load_dataset
