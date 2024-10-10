@@ -1,11 +1,15 @@
 """Type interface for the function interface"""
 
 import inspect
+import sys
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, TypeVar
 
-from typing_extensions import Self
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 T = TypeVar("T")
 Variable = tuple[str, type, Any]
