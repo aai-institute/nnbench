@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nnbench-prefect-example"
-requires-python = ">= 3.8"
+requires-python = ">= 3.10"
 version = "0.1.0"
 description = "Integration example of Prefect with nnbench."
 readme = "docs/guides/prefect.md"
 license = { text = "Apache-2.0" }
 dependencies = [
-    "prefect==2.14.*",
-    "numpy==1.23.*",
-    "scikit-learn==1.4.*",
+    "prefect",
+    "numpy",
+    "scikit-learn",
     "nnbench@git+https://github.com/aai-institute/nnbench.git"
 ]
 maintainers = [{name="Max Mynter", email="m.mynter@appliedai-institute.de"}]
