@@ -15,22 +15,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python and dependencies
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-          cache: pip
-          cache-dependency-path: |
-            requirements-dev.txt
-            requirements-docs.txt
-            pyproject.toml
-      - name: Install dependencies
-        run: |
-          pip install -r requirements-dev.txt -r requirements-docs.txt
-          pip install -e . --no-deps
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Install Python 3.11 interpreter
+        run: uv python install 3.11
+      - name: Install the project
+        run: uv sync --all-extras
       - name: Build and check
-        run: |
-          python -m build
+        run: uv run -m build
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
