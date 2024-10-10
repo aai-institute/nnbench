@@ -1,12 +1,16 @@
 """Type interfaces for benchmarks and benchmark collections."""
 
 import copy
+import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any, Literal
 
-from typing_extensions import Self
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 from nnbench.context import Context
 from nnbench.types.interface import Interface
