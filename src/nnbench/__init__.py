@@ -11,4 +11,13 @@ except PackageNotFoundError:
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter
 from .runner import BenchmarkRunner
-from .types import Memo, Parameters
+from .types import Benchmark, BenchmarkRecord, Memo, Parameters
+
+
+# TODO: This isn't great, make it functional instead?
+def default_runner() -> BenchmarkRunner:
+    return BenchmarkRunner()
+
+
+def default_reporter() -> BenchmarkReporter:
+    return BenchmarkReporter()
