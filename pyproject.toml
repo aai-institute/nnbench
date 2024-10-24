@@ -65,6 +65,9 @@ docs = [
     "neoteroi-mkdocs",
 ]
 
+[project.scripts]
+nnbench = "nnbench.cli:main"
+
 [tool.setuptools]
 package-dir = { "" = "src" }
 
