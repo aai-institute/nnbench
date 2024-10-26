@@ -5,8 +5,6 @@ import tempfile
 import weakref
 from pathlib import Path
 
-from nnbench.context import Context
-
 try:
     import duckdb
 
@@ -122,7 +120,7 @@ class DuckDBReporter(FileReporter):
         results = rel.fetchall()
 
         benchmarks = [dict(zip(columns, r)) for r in results]
-        context = Context()
+        context = {}
         for bm in benchmarks:
             context.update(bm.pop("context", {}))
 
