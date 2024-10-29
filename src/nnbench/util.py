@@ -2,11 +2,36 @@
 
 import importlib
 import importlib.util
+import itertools
 import os
 import sys
 from importlib.machinery import ModuleSpec
 from pathlib import Path
 from types import ModuleType
+
+
+def flatten(d: dict, sep: str = ".", prefix: str = "") -> dict:
+    d_flat = {}
+    for k, v in d.items():
+        new_key = prefix + sep + k if prefix else k
+        if isinstance(v, dict):
+            d_flat.update(flatten(v, sep=sep, prefix=new_key))
+        else:
+            d_flat[k] = v
+    return d_flat
+
+
+def unflatten(d: dict, sep: str = ".") -> dict:
+    sorted_keys = sorted(d.keys())
+    unflattened = {}
+    for prefix, keys in itertools.groupby(sorted_keys, key=lambda key: key.split(sep, 1)[0]):
+        key_group = list(keys)
+        if len(key_group) == 1 and sep not in key_group[0]:
+            unflattened[prefix] = d[prefix]
+        else:
+            nested_dict = {key.split(sep, 1)[1]: d[key] for key in key_group}
+            unflattened[prefix] = unflatten(nested_dict, sep=sep)
+    return unflattened
 
 
 def ismodule(name: str | os.PathLike[str]) -> bool:

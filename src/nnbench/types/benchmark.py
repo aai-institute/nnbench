@@ -12,7 +12,6 @@ if sys.version_info >= (3, 11):
 else:
     from typing_extensions import Self
 
-from nnbench.context import Context
 from nnbench.types.interface import Interface
 
 
@@ -30,7 +29,7 @@ def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None
 
 @dataclass(frozen=True)
 class BenchmarkRecord:
-    context: Context
+    context: dict[str, Any]
     benchmarks: list[dict[str, Any]]
 
     def compact(
@@ -63,12 +62,7 @@ class BenchmarkRecord:
 
         for b in self.benchmarks:
             bc = copy.deepcopy(b)
-            if mode == "inline":
-                bc["context"] = self.context.data
-            elif mode == "flatten":
-                flat = self.context.flatten(sep=sep)
-                bc.update(flat)
-                bc["_contextkeys"] = list(self.context.keys())
+            bc["context"] = self.context
             result.append(bc)
         return result
 
@@ -90,16 +84,16 @@ class BenchmarkRecord:
             The resulting record with the context extracted.
 
         """
-        dctx: dict[str, Any] = {}
+        ctx: dict[str, Any] = {}
         for b in bms:
             if "context" in b:
-                dctx = b.pop("context")
+                ctx = b.pop("context")
             elif "_contextkeys" in b:
                 ctxkeys = b.pop("_contextkeys")
                 for k in ctxkeys:
                     # This should never throw, save for data corruption.
-                    dctx[k] = b.pop(k)
-        return cls(context=Context.make(dctx), benchmarks=bms)
+                    ctx[k] = b.pop(k)
+        return cls(context=ctx, benchmarks=bms)
 
     # TODO: Add an expandmany() API for returning a sequence of records for heterogeneous
     #  context data.
@@ -151,5 +145,3 @@ class Parameters:
     The main advantage over passing parameters as a dictionary is, of course,
     static analysis and type safety for your benchmarking code.
     """
-
-    pass

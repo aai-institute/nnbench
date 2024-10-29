@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, get_origin
 
-from nnbench.context import Context, ContextProvider
+from nnbench.context import ContextProvider
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
 from nnbench.types.memo import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
@@ -268,7 +268,7 @@ class BenchmarkRunner:
         path_or_module: str | os.PathLike[str],
         params: dict[str, Any] | Parameters | None = None,
         tags: tuple[str, ...] = (),
-        context: Sequence[ContextProvider] | Context = (),
+        context: Sequence[ContextProvider] = (),
     ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
@@ -284,7 +284,7 @@ class BenchmarkRunner:
         tags: tuple[str, ...]
             Tags to filter for when collecting benchmarks. Only benchmarks containing either of
             these tags are collected.
-        context: Sequence[ContextProvider] | Context
+        context: Sequence[ContextProvider]
             Additional context to log with the benchmark in the output JSON record. Useful for
             obtaining environment information and configuration, like CPU/GPU hardware info,
             ML model metadata, and more.
@@ -302,12 +302,14 @@ class BenchmarkRunner:
         family_sizes: dict[str, Any] = collections.defaultdict(int)
         family_indices: dict[str, Any] = collections.defaultdict(int)
 
-        if isinstance(context, Context):
-            ctx = context
-        else:
-            ctx = Context()
-            for provider in context:
-                ctx.add(provider)
+        ctx: dict[str, Any] = {}
+        for provider in context:
+            val = provider()
+            duplicates = set(ctx.keys()) & set(val.keys())
+            if duplicates:
+                dupe, *_ = duplicates
+                raise ValueError(f"got multiple values for context key {dupe!r}")
+            ctx.update(val)
 
         # if we didn't find any benchmarks, warn and return an empty record.
         if not self.benchmarks:

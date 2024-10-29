@@ -4,7 +4,6 @@ from typing import Literal
 
 import pytest
 
-from nnbench.context import Context
 from nnbench.reporter.file import FileIO
 from nnbench.types import BenchmarkRecord
 
@@ -20,7 +19,7 @@ def test_fileio_writes_no_compression_inline(
     f = FileIO()
 
     rec = BenchmarkRecord(
-        context=Context.make({"a": "b", "s": 1, "b.c": 1.0}),
+        context={"a": "b", "s": 1, "b.c": 1.0},
         benchmarks=[{"name": "foo", "value": 1}, {"name": "bar", "value": 2}],
     )
     file = tmp_path / f"record.{ext}"
