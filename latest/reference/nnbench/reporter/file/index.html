@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../../_images/aai-favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.8c3ca2c6.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.0253249f.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
@@ -1864,6 +1864,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -1915,6 +1920,11 @@ released. For the most accurate information, please <strong><a href="../../../..
     <div class="doc doc-contents ">
 
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>src/nnbench/reporter/file.py</code></summary>
                 <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12">12</a></span>
@@ -1955,7 +1965,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   </span>
 
 <a href="#nnbench.reporter.file.FileDriverOptions.options" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">options</span><span class="p">:</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">dict</span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">options</span><span class="p">:</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n"><span title="dataclasses.field(default_factory)">default_factory</span></span><span class="o">=</span><span class="n">dict</span><span class="p">)</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2011,6 +2021,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
     <div class="doc doc-contents ">
+
+
+
+
+
 
 
               <details class="quote">
@@ -2470,7 +2485,9 @@ When reading a multi-record file, this uses as much memory as the batched versio
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>file</code></td>
+            <td>
+                <code>file</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The file name to read from.</p>
@@ -2484,7 +2501,9 @@ When reading a multi-record file, this uses as much memory as the batched versio
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>mode</code></td>
+            <td>
+                <code>mode</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>File mode to use. Can be any of the modes used in builtin <code>open()</code>.</p>
@@ -2502,7 +2521,9 @@ When reading a multi-record file, this uses as much memory as the batched versio
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>driver</code></td>
+            <td>
+                <code>driver</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>File driver implementation to use. If None, the file driver inferred from the
@@ -2521,7 +2542,9 @@ given file path's extension will be used.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>compression</code></td>
+            <td>
+                <code>compression</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Compression engine to use. If None, the compression inferred from the given
@@ -2540,7 +2563,9 @@ file path's extension will be used.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>options</code></td>
+            <td>
+                <code>options</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Options to pass to the respective file driver implementation.</p>
@@ -2856,7 +2881,9 @@ was explicitly specified.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>records</code></td>
+            <td>
+                <code>records</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The record to write to the database.</p>
@@ -2870,7 +2897,9 @@ was explicitly specified.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>file</code></td>
+            <td>
+                <code>file</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The file name to write to.</p>
@@ -2884,7 +2913,9 @@ was explicitly specified.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>mode</code></td>
+            <td>
+                <code>mode</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>File mode to use. Can be any of the modes used in builtin <code>open()</code>.</p>
@@ -2902,7 +2933,9 @@ was explicitly specified.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>driver</code></td>
+            <td>
+                <code>driver</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>File driver implementation to use. If None, the file driver inferred from the
@@ -2921,7 +2954,9 @@ given file path's extension will be used.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>compression</code></td>
+            <td>
+                <code>compression</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Compression engine to use. If None, the compression inferred from the given
@@ -2940,7 +2975,9 @@ file path's extension will be used.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>ctxmode</code></td>
+            <td>
+                <code>ctxmode</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>How to handle the benchmark context when writing the record data.</p>
@@ -2958,7 +2995,9 @@ file path's extension will be used.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>options</code></td>
+            <td>
+                <code>options</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Options to pass to the respective file driver implementation.</p>
@@ -3164,6 +3203,11 @@ was explicitly specified.</p>
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
               Bases: <code><a class="autorefs autorefs-internal" title="nnbench.reporter.file.FileIO" href="#nnbench.reporter.file.FileIO">FileIO</a></code>, <code><a class="autorefs autorefs-internal" title="nnbench.reporter.base.BenchmarkReporter" href="../base/#nnbench.reporter.base.BenchmarkReporter">BenchmarkReporter</a></code></p>
+
+
+
+
+
 
 
               <details class="quote">
@@ -3929,7 +3973,7 @@ was explicitly specified.</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.525ec568.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>

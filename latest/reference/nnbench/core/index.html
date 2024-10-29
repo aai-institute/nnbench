@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../_images/aai-favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.8c3ca2c6.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.0253249f.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
@@ -1390,6 +1390,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -1408,11 +1413,27 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 <a href="#nnbench.core.benchmark" class="headerlink" title="Permanent link">&para;</a></h2>
+          <div class="doc-overloads">
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">benchmark</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">func</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]</span>
+</span></code></pre></div><div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">benchmark</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">func</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">],</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span>
+</span></code></pre></div>          </div>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">benchmark</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">func</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span> <span class="o">|</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]</span>
 </span></code></pre></div>
@@ -1434,7 +1455,9 @@ parameters need to be passed in the calls to <code>BenchmarkRunner.run()</code>.
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>func</code></td>
+            <td>
+                <code>func</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The function to benchmark. This slot only exists to allow application of the decorator
@@ -1453,7 +1476,9 @@ without parentheses, you should never fill it explicitly.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A display name to give to the benchmark. Useful in summaries and reports.</p>
@@ -1471,7 +1496,9 @@ without parentheses, you should never fill it explicitly.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>setUp</code></td>
+            <td>
+                <code>setUp</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A setup hook to run before the benchmark.</p>
@@ -1489,7 +1516,9 @@ without parentheses, you should never fill it explicitly.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tearDown</code></td>
+            <td>
+                <code>tearDown</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A teardown hook to run after the benchmark.</p>
@@ -1507,7 +1536,9 @@ without parentheses, you should never fill it explicitly.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tags</code></td>
+            <td>
+                <code>tags</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Additional tags to attach for bookkeeping and selective filtering during runs.</p>
@@ -1653,9 +1684,9 @@ returning the benchmark.</p>
 <a href="#nnbench.core.parametrize" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">parametrize</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">parameters</span><span class="p">:</span> <span class="n"><span title="collections.abc.Iterable">Iterable</span></span><span class="p">[</span><span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]],</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">namegen</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_default_namegen</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">namegen</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="nnbench.core._default_namegen">_default_namegen</span></span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">],</span> <span class="n">list</span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]]</span>
 </span></code></pre></div>
@@ -1677,7 +1708,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>parameters</code></td>
+            <td>
+                <code>parameters</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The different sets of parameters defining the benchmark family.</p>
@@ -1691,7 +1724,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>setUp</code></td>
+            <td>
+                <code>setUp</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A setup hook to run before each of the benchmarks.</p>
@@ -1709,7 +1744,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tearDown</code></td>
+            <td>
+                <code>tearDown</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A teardown hook to run after each of the benchmarks.</p>
@@ -1727,7 +1764,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>namegen</code></td>
+            <td>
+                <code>namegen</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A function taking the benchmark function and given parameters that generates a unique
@@ -1747,7 +1786,9 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tags</code></td>
+            <td>
+                <code>tags</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Additional tags to attach for bookkeeping and selective filtering during runs.</p>
@@ -1929,9 +1970,9 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
 
 <a href="#nnbench.core.product" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">product</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoOp</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">namegen</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_default_namegen</span><span class="p">,</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="../types/benchmark/#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">namegen</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">str</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="nnbench.core._default_namegen">_default_namegen</span></span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="o">**</span><span class="n">iterables</span><span class="p">:</span> <span class="n"><span title="collections.abc.Iterable">Iterable</span></span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">],</span> <span class="n">list</span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.Benchmark" href="../types/benchmark/#nnbench.types.benchmark.Benchmark">Benchmark</a></span><span class="p">]]</span>
@@ -1954,7 +1995,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>setUp</code></td>
+            <td>
+                <code>setUp</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A setup hook to run before each of the benchmarks.</p>
@@ -1972,7 +2015,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tearDown</code></td>
+            <td>
+                <code>tearDown</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A teardown hook to run after each of the benchmarks.</p>
@@ -1990,7 +2035,9 @@ parameters need to be passed in the call to <code>BenchmarkRunner.run()</code>.<
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>namegen</code></td>
+            <td>
+                <code>namegen</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A function taking the benchmark function and given parameters that generates a unique
@@ -2010,7 +2057,9 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tags</code></td>
+            <td>
+                <code>tags</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Additional tags to attach for bookkeeping and selective filtering during runs.</p>
@@ -2028,7 +2077,9 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>**iterables</code></td>
+            <td>
+                <code>**iterables</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The iterables parametrizing the benchmarks.</p>
@@ -2307,7 +2358,7 @@ followed by the keyword arguments in <code>key=value</code> format separated by 
     <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.525ec568.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>

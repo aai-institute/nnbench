@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../../_images/aai-favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.8c3ca2c6.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.0253249f.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
@@ -1734,6 +1734,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -1759,6 +1764,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
     <div class="doc doc-contents ">
+
+
+
+
+
 
 
               <details class="quote">
@@ -1897,6 +1907,11 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
     <div class="doc doc-contents ">
+
+
+
+
+
 
 
               <details class="quote">
@@ -2129,7 +2144,9 @@ nested dictionary or in flattened form.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>mode</code></td>
+            <td>
+                <code>mode</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>How to handle the context. <code>"omit"</code> leaves out the context entirely, <code>"inline"</code>
@@ -2149,7 +2166,9 @@ inserts it into the benchmark dictionary as a single entry named <code>"context"
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>sep</code></td>
+            <td>
+                <code>sep</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The separator to use when flattening the context, i.e. when <code>mode = "flatten"</code>.</p>
@@ -2307,7 +2326,9 @@ serialized with, and then returning the rest of the data as is.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>bms</code></td>
+            <td>
+                <code>bms</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The list of benchmark dicts to expand into a record.</p>
@@ -2448,7 +2469,9 @@ serialized with, and then returning the rest of the data as is.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>fn</code></td>
+            <td>
+                <code>fn</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The function defining the benchmark.</p>
@@ -2462,7 +2485,9 @@ serialized with, and then returning the rest of the data as is.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A name to display for the given benchmark. If not given, will be constructed from the
@@ -2481,7 +2506,9 @@ function name and given parameters.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>params</code></td>
+            <td>
+                <code>params</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A partial parametrization to apply to the benchmark function. Internal only,
@@ -2500,7 +2527,9 @@ you should not need to set this yourself.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>setUp</code></td>
+            <td>
+                <code>setUp</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A setup hook run before the benchmark. Must take all members of <code>params</code> as inputs.</p>
@@ -2518,7 +2547,9 @@ you should not need to set this yourself.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tearDown</code></td>
+            <td>
+                <code>tearDown</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>A teardown hook run after the benchmark. Must take all members of <code>params</code> as inputs.</p>
@@ -2536,7 +2567,9 @@ you should not need to set this yourself.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>tags</code></td>
+            <td>
+                <code>tags</code>
+            </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>Additional tags to attach for bookkeeping and selective filtering during runs.</p>
@@ -2555,6 +2588,11 @@ you should not need to set this yourself.</p>
           </tr>
       </tbody>
     </table>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>src/nnbench/types/benchmark.py</code></summary>
@@ -2697,7 +2735,7 @@ you should not need to set this yourself.</p>
   </span>
 
 <a href="#nnbench.types.benchmark.Benchmark.params" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">params</span><span class="p">:</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">dict</span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">params</span><span class="p">:</span> <span class="n">dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n"><span title="dataclasses.field(default_factory)">default_factory</span></span><span class="o">=</span><span class="n">dict</span><span class="p">)</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2719,7 +2757,7 @@ you should not need to set this yourself.</p>
   </span>
 
 <a href="#nnbench.types.benchmark.Benchmark.setUp" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.State" href="#nnbench.types.benchmark.State">State</a></span><span class="p">,</span> <span class="n"><span title="collections.abc.Mapping">Mapping</span></span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">setUp</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.State" href="#nnbench.types.benchmark.State">State</a></span><span class="p">,</span> <span class="n"><span title="collections.abc.Mapping">Mapping</span></span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n"><span title="dataclasses.field(repr)">repr</span></span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n"><span title="dataclasses.field(default)">default</span></span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">)</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2741,7 +2779,7 @@ you should not need to set this yourself.</p>
   </span>
 
 <a href="#nnbench.types.benchmark.Benchmark.tearDown" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.State" href="#nnbench.types.benchmark.State">State</a></span><span class="p">,</span> <span class="n"><span title="collections.abc.Mapping">Mapping</span></span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">tearDown</span><span class="p">:</span> <span class="n"><span title="collections.abc.Callable">Callable</span></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.State" href="#nnbench.types.benchmark.State">State</a></span><span class="p">,</span> <span class="n"><span title="collections.abc.Mapping">Mapping</span></span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n"><span title="dataclasses.field(repr)">repr</span></span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n"><span title="dataclasses.field(default)">default</span></span><span class="o">=</span><span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.NoOp" href="#nnbench.types.benchmark.NoOp">NoOp</a></span><span class="p">)</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2763,7 +2801,7 @@ you should not need to set this yourself.</p>
   </span>
 
 <a href="#nnbench.types.benchmark.Benchmark.tags" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">())</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">tags</span><span class="p">:</span> <span class="n">tuple</span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n"><span title="dataclasses.field(repr)">repr</span></span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n"><span title="dataclasses.field(default)">default</span></span><span class="o">=</span><span class="p">())</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2785,7 +2823,7 @@ you should not need to set this yourself.</p>
   </span>
 
 <a href="#nnbench.types.benchmark.Benchmark.interface" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">interface</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.interface.Interface" href="../interface/#nnbench.types.interface.Interface">Interface</a></span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">interface</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.interface.Interface" href="../interface/#nnbench.types.interface.Interface">Interface</a></span> <span class="o">=</span> <span class="n"><span title="dataclasses.field">field</span></span><span class="p">(</span><span class="n"><span title="dataclasses.field(init)">init</span></span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n"><span title="dataclasses.field(repr)">repr</span></span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2825,6 +2863,11 @@ you should not need to set this yourself.</p>
 on its own, and needs to be subclassed according to your benchmarking workloads.</p>
 <p>The main advantage over passing parameters as a dictionary is, of course,
 static analysis and type safety for your benchmarking code.</p>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>src/nnbench/types/benchmark.py</code></summary>
@@ -2881,7 +2924,7 @@ static analysis and type safety for your benchmarking code.</p>
 
 
 <a href="#nnbench.types.benchmark.NoOp" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">NoOp</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.State" href="#nnbench.types.benchmark.State">State</a></span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n"><span title="collections.abc.Mapping">Mapping</span></span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">=</span> <span class="n">MappingProxyType</span><span class="p">({}))</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">NoOp</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.types.benchmark.State" href="#nnbench.types.benchmark.State">State</a></span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n"><span title="collections.abc.Mapping">Mapping</span></span><span class="p">[</span><span class="n">str</span><span class="p">,</span> <span class="n"><span title="typing.Any">Any</span></span><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="types.MappingProxyType">MappingProxyType</span></span><span class="p">({}))</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2999,7 +3042,7 @@ static analysis and type safety for your benchmarking code.</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.525ec568.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>
