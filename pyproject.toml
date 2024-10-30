@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "setuptools-scm[toml]>=7.1"]
+requires = ["setuptools>=45"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,6 @@ name = "nnbench"
 description = "A small framework for benchmarking machine learning models."
 keywords = ["Benchmarking", "Machine Learning"]
 requires-python = ">=3.10"
-readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [{ name = "appliedAI Initiative", email = "info+oss@appliedai.de" }]
 maintainers = [
@@ -33,7 +32,7 @@ classifiers = [
 
 dependencies = ["tabulate", "typing-extensions; python_version< '3.11'"]
 
-dynamic = ["version"]
+dynamic = ["readme", "version"]
 
 [project.urls]
 Homepage = "https://github.com/aai-institute/nnbench"
@@ -71,14 +70,15 @@ nnbench = "nnbench.cli:main"
 [tool.setuptools]
 package-dir = { "" = "src" }
 
+[tool.setuptools.dynamic]
+readme = { file = "README.md", content-type = "text/markdown" }
+version = { attr = "nnbench.__version__" }
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 nnbench = ["py.typed"]
-
-# Automatically determine version number from Git tags
-[tool.setuptools_scm]
 
 [tool.mypy]
 allow_redefinition = true
