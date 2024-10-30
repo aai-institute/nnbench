@@ -697,7 +697,7 @@ wheels = [
 
 [[package]]
 name = "nnbench"
-version = "0.2.1.dev38+g73e0973"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "tabulate" },
