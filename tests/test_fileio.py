@@ -1,6 +1,4 @@
-import itertools
 from pathlib import Path
-from typing import Literal
 
 import pytest
 
@@ -9,12 +7,10 @@ from nnbench.types import BenchmarkRecord
 
 
 @pytest.mark.parametrize(
-    "ext,ctxmode",
-    itertools.product(["yaml", "json", "ndjson", "csv", "parquet"], ["inline", "flatten"]),
+    "ext",
+    ["yaml", "json", "ndjson", "csv", "parquet"],
 )
-def test_fileio_writes_no_compression_inline(
-    tmp_path: Path, ext: str, ctxmode: Literal["inline", "flatten"]
-) -> None:
+def test_fileio_writes_no_compression_inline(tmp_path: Path, ext: str) -> None:
     """Tests data integrity for file IO roundtrips with both context modes."""
     f = FileIO()
 
@@ -24,7 +20,7 @@ def test_fileio_writes_no_compression_inline(
     )
     file = tmp_path / f"record.{ext}"
     writemode = "wb" if ext == "parquet" else "w"
-    f.write(rec, file, mode=writemode, ctxmode="inline")
+    f.write(rec, file, mode=writemode)
     readmode = "rb" if ext == "parquet" else "r"
     rec2 = f.read(file, mode=readmode)
     # Python stdlib csv coerces everything to string.
