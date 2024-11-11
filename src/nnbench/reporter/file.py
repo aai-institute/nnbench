@@ -1,26 +1,16 @@
 import os
 import threading
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import IO, Any, Literal, cast
 
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 
-
-@dataclass(frozen=True)
-class FileDriverOptions:
-    options: dict[str, Any] = field(default_factory=dict)
-    """Options to pass to the underlying serialization API call, e.g. ``json.dump``."""
-    ctxmode: Literal["flatten", "inline", "omit"] = "inline"
-    """How to handle the context struct."""
-
-
 _Options = dict[str, Any]
 SerDe = tuple[
-    Callable[[Sequence[BenchmarkRecord], IO, FileDriverOptions], None],
-    Callable[[IO, FileDriverOptions], list[BenchmarkRecord]],
+    Callable[[Sequence[BenchmarkRecord], IO, dict[str, Any]], None],
+    Callable[[IO, dict[str, Any]], list[BenchmarkRecord]],
 ]
 
 
@@ -30,7 +20,7 @@ _file_driver_lock = threading.Lock()
 _compression_lock = threading.Lock()
 
 
-def yaml_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+def yaml_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
     try:
         import yaml
     except ImportError:
@@ -38,72 +28,71 @@ def yaml_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverO
 
     bms = []
     for r in records:
-        bms += r.compact(mode=fdoptions.ctxmode)
-    yaml.safe_dump(bms, fp, **fdoptions.options)
+        bms += r.compact()
+    yaml.safe_dump(bms, fp, **options)
 
 
-def yaml_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+def yaml_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    # TODO: Use expandmany()
     bms = yaml.safe_load(fp)
     return [BenchmarkRecord.expand(bms)]
 
 
-def json_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+def json_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
     import json
 
     bm = []
     for r in records:
-        bm += r.compact(mode=fdoptions.ctxmode)
-    json.dump(bm, fp, **fdoptions.options)
+        bm += r.compact()
+    json.dump(bm, fp, **options)
 
 
-def json_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+def json_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
     import json
 
-    benchmarks: list[dict[str, Any]] = json.load(fp, **fdoptions.options)
+    benchmarks: list[dict[str, Any]] = json.load(fp, **options)
     return [BenchmarkRecord.expand(benchmarks)]
 
 
-def ndjson_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+def ndjson_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
     import json
 
     bm = []
     for r in records:
-        bm += r.compact(mode=fdoptions.ctxmode)
-    fp.write("\n".join([json.dumps(b) for b in bm]))
+        bm += r.compact()
+    fp.write("\n".join([json.dumps(b, **options) for b in bm]))
 
 
-def ndjson_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+def ndjson_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
     import json
 
     benchmarks: list[dict[str, Any]]
-    benchmarks = [json.loads(line, **fdoptions.options) for line in fp]
+    benchmarks = [json.loads(line, **options) for line in fp]
     return [BenchmarkRecord.expand(benchmarks)]
 
 
-def csv_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+def csv_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
     import csv
 
     bm = []
     for r in records:
-        bm += r.compact(mode=fdoptions.ctxmode)
-    writer = csv.DictWriter(fp, fieldnames=bm[0].keys(), **fdoptions.options)
+        bm += r.compact()
+    writer = csv.DictWriter(fp, fieldnames=bm[0].keys(), **options)
     writer.writeheader()
 
     for b in bm:
         writer.writerow(b)
 
 
-def csv_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+def csv_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
     import csv
     import json
 
-    reader = csv.DictReader(fp, **fdoptions.options)
+    reader = csv.DictReader(fp, **options)
 
     benchmarks: list[dict[str, Any]] = []
     # apparently csv.DictReader has no appropriate type hint for __next__,
@@ -122,22 +111,22 @@ def csv_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
     return [BenchmarkRecord.expand(benchmarks)]
 
 
-def parquet_save(records: Sequence[BenchmarkRecord], fp: IO, fdoptions: FileDriverOptions) -> None:
+def parquet_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
     import pyarrow as pa
     import pyarrow.parquet as pq
 
     bm = []
     for r in records:
-        bm += r.compact(mode=fdoptions.ctxmode)
+        bm += r.compact()
 
     table = pa.Table.from_pylist(bm)
-    pq.write_table(table, fp, **fdoptions.options)
+    pq.write_table(table, fp, **options)
 
 
-def parquet_load(fp: IO, fdoptions: FileDriverOptions) -> list[BenchmarkRecord]:
+def parquet_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
     import pyarrow.parquet as pq
 
-    table = pq.read_table(fp, **fdoptions.options)
+    table = pq.read_table(fp, **options)
     benchmarks: list[dict[str, Any]] = table.to_pylist()
     return [BenchmarkRecord.expand(benchmarks)]
 
@@ -292,11 +281,8 @@ class FileIO:
         else:
             fd = open(file, mode)
 
-        # dummy value, since the context mode is unused in read ops.
-        fdoptions = FileDriverOptions(ctxmode="omit", options=options or {})
-
         with fd as fp:
-            return de(fp, fdoptions)
+            return de(fp, options or {})
 
     def write(
         self,
@@ -305,7 +291,6 @@ class FileIO:
         mode: str = "w",
         driver: str | None = None,
         compression: str | None = None,
-        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
         options: dict[str, Any] | None = None,
     ) -> None:
         """Greedy version of ``FileIO.write_batched()``"""
@@ -315,7 +300,6 @@ class FileIO:
             mode=mode,
             driver=driver,
             compression=compression,
-            ctxmode=ctxmode,
             options=options,
         )
 
@@ -326,7 +310,6 @@ class FileIO:
         mode: str = "w",
         driver: str | None = None,
         compression: str | None = None,
-        ctxmode: Literal["flatten", "inline", "omit"] = "inline",
         options: dict[str, Any] | None = None,
     ) -> None:
         """
@@ -348,8 +331,6 @@ class FileIO:
         compression: str | None
             Compression engine to use. If None, the compression inferred from the given
             file path's extension will be used.
-        ctxmode: Literal["flatten", "inline", "omit"]
-            How to handle the benchmark context when writing the record data.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
 
@@ -382,9 +363,8 @@ class FileIO:
         else:
             fd = open(file, mode)
 
-        fdoptions = FileDriverOptions(ctxmode=ctxmode, options=options or {})
         with fd as fp:
-            ser(records, fp, fdoptions)
+            ser(records, fp, options or {})
 
 
 class FileReporter(FileIO, BenchmarkReporter):

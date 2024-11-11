@@ -5,7 +5,7 @@ import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Any, Literal
+from typing import Any
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -32,32 +32,23 @@ class BenchmarkRecord:
     context: dict[str, Any]
     benchmarks: list[dict[str, Any]]
 
-    def compact(
-        self,
-        mode: Literal["flatten", "inline", "omit"] = "inline",
-        sep: str = ".",
-    ) -> list[dict[str, Any]]:
+    def compact(self, sep: str = ".") -> list[dict[str, Any]]:
         """
         Prepare the benchmark results, optionally inlining the context either as a
         nested dictionary or in flattened form.
 
         Parameters
         ----------
-        mode: Literal["flatten", "inline", "omit"]
-            How to handle the context. ``"omit"`` leaves out the context entirely, ``"inline"``
-            inserts it into the benchmark dictionary as a single entry named ``"context"``, and
-            ``"flatten"`` inserts the flattened context values into the dictionary.
         sep: str
-            The separator to use when flattening the context, i.e. when ``mode = "flatten"``.
+            Deprecated, unused.
 
         Returns
         -------
         list[dict[str, Any]]
             The updated list of benchmark records.
         """
-        if mode == "omit":
-            return self.benchmarks
-
+        # TODO: Allow keeping data as top-level struct?
+        #  i.e. .compact(inline=False) -> { "context": {...}, "benchmarks": [...] }
         result = []
 
         for b in self.benchmarks:
@@ -86,17 +77,11 @@ class BenchmarkRecord:
         """
         ctx: dict[str, Any] = {}
         for b in bms:
+            # Safeguard if the context is not in the deser'd record,
+            # for example if the record came from a DB query.
             if "context" in b:
-                ctx = b.pop("context")
-            elif "_contextkeys" in b:
-                ctxkeys = b.pop("_contextkeys")
-                for k in ctxkeys:
-                    # This should never throw, save for data corruption.
-                    ctx[k] = b.pop(k)
+                ctx = b.pop("context", {})
         return cls(context=ctx, benchmarks=bms)
-
-    # TODO: Add an expandmany() API for returning a sequence of records for heterogeneous
-    #  context data.
 
 
 @dataclass(frozen=True)
