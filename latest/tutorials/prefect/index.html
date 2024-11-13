@@ -454,27 +454,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/transforms/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Using transforms to manipulate benchmark records
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1466,7 +1445,7 @@ We can filter by tags and use this to define two separate tasks, one to run the 
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="k">await</span> <span class="n">create_table_artifact</span><span class="p">(</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>            <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>            <span class="n">table</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">compact</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;flatten&quot;</span><span class="p">),</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>            <span class="n">table</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">to_json</span><span class="p">(),</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
 </span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        <span class="p">)</span>
 </span></code></pre></div>
