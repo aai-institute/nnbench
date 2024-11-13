@@ -3,7 +3,7 @@
 import copy
 import sys
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from types import MappingProxyType
 from typing import Any
 
@@ -32,33 +32,32 @@ class BenchmarkRecord:
     context: dict[str, Any]
     benchmarks: list[dict[str, Any]]
 
-    def compact(self, sep: str = ".") -> list[dict[str, Any]]:
+    def to_json(self) -> dict[str, Any]:
         """
-        Prepare the benchmark results, optionally inlining the context either as a
-        nested dictionary or in flattened form.
-
-        Parameters
-        ----------
-        sep: str
-            Deprecated, unused.
+        Export a benchmark record to JSON.
 
         Returns
         -------
-        list[dict[str, Any]]
-            The updated list of benchmark records.
+        dict[str, Any]
+            A JSON representation of the benchmark record.
         """
-        # TODO: Allow keeping data as top-level struct?
-        #  i.e. .compact(inline=False) -> { "context": {...}, "benchmarks": [...] }
-        result = []
+        return asdict(self)
 
+    def to_list(self) -> list[dict[str, Any]]:
+        """
+        Export a benchmark record to a list of individual results,
+        each with the benchmark context inlined.
+        """
+        results = []
         for b in self.benchmarks:
             bc = copy.deepcopy(b)
+            # TODO: Give an option to elide (or process) the context?
             bc["context"] = self.context
-            result.append(bc)
-        return result
+            results.append(bc)
+        return results
 
     @classmethod
-    def expand(cls, bms: list[dict[str, Any]]) -> Self:
+    def expand(cls, bms: dict[str, Any] | list[dict[str, Any]]) -> Self:
         """
         Expand a list of deserialized JSON-like objects into a benchmark record.
         This is equivalent to extracting the context given by the method it was
@@ -66,8 +65,8 @@ class BenchmarkRecord:
 
         Parameters
         ----------
-        bms: list[dict[str, Any]]
-            The list of benchmark dicts to expand into a record.
+        bms: dict[str, Any] | list[dict[str, Any]]
+            The deserialized benchmark record or list of records to expand into a record.
 
         Returns
         -------
@@ -75,13 +74,23 @@ class BenchmarkRecord:
             The resulting record with the context extracted.
 
         """
-        ctx: dict[str, Any] = {}
-        for b in bms:
-            # Safeguard if the context is not in the deser'd record,
-            # for example if the record came from a DB query.
-            if "context" in b:
-                ctx = b.pop("context", {})
-        return cls(context=ctx, benchmarks=bms)
+        context: dict[str, Any]
+        if isinstance(bms, dict):
+            if "benchmarks" not in bms.keys():
+                raise ValueError(f"no benchmark data found in struct {bms}")
+
+            benchmarks = bms["benchmarks"]
+            context = bms.get("context", {})
+        else:
+            context = {}
+            benchmarks = bms
+            for b in benchmarks:
+                # Safeguard if the context is not in the record,
+                # for example if it came from a DB query.
+                if "context" in b:
+                    # TODO: Log context key/value disagreements
+                    context |= b.pop("context", {})
+        return cls(benchmarks=benchmarks, context=context)
 
 
 @dataclass(frozen=True)

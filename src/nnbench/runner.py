@@ -81,9 +81,6 @@ class BenchmarkRunner:
         return self._params_repr_hooks.pop(typ, None)
 
     def _check(self, params: dict[str, Any]) -> None:
-        if not self.typecheck:
-            return
-
         allvars: dict[str, tuple[type, Any]] = {}
         required: set[str] = set()
         empty = inspect.Parameter.empty
@@ -324,7 +321,9 @@ class BenchmarkRunner:
         else:
             dparams = params or {}
 
-        self._check(dparams)
+        if self.typecheck:
+            self._check(dparams)
+
         results: list[dict[str, Any]] = []
 
         def _maybe_dememo(v, expected_type):
@@ -344,7 +343,6 @@ class BenchmarkRunner:
             family_indices[bm_family] += 1
             bmtypes = dict(zip(benchmark.interface.names, benchmark.interface.types))
             bmparams = dict(zip(benchmark.interface.names, benchmark.interface.defaults))
-            # TODO: Does this need a copy.deepcopy()?
             bmparams |= {k: v for k, v in dparams.items() if k in bmparams}
             bmparams = {k: _maybe_dememo(v, bmtypes[k]) for k, v in bmparams.items()}
 

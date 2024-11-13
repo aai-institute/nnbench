@@ -23,7 +23,6 @@ nav:
     - guides/organization.md
     - guides/runners.md 
     - guides/memoization.md
-    - guides/transforms.md
   - Examples:
     - tutorials/index.md
     - tutorials/huggingface.md
