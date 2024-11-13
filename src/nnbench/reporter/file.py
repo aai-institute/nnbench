@@ -141,7 +141,9 @@ def deregister_driver_implementation(name: str) -> SerDe | None:
         return _file_drivers.pop(name, None)
 
 
-def gzip_compression(filename: str | os.PathLike[str], mode: Literal["r", "w"] = "r") -> IO:
+def gzip_compression(
+    filename: str | os.PathLike[str], mode: Literal["rb", "wb"] = "rb", compresslevel: int = 9
+) -> IO:
     import gzip
 
     # gzip.GzipFile does not inherit from IO[bytes],
@@ -149,10 +151,22 @@ def gzip_compression(filename: str | os.PathLike[str], mode: Literal["r", "w"] =
     return cast(IO[bytes], gzip.GzipFile(filename=filename, mode=mode))
 
 
-def bz2_compression(filename: str | os.PathLike[str], mode: Literal["r", "w"] = "r") -> IO:
+def bz2_compression(
+    filename: str | os.PathLike[str], mode: Literal["rb", "wb"] = "rb", compresslevel: int = 9
+) -> IO:
     import bz2
 
-    return bz2.BZ2File(filename=filename, mode=mode)
+    return bz2.BZ2File(filename, mode, compresslevel=compresslevel)
+
+
+def lzma_compression(
+    filename: str | os.PathLike[str], mode: Literal["rb", "wb"] = "rb", compresslevel: int = 9
+) -> IO:
+    import lzma
+
+    # not available for LZMA.
+    del compresslevel
+    return lzma.LZMAFile(filename, mode)
 
 
 def get_compression_algorithm(name: str) -> Callable:
@@ -178,13 +192,15 @@ def deregister_compression(name: str) -> Callable | None:
         return _compressions.pop(name, None)
 
 
-register_driver_implementation("yaml", (yaml_save, yaml_load))
-register_driver_implementation("json", (json_save, json_load))
-register_driver_implementation("ndjson", (ndjson_save, ndjson_load))
-register_driver_implementation("csv", (csv_save, csv_load))
-register_driver_implementation("parquet", (parquet_save, parquet_load))
-register_compression("gz", gzip_compression)
-register_compression("bz2", bz2_compression)
+register_driver_implementation(".yaml", (yaml_save, yaml_load))
+register_driver_implementation(".yml", (yaml_save, yaml_load))
+register_driver_implementation(".json", (json_save, json_load))
+register_driver_implementation(".ndjson", (ndjson_save, ndjson_load))
+register_driver_implementation(".csv", (csv_save, csv_load))
+register_driver_implementation(".parquet", (parquet_save, parquet_load))
+register_compression(".gz", gzip_compression)
+register_compression(".bz2", bz2_compression)
+register_compression(".xz", lzma_compression)
 
 
 class FileIO:
@@ -227,13 +243,12 @@ class FileIO:
             If no registered file driver matches the file extension and no other driver
             was explicitly specified.
         """
-        fileext = Path(file).suffix.removeprefix(".")
-        # if the extension looks like FORMAT.COMPRESSION, we split.
-        if fileext.count(".") == 1:
-            # TODO: Are there file extensions with more than one meaningful part?
-            ext_driver, ext_compression = fileext.rsplit(".", 1)
+        suffixes = Path(file).suffixes
+        if len(suffixes) == 1:
+            ext_driver, ext_compression = suffixes[0], None
         else:
-            ext_driver, ext_compression = fileext, None
+            ext_driver = "".join(suffixes[:-1])
+            ext_compression = suffixes[-1]
 
         driver = driver or ext_driver
         compression = compression or ext_compression
@@ -291,12 +306,12 @@ class FileIO:
             If no registered file driver matches the file extension and no other driver
             was explicitly specified.
         """
-        fileext = Path(file).suffix.removeprefix(".")
-        # if the extension looks like FORMAT.COMPRESSION, we split.
-        if fileext.count(".") == 1:
-            ext_driver, ext_compression = fileext.rsplit(".", 1)
+        suffixes = Path(file).suffixes
+        if len(suffixes) == 1:
+            ext_driver, ext_compression = suffixes[0], None
         else:
-            ext_driver, ext_compression = fileext, None
+            ext_driver = "".join(suffixes[:-1])
+            ext_compression = suffixes[-1]
 
         driver = driver or ext_driver
         compression = compression or ext_compression
