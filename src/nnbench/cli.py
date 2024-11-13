@@ -30,6 +30,15 @@ def main() -> int:
         help="Only run benchmarks marked with one or more given tag(s).",
         default=tuple(),
     )
+    parser.add_argument(
+        "-o",
+        "--output-file",
+        metavar="<file>",
+        dest="outfile",
+        help="File or stream to write results to.",
+        type=argparse.FileType("w"),
+        default="-",
+    )
 
     args = parser.parse_args()
 
