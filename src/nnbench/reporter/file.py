@@ -1,6 +1,6 @@
 import os
 import threading
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from pathlib import Path
 from typing import IO, Any, Literal, cast
 
@@ -9,8 +9,8 @@ from nnbench.types import BenchmarkRecord
 
 _Options = dict[str, Any]
 SerDe = tuple[
-    Callable[[Sequence[BenchmarkRecord], IO, dict[str, Any]], None],
-    Callable[[IO, dict[str, Any]], list[BenchmarkRecord]],
+    Callable[[BenchmarkRecord, IO, dict[str, Any]], None],
+    Callable[[IO, dict[str, Any]], BenchmarkRecord],
 ]
 
 
@@ -20,67 +20,59 @@ _file_driver_lock = threading.Lock()
 _compression_lock = threading.Lock()
 
 
-def yaml_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
+def yaml_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    bms = []
-    for r in records:
-        bms += r.compact()
-    yaml.safe_dump(bms, fp, **options)
+    yaml.safe_dump(record.to_json(), fp, **options)
 
 
-def yaml_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
+def yaml_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
     try:
         import yaml
     except ImportError:
         raise ModuleNotFoundError("`pyyaml` is not installed")
 
     bms = yaml.safe_load(fp)
-    return [BenchmarkRecord.expand(bms)]
+    return BenchmarkRecord.expand(bms)
 
 
-def json_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
+def json_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
     import json
 
-    bm = []
-    for r in records:
-        bm += r.compact()
-    json.dump(bm, fp, **options)
+    json.dump(record.to_json(), fp, **options)
 
 
-def json_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
+def json_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
     import json
 
-    benchmarks: list[dict[str, Any]] = json.load(fp, **options)
-    return [BenchmarkRecord.expand(benchmarks)]
+    benchmarks = json.load(fp, **options)
+    return BenchmarkRecord.expand(benchmarks)
 
 
-def ndjson_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
+def ndjson_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+    # mode is unused, since NDJSON requires every individual benchmark to be one line.
     import json
 
-    bm = []
-    for r in records:
-        bm += r.compact()
-    fp.write("\n".join([json.dumps(b, **options) for b in bm]))
+    bms = record.to_list()
+    fp.write("\n".join([json.dumps(b, **options) for b in bms]))
 
 
-def ndjson_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
+def ndjson_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
     import json
 
     benchmarks: list[dict[str, Any]]
     benchmarks = [json.loads(line, **options) for line in fp]
-    return [BenchmarkRecord.expand(benchmarks)]
+    return BenchmarkRecord.expand(benchmarks)
 
 
-def csv_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
+def csv_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+    # mode is unused, since NDJSON requires every individual benchmark to be one line.
     import csv
 
-    bm = []
-    for r in records:
-        bm += r.compact()
+    bm = record.to_list()
     writer = csv.DictWriter(fp, fieldnames=bm[0].keys(), **options)
     writer.writeheader()
 
@@ -88,7 +80,7 @@ def csv_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]
         writer.writerow(b)
 
 
-def csv_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
+def csv_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
     import csv
     import json
 
@@ -102,33 +94,28 @@ def csv_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
         benchmarks.append(bm)
         # it can happen that the context is inlined as a stringified JSON object
         # (e.g. in CSV), so we optionally JSON-load the context.
-        for key in ("context", "_contextkeys"):
-            if key in bm:
-                strctx: str = bm[key]
-                # TODO: This does not play nicely with doublequote, maybe re.sub?
-                strctx = strctx.replace("'", '"')
-                bm[key] = json.loads(strctx)
-    return [BenchmarkRecord.expand(benchmarks)]
+        if "context" in bm:
+            strctx: str = bm["context"]
+            # TODO: This does not play nicely with doublequote, maybe re.sub?
+            strctx = strctx.replace("'", '"')
+            bm["context"] = json.loads(strctx)
+    return BenchmarkRecord.expand(benchmarks)
 
 
-def parquet_save(records: Sequence[BenchmarkRecord], fp: IO, options: dict[str, Any]) -> None:
+def parquet_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
     import pyarrow as pa
     import pyarrow.parquet as pq
 
-    bm = []
-    for r in records:
-        bm += r.compact()
-
-    table = pa.Table.from_pylist(bm)
+    table = pa.Table.from_pylist(record.to_list())
     pq.write_table(table, fp, **options)
 
 
-def parquet_load(fp: IO, options: dict[str, Any]) -> list[BenchmarkRecord]:
+def parquet_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
     import pyarrow.parquet as pq
 
     table = pq.read_table(fp, **options)
     benchmarks: list[dict[str, Any]] = table.to_pylist()
-    return [BenchmarkRecord.expand(benchmarks)]
+    return BenchmarkRecord.expand(benchmarks)
 
 
 def get_driver_implementation(name: str) -> SerDe:
@@ -210,26 +197,9 @@ class FileIO:
         options: dict[str, Any] | None = None,
     ) -> BenchmarkRecord:
         """
-        Greedy version of ``FileIO.read_batched()``, returning the first read record.
-        When reading a multi-record file, this uses as much memory as the batched version.
-        """
-        records = self.read_batched(
-            file=file, mode=mode, driver=driver, compression=compression, options=options
-        )
-        return records[0]
+        Reads a benchmark record from the given file path.
 
-    def read_batched(
-        self,
-        file: str | os.PathLike[str],
-        mode: str = "r",
-        driver: str | None = None,
-        compression: str | None = None,
-        options: dict[str, Any] | None = None,
-    ) -> list[BenchmarkRecord]:
-        """
-        Reads a set of benchmark records from the given file path.
-
-        The file driver is chosen based on the extension found on the ``file`` path.
+        The file driver is chosen based on the extension in the ``file`` pathname.
 
         Parameters
         ----------
@@ -248,8 +218,8 @@ class FileIO:
 
         Returns
         -------
-        list[BenchmarkRecord]
-            The benchmark records contained in the file.
+        BenchmarkRecord
+            The benchmark record contained in the file.
 
         Raises
         ------
@@ -293,25 +263,6 @@ class FileIO:
         compression: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> None:
-        """Greedy version of ``FileIO.write_batched()``"""
-        self.write_batched(
-            [record],
-            file=file,
-            mode=mode,
-            driver=driver,
-            compression=compression,
-            options=options,
-        )
-
-    def write_batched(
-        self,
-        records: Sequence[BenchmarkRecord],
-        file: str | os.PathLike[str],
-        mode: str = "w",
-        driver: str | None = None,
-        compression: str | None = None,
-        options: dict[str, Any] | None = None,
-    ) -> None:
         """
         Writes a benchmark record to the given file path.
 
@@ -319,7 +270,7 @@ class FileIO:
 
         Parameters
         ----------
-        records: Sequence[BenchmarkRecord]
+        record: BenchmarkRecord
             The record to write to the database.
         file: str | os.PathLike[str]
             The file name to write to.
@@ -364,7 +315,7 @@ class FileIO:
             fd = open(file, mode)
 
         with fd as fp:
-            ser(records, fp, options or {})
+            ser(record, fp, options or {})
 
 
 class FileReporter(FileIO, BenchmarkReporter):

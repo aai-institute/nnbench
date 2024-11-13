@@ -22,7 +22,7 @@ class PrefectReporter(reporter.BenchmarkReporter):
     ) -> None:
         await create_table_artifact(
             key=key,
-            table=record.compact(mode="flatten"),
+            table=record.to_json(),
             description=description,
         )
 

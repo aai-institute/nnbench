@@ -41,7 +41,7 @@ class MNISTTestParameters(nnbench.Parameters):
 
 
 class ConvNet(nn.Module):
-    @nn.compact
+    @nn.to_json
     def __call__(self, x):
         x = nn.Conv(features=32, kernel_size=(3, 3))(x)
         x = nn.relu(x)

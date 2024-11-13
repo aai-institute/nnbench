@@ -119,8 +119,8 @@ class GitEnvironmentInfo:
         p = git_subprocess(["remote", "get-url", self.remote])
         if not p.returncode:
             remotename: str = p.stdout.strip()
-            # it's an SSH remote.
             if "@" in remotename:
+                # it's an SSH remote.
                 prefix, sep = "git@", ":"
             else:
                 # it is HTTPS.

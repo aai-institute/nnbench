@@ -6,6 +6,7 @@ from tabulate import tabulate
 
 from nnbench.reporter.util import nullcols
 from nnbench.types import BenchmarkRecord
+from nnbench.util import flatten
 
 
 # TODO: Add IO mixins for database, file, and HTTP IO
@@ -107,7 +108,7 @@ class BenchmarkReporter:
                 continue
             filteredctx = {
                 k: v
-                for k, v in record.context.items()
+                for k, v in flatten(record.context).items()
                 if any(k.startswith(i) for i in include_context)
             }
             filteredbm = {k: v for k, v in bm.items() if k in cols}
