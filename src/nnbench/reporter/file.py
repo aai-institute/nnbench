@@ -167,7 +167,7 @@ def get_protocol(url: str | os.PathLike[str]) -> str:
     return "file"
 
 
-class FileIO:
+class FileReporter(BenchmarkReporter):
     def read(
         self,
         file: str | os.PathLike[str] | IO[str],
@@ -294,8 +294,3 @@ class FileIO:
 
         with fd as fp:
             ser(record, fp, options or {})
-
-
-class FileReporter(FileIO, BenchmarkReporter):
-    pass
-    # TODO: Add functionality to forward written local files via fsspec.

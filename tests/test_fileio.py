@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from nnbench.reporter.file import FileIO
+from nnbench.reporter.file import FileReporter
 from nnbench.types import BenchmarkRecord
 
 
@@ -12,7 +12,7 @@ from nnbench.types import BenchmarkRecord
 )
 def test_fileio_writes_no_compression_inline(tmp_path: Path, ext: str) -> None:
     """Tests data integrity for file IO roundtrips with both context modes."""
-    f = FileIO()
+    f = FileReporter()
 
     rec = BenchmarkRecord(
         context={"a": "b", "s": 1, "b.c": 1.0},
