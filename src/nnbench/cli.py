@@ -1,7 +1,9 @@
 import argparse
+import sys
 from typing import Any
 
 from nnbench import default_reporter, default_runner
+from nnbench.reporter.file import FileIO
 
 
 def main() -> int:
@@ -36,8 +38,7 @@ def main() -> int:
         metavar="<file>",
         dest="outfile",
         help="File or stream to write results to.",
-        type=argparse.FileType("w"),
-        default="-",
+        default=sys.stdout,
     )
 
     args = parser.parse_args()
@@ -54,5 +55,12 @@ def main() -> int:
         context[k] = v
 
     record = runner.run(args.benchmarks, tags=tuple(args.tags))
-    reporter.display(record)
+
+    outfile = args.outfile
+    if args.outfile == sys.stdout:
+        reporter.display(record)
+    else:
+        f = FileIO()
+        f.write(record, outfile)
+
     return 0
