@@ -2,8 +2,8 @@ import argparse
 import sys
 from typing import Any
 
-from nnbench import default_reporter, default_runner
-from nnbench.reporter.file import FileIO
+from nnbench import BenchmarkReporter, BenchmarkRunner
+from nnbench.reporter.file import FileReporter
 
 
 def main() -> int:
@@ -19,7 +19,7 @@ def main() -> int:
     parser.add_argument(
         "--context",
         action="append",
-        metavar="<key>=<value>",
+        metavar="<key=value>",
         help="Additional context values giving information about the benchmark run.",
         default=list(),
     )
@@ -40,11 +40,13 @@ def main() -> int:
         help="File or stream to write results to.",
         default=sys.stdout,
     )
+    parser.add_argument(
+        "--typecheck",
+        action=argparse.BooleanOptionalAction,
+        help="Whether or not to strictly check types of benchmark inputs.",
+    )
 
     args = parser.parse_args()
-
-    runner = default_runner()
-    reporter = default_reporter()
 
     context: dict[str, Any] = {}
     for val in args.context:
@@ -54,13 +56,14 @@ def main() -> int:
             raise ValueError("context values need to be of the form <key>=<value>")
         context[k] = v
 
-    record = runner.run(args.benchmarks, tags=tuple(args.tags))
+    record = BenchmarkRunner().run(args.benchmarks, tags=tuple(args.tags))
 
     outfile = args.outfile
     if args.outfile == sys.stdout:
+        reporter = BenchmarkReporter()
         reporter.display(record)
     else:
-        f = FileIO()
+        f = FileReporter()
         f.write(record, outfile)
 
     return 0

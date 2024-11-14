@@ -21,13 +21,13 @@ Running both of these benchmarks produces a benchmark record, which we can save 
 ```python
 import nnbench
 from nnbench.context import GitEnvironmentInfo
-from nnbench.reporter.file import FileIO
+from nnbench.reporter.file import FileReporter
 
 runner = nnbench.BenchmarkRunner()
 record = runner.run("benchmarks.py", params={"a": 1, "b": 1}, context=(GitEnvironmentInfo(),))
 
-fio = FileIO()
-fio.write(record, "record.json", driver="ndjson")
+file_reporter = FileReporter()
+file_reporter.write(record, "record.json", driver="ndjson")
 ```
 
 This writes a newline-delimited JSON file as `record.json` into the current directory. We choose this format because it is ideal for duckdb to work with.
