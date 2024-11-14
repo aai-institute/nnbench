@@ -1,4 +1,5 @@
 import os
+import re
 import threading
 from collections.abc import Callable
 from pathlib import Path
@@ -158,6 +159,14 @@ def get_extension(f: str | os.PathLike[str] | IO) -> str:
         return Path(f.name).suffix
 
 
+def get_protocol(url: str | os.PathLike[str]) -> str:
+    url = str(url)
+    parts = re.split(r"(\:\:|\://)", url, maxsplit=1)
+    if len(parts) > 1:
+        return parts[0]
+    return "file"
+
+
 class FileIO:
     def read(
         self,
@@ -204,8 +213,18 @@ class FileIO:
             )
         _, de = get_driver_implementation(driver)
 
-        if isinstance(file, str | bytes | os.PathLike):
-            fd = open(file, mode)
+        if isinstance(file, str | os.PathLike):
+            protocol = get_protocol(file)
+            if protocol == "file":
+                fd = open(file, mode)
+            else:
+                try:
+                    import fsspec
+                except ImportError:
+                    raise RuntimeError("non-local URIs require the fsspec package")
+                fs = fsspec.filesystem(protocol)
+                # NB(njunge): I sure hope this is standardized by fsspec
+                fd = fs.open(file, mode)
         elif hasattr(file, "read"):
             fd = file
         else:
@@ -257,8 +276,17 @@ class FileIO:
             )
         ser, _ = get_driver_implementation(driver)
 
-        if isinstance(file, str | bytes | os.PathLike):
-            fd = open(file, mode)
+        if isinstance(file, str | os.PathLike):
+            protocol = get_protocol(file)
+            if protocol == "file":
+                fd = open(file, mode)
+            else:
+                try:
+                    import fsspec
+                except ImportError:
+                    raise RuntimeError("non-local URIs require the fsspec package")
+                fs = fsspec.filesystem(protocol)
+                fd = fs.open(file, mode)
         elif hasattr(file, "write"):
             fd = file
         else:
