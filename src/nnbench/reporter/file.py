@@ -2,7 +2,7 @@ import os
 import threading
 from collections.abc import Callable
 from pathlib import Path
-from typing import IO, Any, Literal, cast
+from typing import IO, Any
 
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
@@ -15,9 +15,7 @@ SerDe = tuple[
 
 
 _file_drivers: dict[str, SerDe] = {}
-_compressions: dict[str, Callable] = {}
 _file_driver_lock = threading.Lock()
-_compression_lock = threading.Lock()
 
 
 def yaml_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
@@ -141,95 +139,23 @@ def deregister_driver_implementation(name: str) -> SerDe | None:
         return _file_drivers.pop(name, None)
 
 
-def gzip_compression(
-    file: str | os.PathLike[str] | IO, mode: Literal["rb", "wb"] = "rb", compresslevel: int = 9
-) -> IO:
-    import gzip
-
-    if isinstance(file, str | os.PathLike):
-        filename = file
-        fileobj = None
-    else:
-        filename = file.name
-        fileobj = file
-    # gzip.GzipFile does not inherit from IO[bytes],
-    # but it has all required methods, so we allow it.
-    return cast(
-        IO[bytes],
-        gzip.GzipFile(filename=filename, mode=mode, compresslevel=compresslevel, fileobj=fileobj),
-    )
-
-
-def bz2_compression(
-    filename: str | os.PathLike[str], mode: Literal["rb", "wb"] = "rb", compresslevel: int = 9
-) -> IO:
-    import bz2
-
-    return bz2.BZ2File(filename, mode, compresslevel=compresslevel)
-
-
-def lzma_compression(
-    filename: str | os.PathLike[str], mode: Literal["rb", "wb"] = "rb", compresslevel: int = 9
-) -> IO:
-    import lzma
-
-    # not available for LZMA.
-    del compresslevel
-    return lzma.LZMAFile(filename, mode)
-
-
-def get_compression_algorithm(name: str) -> Callable:
-    try:
-        return _compressions[name]
-    except KeyError:
-        raise KeyError(f"unsupported compression algorithm {name!r}") from None
-
-
-def register_compression(name: str, impl: Callable, clobber: bool = False) -> None:
-    if name in _compressions and not clobber:
-        raise RuntimeError(
-            f"compression {name!r} is already registered "
-            f"(to force registration, rerun with clobber=True)"
-        )
-
-    with _compression_lock:
-        _compressions[name] = impl
-
-
-def deregister_compression(name: str) -> Callable | None:
-    with _compression_lock:
-        return _compressions.pop(name, None)
-
-
 register_driver_implementation(".yaml", (yaml_save, yaml_load))
 register_driver_implementation(".yml", (yaml_save, yaml_load))
 register_driver_implementation(".json", (json_save, json_load))
 register_driver_implementation(".ndjson", (ndjson_save, ndjson_load))
 register_driver_implementation(".csv", (csv_save, csv_load))
 register_driver_implementation(".parquet", (parquet_save, parquet_load))
-register_compression(".gz", gzip_compression)
-register_compression(".bz2", bz2_compression)
-register_compression(".xz", lzma_compression)
 
 
-def get_extension_and_compression(f: str | os.PathLike[str] | IO) -> tuple[str, str | None]:
+def get_extension(f: str | os.PathLike[str] | IO) -> str:
     """
-    Given a file path or file-like object, returns inferred file extension
-    and compression (or None if no compression is given).
+    Given a file path or file-like object, returns file extension
+    (can be the empty string, if the file has no extension).
     """
     if isinstance(f, str | bytes | os.PathLike):
-        pf = Path(f)
+        return Path(f).suffix
     else:
-        pf = Path(f.name)
-
-    suffixes = pf.suffixes
-    if len(suffixes) == 1:
-        ext_driver, ext_compression = suffixes[0], None
-    else:
-        ext_driver = "".join(suffixes[:-1])
-        ext_compression = suffixes[-1]
-
-    return ext_driver, ext_compression
+        return Path(f.name).suffix
 
 
 class FileIO:
@@ -238,7 +164,6 @@ class FileIO:
         file: str | os.PathLike[str] | IO[str],
         mode: str = "r",
         driver: str | None = None,
-        compression: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> BenchmarkRecord:
         """
@@ -255,9 +180,6 @@ class FileIO:
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
-        compression: str | None
-            Compression engine to use. If None, the compression inferred from the given
-            file path's extension will be used.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
 
@@ -272,9 +194,7 @@ class FileIO:
             If no registered file driver matches the file extension and no other driver
             was explicitly specified.
         """
-        ext_driver, ext_compression = get_extension_and_compression(file)
-        driver = driver or ext_driver
-        compression = compression or ext_compression
+        driver = driver or get_extension(file)
 
         if not driver:
             raise ValueError(
@@ -284,15 +204,12 @@ class FileIO:
             )
         _, de = get_driver_implementation(driver)
 
-        if compression is not None:
-            fd = get_compression_algorithm(compression)(file)
+        if isinstance(file, str | bytes | os.PathLike):
+            fd = open(file, mode)
+        elif hasattr(file, "read"):
+            fd = file
         else:
-            if isinstance(file, str | bytes | os.PathLike):
-                fd = open(file, mode)
-            elif hasattr(file, "read"):
-                fd = file
-            else:
-                raise TypeError("filename must be a str, bytes, file or PathLike object")
+            raise TypeError("filename must be a str, bytes, file or PathLike object")
 
         with fd as fp:
             return de(fp, options or {})
@@ -303,7 +220,6 @@ class FileIO:
         file: str | os.PathLike[str] | IO[str],
         mode: str = "w",
         driver: str | None = None,
-        compression: str | None = None,
         options: dict[str, Any] | None = None,
     ) -> None:
         """
@@ -322,9 +238,6 @@ class FileIO:
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
-        compression: str | None
-            Compression engine to use. If None, the compression inferred from the given
-            file path's extension will be used.
         options: dict[str, Any] | None
             Options to pass to the respective file driver implementation.
 
@@ -334,9 +247,7 @@ class FileIO:
             If no registered file driver matches the file extension and no other driver
             was explicitly specified.
         """
-        ext_driver, ext_compression = get_extension_and_compression(file)
-        driver = driver or ext_driver
-        compression = compression or ext_compression
+        driver = driver or get_extension(file)
 
         if not driver:
             raise ValueError(
@@ -346,15 +257,12 @@ class FileIO:
             )
         ser, _ = get_driver_implementation(driver)
 
-        if compression is not None:
-            fd = get_compression_algorithm(compression)(file, mode)
+        if isinstance(file, str | bytes | os.PathLike):
+            fd = open(file, mode)
+        elif hasattr(file, "write"):
+            fd = file
         else:
-            if isinstance(file, str | bytes | os.PathLike):
-                fd = open(file, mode)
-            elif hasattr(file, "write"):
-                fd = file
-            else:
-                raise TypeError("filename must be a str, bytes, file or PathLike object")
+            raise TypeError("filename must be a str, bytes, file or PathLike object")
 
         with fd as fp:
             ser(record, fp, options or {})
