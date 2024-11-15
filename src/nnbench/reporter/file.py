@@ -153,7 +153,7 @@ def get_extension(f: str | os.PathLike[str] | IO) -> str:
     Given a file path or file-like object, returns file extension
     (can be the empty string, if the file has no extension).
     """
-    if isinstance(f, str | bytes | os.PathLike):
+    if isinstance(f, str | os.PathLike):
         return Path(f).suffix
     else:
         return Path(f.name).suffix
@@ -161,7 +161,7 @@ def get_extension(f: str | os.PathLike[str] | IO) -> str:
 
 def get_protocol(url: str | os.PathLike[str]) -> str:
     url = str(url)
-    parts = re.split(r"(\:\:|\://)", url, maxsplit=1)
+    parts = re.split(r"(::|://)", url, maxsplit=1)
     if len(parts) > 1:
         return parts[0]
     return "file"
