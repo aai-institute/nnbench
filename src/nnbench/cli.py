@@ -37,12 +37,13 @@ def main() -> int:
         "--output-file",
         metavar="<file>",
         dest="outfile",
-        help="File or stream to write results to.",
+        help="File or stream to write results to, defaults to stdout.",
         default=sys.stdout,
     )
     parser.add_argument(
         "--typecheck",
         action=argparse.BooleanOptionalAction,
+        default=True,
         help="Whether or not to strictly check types of benchmark inputs.",
     )
 
@@ -54,12 +55,17 @@ def main() -> int:
             k, v = val.split("=")
         except ValueError:
             raise ValueError("context values need to be of the form <key>=<value>")
+        # TODO: Support builtin providers in the runner
         context[k] = v
 
-    record = BenchmarkRunner().run(args.benchmarks, tags=tuple(args.tags))
+    record = BenchmarkRunner(typecheck=args.typecheck).run(
+        args.benchmarks,
+        tags=tuple(args.tags),
+        context=[lambda: context],
+    )
 
     outfile = args.outfile
-    if args.outfile == sys.stdout:
+    if outfile == sys.stdout:
         reporter = BenchmarkReporter()
         reporter.display(record)
     else:

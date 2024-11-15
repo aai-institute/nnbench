@@ -144,6 +144,8 @@ class BenchmarkRunner:
             msng, *_ = missing
             raise ValueError(f"missing value for required parameter {msng!r}")
 
+        # TODO(n.junge): This doesn't pick up mistyped defaults
+        #  (admittedly, that's likely user error)
         for k, v in params.items():
             if k not in allvars:
                 warnings.warn(
