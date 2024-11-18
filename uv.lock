@@ -700,6 +700,7 @@ name = "nnbench"
 version = "0.3.0"
 source = { editable = "." }
 dependencies = [
+    { name = "rich" },
     { name = "tabulate" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
@@ -748,6 +749,7 @@ requires-dist = [
     { name = "psutil", marker = "extra == 'dev'" },
     { name = "pyarrow", marker = "extra == 'dev'" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
+    { name = "rich" },
     { name = "tabulate" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
