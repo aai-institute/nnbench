@@ -30,7 +30,11 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-dependencies = ["tabulate", "typing-extensions; python_version< '3.11'"]
+dependencies = [
+    "rich",
+    "tabulate",
+    "typing-extensions; python_version< '3.11'",
+]
 
 dynamic = ["readme", "version"]
 
