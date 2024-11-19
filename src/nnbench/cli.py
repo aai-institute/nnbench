@@ -2,12 +2,15 @@ import argparse
 import sys
 from typing import Any
 
-from nnbench import BenchmarkRunner, ConsoleReporter
+from nnbench import BenchmarkRunner, ConsoleReporter, __version__
 from nnbench.reporter.file import FileReporter
+
+_VERSION = f"%(prog)s version {__version__}"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser("nnbench")
+    parser.add_argument("--version", action="version", version=_VERSION)
     subparsers = parser.add_subparsers(
         metavar="<command>", required=False, dest="command", help="Subcommands"
     )
