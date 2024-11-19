@@ -77,6 +77,10 @@
          <lastmod>2024-11-19</lastmod>
     </url>
     <url>
+         <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/console/</loc>
+         <lastmod>2024-11-19</lastmod>
+    </url>
+    <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/duckdb_sql/</loc>
          <lastmod>2024-11-19</lastmod>
     </url>

@@ -928,6 +928,27 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
+      <a href="../reporter/console/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    console
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reporter/duckdb_sql/" class="md-nav__link">
         
   
@@ -1512,7 +1533,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 </span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108"></a>
 </span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109"></a>            <span class="n">outfile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">outfile</span>
 </span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110"></a>            <span class="k">if</span> <span class="n">outfile</span> <span class="o">==</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
-</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111"></a>                <span class="n">reporter</span> <span class="o">=</span> <span class="n">BenchmarkReporter</span><span class="p">()</span>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111"></a>                <span class="n">reporter</span> <span class="o">=</span> <span class="n">ConsoleReporter</span><span class="p">()</span>
 </span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112"></a>                <span class="n">reporter</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
 </span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113"></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114"></a>                <span class="n">f</span> <span class="o">=</span> <span class="n">FileReporter</span><span class="p">()</span>
