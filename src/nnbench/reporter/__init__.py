@@ -3,5 +3,6 @@ A lightweight interface for refining, displaying, and streaming benchmark result
 """
 
 from .base import BenchmarkReporter
+from .console import ConsoleReporter
 from .duckdb_sql import DuckDBReporter
 from .file import FileReporter

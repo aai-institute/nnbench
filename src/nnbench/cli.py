@@ -2,7 +2,7 @@ import argparse
 import sys
 from typing import Any
 
-from nnbench import BenchmarkReporter, BenchmarkRunner
+from nnbench import BenchmarkRunner, ConsoleReporter
 from nnbench.reporter.file import FileReporter
 
 
@@ -108,7 +108,7 @@ def main() -> int:
 
             outfile = args.outfile
             if outfile == sys.stdout:
-                reporter = BenchmarkReporter()
+                reporter = ConsoleReporter()
                 reporter.display(record)
             else:
                 f = FileReporter()
