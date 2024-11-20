@@ -29,14 +29,14 @@ class PythonInfo:
 
     Parameters
     ----------
-    *packages: str
+    packages: tuple[str, ...]
         Names of the requested packages under which they exist in the current environment.
         For packages installed through ``pip``, this equals the PyPI package name.
     """
 
     key = "python"
 
-    def __init__(self, *packages: str):
+    def __init__(self, packages: tuple[str, ...]):
         self.packages = packages
 
     def __call__(self) -> dict[str, Any]:
@@ -191,5 +191,4 @@ class CPUInfo:
         # result is in bytes, so no need for base conversion.
         result["total_memory"] = mem_struct.total / mem_conversion
         result["memory_unit"] = self.memunit
-        # TODO: Lacks CPU cache info, which requires a solution other than psutil.
         return {self.key: result}

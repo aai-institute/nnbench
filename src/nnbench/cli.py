@@ -3,7 +3,7 @@ import sys
 from typing import Any
 
 from nnbench import BenchmarkRunner, ConsoleReporter, __version__
-from nnbench.reporter.file import FileReporter
+from nnbench.reporter import FileReporter
 
 _VERSION = f"%(prog)s version {__version__}"
 
@@ -122,7 +122,6 @@ def main() -> int:
         default=list(),
         help="Additional record data to display in the comparison table.",
     )
-    # TODO: Add customization option for rich table displays
 
     try:
         args = parser.parse_args()
@@ -130,10 +129,9 @@ def main() -> int:
             context: dict[str, Any] = {}
             for val in args.context:
                 try:
-                    k, v = val.split("=")
+                    k, v = val.split("=", 1)
                 except ValueError:
                     raise ValueError("context values need to be of the form <key>=<value>")
-                # TODO: Support builtin providers in the runner
                 context[k] = v
 
             record = BenchmarkRunner(typecheck=args.typecheck).run(
@@ -159,8 +157,7 @@ def main() -> int:
                 parameters=args.parameters,
                 contextvals=args.contextvals,
             )
-
         return 0
     except Exception as e:
         sys.stderr.write(f"error: {e}")
-        sys.exit(1)
+        return 1
