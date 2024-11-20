@@ -8,13 +8,44 @@ from nnbench.reporter.file import FileReporter
 _VERSION = f"%(prog)s version {__version__}"
 
 
+class CustomFormatter(argparse.RawDescriptionHelpFormatter):
+    def _format_action_invocation(self, action):
+        if not action.option_strings:
+            (metavar,) = self._metavar_formatter(action, action.dest)(1)
+            return metavar
+        elif isinstance(action, argparse.BooleanOptionalAction):
+            if len(action.option_strings) == 2:
+                true_opt, false_opt = action.option_strings
+                return "--[no-]" + true_opt[2:]
+        else:
+            parts = []
+            # if the Optional doesn't take a value, format is:
+            #    -s, --long
+            if action.nargs == 0:
+                parts.extend(action.option_strings)
+
+            # if the Optional takes a value, format is:
+            #    -s, --long ARGS
+            else:
+                default = action.dest.upper()
+                args_string = self._format_args(action, default)
+                parts.extend(action.option_strings)
+                parts[-1] += f" {args_string}"
+            return ", ".join(parts)
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser("nnbench")
+    parser = argparse.ArgumentParser("nnbench", formatter_class=CustomFormatter)
     parser.add_argument("--version", action="version", version=_VERSION)
     subparsers = parser.add_subparsers(
-        metavar="<command>", required=False, dest="command", help="Subcommands"
+        title="Available commands",
+        required=False,
+        dest="command",
+        metavar="",
     )
-    run_parser = subparsers.add_parser("run", help="Run a benchmark workload.")
+    run_parser = subparsers.add_parser(
+        "run", help="Run a benchmark workload.", formatter_class=CustomFormatter
+    )
     # can be a directory, single file, or glob
     run_parser.add_argument(
         "benchmarks",
@@ -55,7 +86,9 @@ def main() -> int:
     )
 
     compare_parser = subparsers.add_parser(
-        "compare", help="Compare results from multiple benchmark runs."
+        "compare",
+        help="Compare results from multiple benchmark runs.",
+        formatter_class=CustomFormatter,
     )
     compare_parser.add_argument(
         "records",
