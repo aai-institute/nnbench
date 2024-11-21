@@ -15,7 +15,7 @@ def test_fileio_writes_no_compression_inline(tmp_path: Path, ext: str) -> None:
     f = FileReporter()
 
     rec = BenchmarkRecord(
-        name="my-run",
+        run="my-run",
         context={"a": "b", "s": 1, "b.c": 1.0},
         benchmarks=[{"name": "foo", "value": 1}, {"name": "bar", "value": 2}],
     )
