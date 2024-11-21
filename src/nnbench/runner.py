@@ -56,23 +56,13 @@ class BenchmarkRunner:
     typecheck: bool
         Whether to check parameter types against the expected benchmark input types.
         Type mismatches will result in an error before the workload is run.
-    params_repr_hooks: dict[type, Callable]
-        A mapping of data types to functions computing a compressed representation
-        of benchmark parameters of said types. Used in self.params_repr().
     """
 
     benchmark_type = Benchmark
 
-    def __init__(self, typecheck: bool = True, params_repr_hooks: dict[type, Callable] = None):
+    def __init__(self, typecheck: bool = True):
         self.benchmarks: list[Benchmark] = list()
         self.typecheck = typecheck
-        self._params_repr_hooks = params_repr_hooks or {}
-
-    def register_repr_hook(self, typ: type, fn: Callable) -> None:
-        self._params_repr_hooks[typ] = fn
-
-    def deregister_repr_hook(self, typ: type) -> Callable | None:
-        return self._params_repr_hooks.pop(typ, None)
 
     def _check(self, params: dict[str, Any]) -> None:
         allvars: dict[str, tuple[type, Any]] = {}
@@ -138,8 +128,6 @@ class BenchmarkRunner:
             msng, *_ = missing
             raise ValueError(f"missing value for required parameter {msng!r}")
 
-        # TODO(n.junge): This doesn't pick up mistyped defaults
-        #  (admittedly, that's likely user error)
         for k, v in params.items():
             if k not in allvars:
                 warnings.warn(
@@ -161,9 +149,11 @@ class BenchmarkRunner:
             if not _issubtype(vtype, typ):
                 raise TypeError(f"expected type {typ} for parameter {k!r}, got {vtype}")
 
-    def params_repr(self, params: dict[str, Any]) -> dict[str, Any]:
+    def jsonify_params(
+        self, params: dict[str, Any], repr_hooks: dict[type, Callable] | None = None
+    ) -> dict[str, Any]:
         """
-        Compute a compressed representation of benchmark parameters.
+        Construct a JSON representation of benchmark parameters.
 
         This is necessary to break reference cycles from the parameters to the records,
         which prevent garbage collection of memory-intensive values.
@@ -171,37 +161,41 @@ class BenchmarkRunner:
         Parameters
         ----------
         params: dict[str, Any]
-            Benchmark parameters to compute a compressed representation of.
+            Benchmark parameters to compute a JSON representation of.
+        repr_hooks: dict[type, Callable] | None
+            A dictionary mapping parameter types to functions returning a JSON representation
+            of an instance of the type. Allows fine-grained control to achieve lossless,
+            reproducible serialization of input parameter information.
 
         Returns
         -------
         dict[str, Any]
-            A compressed representation of the benchmark input parameters.
+            A JSON-serializable representation of the benchmark input parameters.
         """
-        containers = (tuple, list, set, frozenset)
+        repr_hooks = repr_hooks or {}
         natives = (float, int, str, bool, bytes, complex)
-        compressed: dict[str, Any] = {}
+        json_params: dict[str, Any] = {}
 
-        def _compress_impl(val):
+        def _jsonify(val):
             vtype = type(val)
-            if vtype in self._params_repr_hooks:
-                return self._params_repr_hooks[vtype](val)
+            if vtype in repr_hooks:
+                return repr_hooks[vtype](val)
             if isinstance(val, natives):
-                # save native types without modification...
                 return val
+            elif hasattr(val, "to_json"):
+                return val.to_json()
             else:
-                # ... or return the string repr.
-                return repr(val)
+                return str(val)
 
         for k, v in params.items():
-            if isinstance(v, containers):
+            if isinstance(v, tuple | list | set | frozenset):
                 container_type = type(v)
-                compressed[k] = container_type(_compress_impl(vv) for vv in v)
+                json_params[k] = container_type(map(_jsonify, v))
             elif isinstance(v, dict):
-                compressed[k] = self.params_repr(v)
+                json_params[k] = self.jsonify_params(v)
             else:
-                compressed[k] = _compress_impl(v)
-        return compressed
+                json_params[k] = _jsonify(v)
+        return json_params
 
     def clear(self) -> None:
         """Clear all registered benchmarks."""
@@ -260,10 +254,10 @@ class BenchmarkRunner:
     def run(
         self,
         path_or_module: str | os.PathLike[str],
+        name: str | None = None,
         params: dict[str, Any] | Parameters | None = None,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
-        name: str | None = None,
     ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
@@ -273,6 +267,8 @@ class BenchmarkRunner:
         path_or_module: str | os.PathLike[str]
             Name or path of the module to discover benchmarks in. Can also be a directory,
             in which case benchmarks are collected from the Python files therein.
+        name: str | None
+            A name for the currently started run. If None, a name will be automatically generated.
         params: dict[str, Any] | Parameters | None
             Parameters to use for the benchmark run. Names have to match positional and keyword
             argument names of the benchmark functions.
@@ -283,8 +279,6 @@ class BenchmarkRunner:
             Additional context to log with the benchmark in the output JSON record. Useful for
             obtaining environment information and configuration, like CPU/GPU hardware info,
             ML model metadata, and more.
-        name: str | None
-            A name for the currently started run. If None, a name will be automatically generated.
 
         Returns
         -------
@@ -293,7 +287,7 @@ class BenchmarkRunner:
             "name" giving the benchmark run name, "context" holding the context information,
             and "benchmarks", holding an array with the benchmark results.
         """
-        name = name or "nnbench-" + platform.node() + "-" + uuid.uuid1().hex[:8]
+        run = name or "nnbench-" + platform.node() + "-" + uuid.uuid1().hex[:8]
 
         if not self.benchmarks:
             self.collect(path_or_module, tags)
@@ -313,7 +307,7 @@ class BenchmarkRunner:
         # if we didn't find any benchmarks, warn and return an empty record.
         if not self.benchmarks:
             warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
-            return BenchmarkRecord(name=name, context=ctx, benchmarks=[])
+            return BenchmarkRecord(run=run, context=ctx, benchmarks=[])
 
         for bm in self.benchmarks:
             family_sizes[bm.fn.__name__] += 1
@@ -356,7 +350,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
-                "parameters": self.params_repr(bmparams),
+                "parameters": self.jsonify_params(bmparams),
             }
             try:
                 benchmark.setUp(state, bmparams)
@@ -370,7 +364,7 @@ class BenchmarkRunner:
                 results.append(res)
 
         return BenchmarkRecord(
-            name=name,
+            run=run,
             context=ctx,
             benchmarks=results,
         )
