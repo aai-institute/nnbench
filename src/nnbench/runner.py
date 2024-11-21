@@ -5,8 +5,10 @@ import contextlib
 import inspect
 import logging
 import os
+import platform
 import sys
 import time
+import uuid
 import warnings
 from collections.abc import Callable, Generator, Sequence
 from dataclasses import asdict
@@ -20,14 +22,6 @@ from nnbench.types.memo import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger(__name__)
-
-
-def iscontainer(s: Any) -> bool:
-    return isinstance(s, tuple | list)
-
-
-def isdunder(s: str) -> bool:
-    return s.startswith("__") and s.endswith("__")
 
 
 def qualname(fn: Callable) -> str:
@@ -251,12 +245,13 @@ class BenchmarkRunner:
 
         # iterate through the module dict members to register
         for k, v in module.__dict__.items():
-            if isdunder(k):
+            if k.startswith("__") and k.endswith("__"):
+                # dunder names are ignored.
                 continue
             elif isinstance(v, self.benchmark_type):
                 if not tags or set(tags) & set(v.tags):
                     self.benchmarks.append(v)
-            elif iscontainer(v):
+            elif isinstance(v, list | tuple | set | frozenset):
                 for bm in v:
                     if isinstance(bm, self.benchmark_type):
                         if not tags or set(tags) & set(bm.tags):
@@ -268,6 +263,7 @@ class BenchmarkRunner:
         params: dict[str, Any] | Parameters | None = None,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
+        name: str | None = None,
     ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
@@ -287,14 +283,18 @@ class BenchmarkRunner:
             Additional context to log with the benchmark in the output JSON record. Useful for
             obtaining environment information and configuration, like CPU/GPU hardware info,
             ML model metadata, and more.
+        name: str | None
+            A name for the currently started run. If None, a name will be automatically generated.
 
         Returns
         -------
         BenchmarkRecord
-            A JSON output representing the benchmark results. Has two top-level keys, "context"
-            holding the context information, and "benchmarks", holding an array with the
-            benchmark results.
+            A JSON output representing the benchmark results. Has three top-level keys,
+            "name" giving the benchmark run name, "context" holding the context information,
+            and "benchmarks", holding an array with the benchmark results.
         """
+        name = name or "nnbench-" + platform.node() + "-" + uuid.uuid1().hex[:8]
+
         if not self.benchmarks:
             self.collect(path_or_module, tags)
 
@@ -313,7 +313,7 @@ class BenchmarkRunner:
         # if we didn't find any benchmarks, warn and return an empty record.
         if not self.benchmarks:
             warnings.warn(f"No benchmarks found in path/module {str(path_or_module)!r}.")
-            return BenchmarkRecord(context=ctx, benchmarks=[])
+            return BenchmarkRecord(name=name, context=ctx, benchmarks=[])
 
         for bm in self.benchmarks:
             family_sizes[bm.fn.__name__] += 1
@@ -370,6 +370,7 @@ class BenchmarkRunner:
                 results.append(res)
 
         return BenchmarkRecord(
+            name=name,
             context=ctx,
             benchmarks=results,
         )

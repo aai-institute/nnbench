@@ -29,6 +29,7 @@ def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None
 
 @dataclass(frozen=True)
 class BenchmarkRecord:
+    name: str
     context: dict[str, Any]
     benchmarks: list[dict[str, Any]]
 
@@ -51,8 +52,8 @@ class BenchmarkRecord:
         results = []
         for b in self.benchmarks:
             bc = copy.deepcopy(b)
-            # TODO: Give an option to elide (or process) the context?
             bc["context"] = self.context
+            bc["run-name"] = self.name
             results.append(bc)
         return results
 
@@ -81,16 +82,20 @@ class BenchmarkRecord:
 
             benchmarks = bms["benchmarks"]
             context = bms.get("context", {})
+            name = bms.get("name", "")
         else:
+            name = ""
             context = {}
             benchmarks = bms
             for b in benchmarks:
-                # Safeguard if the context is not in the record,
-                # for example if it came from a DB query.
+                # TODO(nicholasjng): This does not do the right thing if the list contains
+                #  data from multiple benchmark runs, e.g. from a DB query.
+                if "run-name" in b:
+                    name = b.pop("run-name")
                 if "context" in b:
                     # TODO: Log context key/value disagreements
                     context |= b.pop("context", {})
-        return cls(benchmarks=benchmarks, context=context)
+        return cls(name=name, benchmarks=benchmarks, context=context)
 
 
 @dataclass(frozen=True)
