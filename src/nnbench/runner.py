@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, get_origin
 
 from nnbench.context import ContextProvider
+from nnbench.fixtures import FixtureManager
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
 from nnbench.types.memo import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
@@ -310,14 +311,14 @@ class BenchmarkRunner:
             return BenchmarkRecord(run=run, context=ctx, benchmarks=[])
 
         for bm in self.benchmarks:
-            family_sizes[bm.fn.__name__] += 1
+            family_sizes[bm.interface.funcname] += 1
 
         if isinstance(params, Parameters):
             dparams = asdict(params)
         else:
             dparams = params or {}
 
-        if self.typecheck:
+        if dparams and self.typecheck:
             self._check(dparams)
 
         results: list[dict[str, Any]] = []
@@ -329,7 +330,7 @@ class BenchmarkRunner:
             return v
 
         for benchmark in self.benchmarks:
-            bm_family = benchmark.fn.__name__
+            bm_family = benchmark.interface.funcname
             state = State(
                 name=benchmark.name,
                 family=bm_family,
@@ -337,10 +338,30 @@ class BenchmarkRunner:
                 family_index=family_indices[bm_family],
             )
             family_indices[bm_family] += 1
-            bmtypes = dict(zip(benchmark.interface.names, benchmark.interface.types))
-            bmparams = dict(zip(benchmark.interface.names, benchmark.interface.defaults))
-            bmparams |= {k: v for k, v in dparams.items() if k in bmparams}
-            bmparams = {k: _maybe_dememo(v, bmtypes[k]) for k, v in bmparams.items()}
+
+            # Assembling benchmark parameters: First grab all defaults from the interface...
+            bmparams = {
+                name: _maybe_dememo(val, typ)
+                for name, typ, val in benchmark.interface.variables
+                if val != inspect.Parameter.empty
+            }
+            # ... then hydrate with the input parameters.
+            bmparams |= dparams
+            # If any arguments are still unresolved, go look them up as fixtures.
+            if set(bmparams) < set(benchmark.interface.names):
+                # TODO: This breaks for a module name (like __main__).
+                # Since that only means that we cannot resolve fixtures when benchmarking
+                # a module name (which makes sense), and we can always pass extra
+                # parameters in the module case, fixing this is not as urgent.
+                p = Path(path_or_module)
+                if p.is_file():
+                    root = p.parent
+                elif p.is_dir():
+                    root = p
+                else:
+                    raise ValueError(f"expected a file or directory, got {path_or_module!r}")
+                fm = FixtureManager(root)
+                bmparams |= fm.resolve(benchmark)
 
             # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
