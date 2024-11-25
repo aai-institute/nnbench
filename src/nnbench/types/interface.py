@@ -35,6 +35,7 @@ class Interface:
         The function's return type annotation, or NoneType if left untyped.
     """
 
+    funcname: str
     names: tuple[str, ...]
     types: tuple[type, ...]
     defaults: tuple
@@ -53,6 +54,7 @@ class Interface:
         _defaults = {k: defaults.get(k, v.default) for k, v in sig.parameters.items()}
         # defaults are the signature parameters, then the partial parametrization.
         return cls(
+            fn.__name__,
             tuple(sig.parameters.keys()),
             tuple(p.annotation for p in sig.parameters.values()),
             tuple(_defaults.values()),

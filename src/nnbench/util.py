@@ -62,7 +62,7 @@ def modulename(file: str | os.PathLike[str]) -> str:
 
 
 def import_file_as_module(file: str | os.PathLike[str]) -> ModuleType:
-    fpath = Path(file).resolve()  # Python module __file__ paths are absolute.
+    fpath = Path(file)
     if not fpath.is_file() or fpath.suffix != ".py":
         raise ValueError(f"path {str(file)!r} is not a Python file")
 
