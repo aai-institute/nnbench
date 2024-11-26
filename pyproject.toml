@@ -30,10 +30,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-dependencies = [
-    "rich",
-    "typing-extensions; python_version< '3.11'",
-]
+dependencies = ["rich", "typing-extensions; python_version< '3.11'"]
 
 dynamic = ["readme", "version"]
 
@@ -50,7 +47,7 @@ dev = [
     "psutil",
     "pyarrow",
     "pytest>=7.4.0",
-    "fsspec"
+    "fsspec",
 ]
 docs = [
     "black",
