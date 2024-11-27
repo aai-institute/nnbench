@@ -10,4 +10,4 @@ def parse_nnbench_config(pyproject_path):
     with open(pyproject_path, "rb") as fp:
         config = tomllib.load(fp)
 
-    return config.get("tool.nnbench", {})
+    return config.get("tool", {}).get("nnbench", {})
