@@ -14,7 +14,7 @@ from collections.abc import Callable, Generator, Sequence
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, get_origin
+from typing import Any
 
 from nnbench.context import ContextProvider
 from nnbench.fixtures import FixtureManager
@@ -61,94 +61,8 @@ class BenchmarkRunner:
 
     benchmark_type = Benchmark
 
-    def __init__(self, typecheck: bool = True):
+    def __init__(self):
         self.benchmarks: list[Benchmark] = list()
-        self.typecheck = typecheck
-
-    def _check(self, params: dict[str, Any]) -> None:
-        allvars: dict[str, tuple[type, Any]] = {}
-        required: set[str] = set()
-        empty = inspect.Parameter.empty
-
-        def _issubtype(t1: type, t2: type) -> bool:
-            """Small helper to make typechecks work on generics."""
-
-            if t1 == t2:
-                return True
-
-            t1 = get_origin(t1) or t1
-            t2 = get_origin(t2) or t2
-            if not inspect.isclass(t1):
-                return False
-            # TODO: Extend typing checks to args.
-            return issubclass(t1, t2)
-
-        # stitch together the union interface comprised of all benchmarks.
-        for bm in self.benchmarks:
-            for var in bm.interface.variables:
-                name, typ, default = var
-                if default is empty:
-                    required.add(name)
-                if name in params and default != empty:
-                    logger.debug(
-                        f"using given value {params[name]} over default value {default} "
-                        f"for parameter {name!r} in benchmark {bm.name}()"
-                    )
-
-                if typ == empty:
-                    logger.debug(f"parameter {name!r} untyped in benchmark {bm.name}().")
-
-                if name in allvars:
-                    currvar = allvars[name]
-                    orig_type, orig_val = new_type, new_val = currvar
-                    # If a benchmark has a variable without a default value,
-                    # that variable is taken into the combined interface as no-default.
-                    if default is empty:
-                        new_val = default
-                    # These types need not be exact matches, just compatible.
-                    # Two types are compatible iff either is a subtype of the other.
-                    # We only log the narrowest type for each varname in the final interface,
-                    # since that determines whether an input value is admissible.
-                    if _issubtype(orig_type, typ):
-                        pass
-                    elif _issubtype(typ, orig_type):
-                        new_type = typ
-                    else:
-                        raise TypeError(
-                            f"got incompatible types {orig_type}, {typ} for parameter {name!r}"
-                        )
-                    newvar = (new_type, new_val)
-                    if newvar != currvar:
-                        allvars[name] = newvar
-                else:
-                    allvars[name] = (typ, default)
-
-        # check if any required variable has no parameter.
-        missing = required - params.keys()
-        if missing:
-            msng, *_ = missing
-            raise ValueError(f"missing value for required parameter {msng!r}")
-
-        for k, v in params.items():
-            if k not in allvars:
-                warnings.warn(
-                    f"ignoring parameter {k!r} since it is not part of any benchmark interface."
-                )
-                continue
-
-            typ, default = allvars[k]
-            # skip the subsequent type check if the variable is untyped.
-            if typ == empty:
-                continue
-
-            vtype = type(v)
-            if is_memo(v) and not is_memo_type(typ):
-                # in case of a thunk, check the result type of __call__() instead.
-                vtype = inspect.signature(v).return_annotation
-
-            # type-check parameter value against the narrowest hinted type.
-            if not _issubtype(vtype, typ):
-                raise TypeError(f"expected type {typ} for parameter {k!r}, got {vtype}")
 
     def jsonify_params(
         self, params: dict[str, Any], repr_hooks: dict[type, Callable] | None = None
@@ -317,9 +231,6 @@ class BenchmarkRunner:
             dparams = asdict(params)
         else:
             dparams = params or {}
-
-        if dparams and self.typecheck:
-            self._check(dparams)
 
         results: list[dict[str, Any]] = []
 
