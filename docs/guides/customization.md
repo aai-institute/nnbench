@@ -16,7 +16,7 @@ import nnbench
 
 def set_envvar(**params):
     os.environ["MY_ENV"] = "MY_VALUE"
-    
+
 
 @nnbench.benchmark(setUp=set_envvar)
 def prod(a: int, b: int) -> int:
@@ -33,7 +33,7 @@ import nnbench
 
 def set_envvar(**params):
     os.environ["MY_ENV"] = "MY_VALUE"
-    
+
 
 def pop_envvar(**params):
     os.environ.pop("MY_ENV")
@@ -108,4 +108,4 @@ runner = nnbench.BenchmarkRunner()
 result = runner.run(__name__, params=params)
 ```
 
-While this does not have a concrete advantage in terms of type safety over a raw dictionary (all inputs will be checked against the types expected from the benchmark interfaces), it guards against accidental modification of parameters breaking reproducibility.
+While this does not have a concrete advantage in terms of type safety over a raw dictionary, it guards against accidental modification of parameters breaking reproducibility.

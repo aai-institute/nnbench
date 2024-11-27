@@ -48,15 +48,6 @@ class BenchmarkRunner:
     Collects benchmarks from a module or file using the collect() method.
     Runs a previously collected benchmark workload with parameters in the run() method,
     outputting the results to a JSON-like document.
-
-    Optionally checks input parameters against the benchmark function's interfaces,
-    raising an error if the input types do not match the expected types.
-
-    Parameters
-    ----------
-    typecheck: bool
-        Whether to check parameter types against the expected benchmark input types.
-        Type mismatches will result in an error before the workload is run.
     """
 
     benchmark_type = Benchmark
