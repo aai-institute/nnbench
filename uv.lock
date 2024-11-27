@@ -701,6 +701,7 @@ version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "rich" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 
@@ -749,6 +750,7 @@ requires-dist = [
     { name = "pyarrow", marker = "extra == 'dev'" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
     { name = "rich" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=1.1.0" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 
