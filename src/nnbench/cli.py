@@ -78,12 +78,6 @@ def main() -> int:
         help="File or stream to write results to, defaults to stdout.",
         default=sys.stdout,
     )
-    run_parser.add_argument(
-        "--typecheck",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="Whether or not to strictly check types of benchmark inputs.",
-    )
 
     compare_parser = subparsers.add_parser(
         "compare",
@@ -136,7 +130,7 @@ def main() -> int:
                 # TODO: Support builtin providers in the runner
                 context[k] = v
 
-            record = BenchmarkRunner(typecheck=args.typecheck).run(
+            record = BenchmarkRunner().run(
                 args.benchmarks,
                 tags=tuple(args.tags),
                 context=[lambda: context],
