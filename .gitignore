@@ -129,3 +129,12 @@ public/
 *.bin
 *.html
 !docs/**/*.html
+
+# Written records
+*.json
+*.parquet
+*.csv
+*.ndjson
+
+# Zed
+.ropeproject
