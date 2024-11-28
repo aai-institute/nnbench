@@ -37,15 +37,46 @@ class CustomFormatter(argparse.RawDescriptionHelpFormatter):
             return ", ".join(parts)
 
 
-def main() -> int:
-    # TODO: Put the parser into its own function
+def _log_level(log_level: str) -> str:
+    """
+    Initializes a stream handler to the nnbench logger if any level except NOTSET is passed.
+
+    This runs before input validation against "choices", so we must check the input is in fact a
+    literal of the available log levels.
+    """
+
+    if log_level not in ("NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
+        # ValueErrors are caught by argparse, but the error message is non-configurable,
+        # and the original exception is swallowed
+        raise ValueError
+
+    if log_level != "NOTSET":
+        logger.setLevel(log_level)
+        sh = logging.StreamHandler()
+        # TODO: Add --log-format switch to allow setting a custom log formatter (?)
+        # TODO: Add --log-file switch to allow dumping to a file
+        sh.setFormatter(
+            logging.Formatter(fmt="[{levelname:<4} {name}:L{lineno}] {message}", style="{")
+        )
+        logger.addHandler(sh)
+    return log_level
+
+
+# hacky way to craft a nicer error message from a type hook:
+# since __name__ is used as the argument value name, any weirdly
+# named function (i.e. implementation detail) will produce a
+# weird error message.
+_log_level.__name__ = "log level"
+
+
+def construct_parser() -> argparse.ArgumentParser:
     config = parse_nnbench_config()
     parser = argparse.ArgumentParser("nnbench", formatter_class=CustomFormatter)
     parser.add_argument("--version", action="version", version=_VERSION)
     parser.add_argument(
         "--log-level",
         default=config["log-level"],
-        choices=("NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
+        type=_log_level,
         metavar="<level>",
         help="Log level to use for the nnbench package, defaults to NOTSET (no logging).",
     )
@@ -128,17 +159,14 @@ def main() -> int:
         default=list(),
         help="Additional record data to display in the comparison table.",
     )
+    return parser
 
+
+def main() -> int:
+    """The main nnbench CLI entry point."""
+    parser = construct_parser()
     try:
         args = parser.parse_args()
-        # TODO: stick this into an argparse type converter
-        if args.log_level != "NOTSET":
-            logger.setLevel(args.log_level)
-            sh = logging.StreamHandler()
-            sh.setFormatter(
-                logging.Formatter(fmt="[{levelname:<4} {name}:L{lineno}] {message}", style="{")
-            )
-            logger.addHandler(sh)
         if args.command == "run":
             context: dict[str, Any] = {}
             for val in args.context:
