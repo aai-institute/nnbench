@@ -2,7 +2,7 @@
 
 import platform
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from typing import Any, Literal
 
 ContextProvider = Callable[[], dict[str, Any]]
@@ -29,14 +29,14 @@ class PythonInfo:
 
     Parameters
     ----------
-    *packages: str
+    packages: str
         Names of the requested packages under which they exist in the current environment.
         For packages installed through ``pip``, this equals the PyPI package name.
     """
 
     key = "python"
 
-    def __init__(self, *packages: str):
+    def __init__(self, packages: Sequence[str] = ()):
         self.packages = packages
 
     def __call__(self) -> dict[str, Any]:
@@ -57,7 +57,7 @@ class PythonInfo:
             except PackageNotFoundError:
                 dependencies[pkg] = ""
 
-        result["dependencies"] = dependencies
+        result["packages"] = dependencies
         return {self.key: result}
 
 
@@ -193,3 +193,6 @@ class CPUInfo:
         result["memory_unit"] = self.memunit
         # TODO: Lacks CPU cache info, which requires a solution other than psutil.
         return {self.key: result}
+
+
+builtin_providers: dict[str, ContextProvider] = {"cpu": CPUInfo(), "python": PythonInfo()}

@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from rich.console import Console
@@ -46,8 +47,8 @@ class ConsoleReporter(BenchmarkReporter):
         columns: list[str] = ["Benchmark", "Value", "Wall time (ns)", "Parameters"]
 
         # print context values
-        for k, v in record.context.items():
-            print(f"{k}: {v}")
+        print("Context values:")
+        print(json.dumps(record.context, indent=4))
 
         for bm in record.benchmarks:
             row = [bm["name"], get_value_by_name(bm), str(bm["time_ns"]), str(bm["parameters"])]
