@@ -1,11 +1,14 @@
 import argparse
+import logging
 import sys
 from typing import Any
 
 from nnbench import BenchmarkRunner, ConsoleReporter, __version__
-from nnbench.reporter.file import FileReporter
+from nnbench.config import parse_nnbench_config
+from nnbench.reporter import FileReporter
 
 _VERSION = f"%(prog)s version {__version__}"
+logger = logging.getLogger("nnbench")
 
 
 class CustomFormatter(argparse.RawDescriptionHelpFormatter):
@@ -35,8 +38,17 @@ class CustomFormatter(argparse.RawDescriptionHelpFormatter):
 
 
 def main() -> int:
+    # TODO: Put the parser into its own function
+    config = parse_nnbench_config()
     parser = argparse.ArgumentParser("nnbench", formatter_class=CustomFormatter)
     parser.add_argument("--version", action="version", version=_VERSION)
+    parser.add_argument(
+        "--log-level",
+        default=config["log-level"],
+        choices=("NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
+        metavar="<level>",
+        help="Log level to use for the nnbench package, defaults to NOTSET (no logging).",
+    )
     subparsers = parser.add_subparsers(
         title="Available commands",
         required=False,
@@ -116,10 +128,17 @@ def main() -> int:
         default=list(),
         help="Additional record data to display in the comparison table.",
     )
-    # TODO: Add customization option for rich table displays
 
     try:
         args = parser.parse_args()
+        # TODO: stick this into an argparse type converter
+        if args.log_level != "NOTSET":
+            logger.setLevel(args.log_level)
+            sh = logging.StreamHandler()
+            sh.setFormatter(
+                logging.Formatter(fmt="[{levelname:<4} {name}:L{lineno}] {message}", style="{")
+            )
+            logger.addHandler(sh)
         if args.command == "run":
             context: dict[str, Any] = {}
             for val in args.context:

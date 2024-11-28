@@ -22,7 +22,7 @@ from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
 from nnbench.types.memo import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("nnbench.runner")
 
 
 def qualname(fn: Callable) -> str:
@@ -134,6 +134,7 @@ class BenchmarkRunner:
                 self.collect(py, tags)
             return
         elif ppath.is_file():
+            logger.debug(f"Collecting benchmarks from file {ppath}.")
             module = import_file_as_module(path_or_module)
         elif ismodule(path_or_module):
             module = sys.modules[str(path_or_module)]

@@ -33,7 +33,7 @@ classifiers = [
 dependencies = [
     "rich",
     "tomli >= 1.1.0 ; python_version < '3.11'",
-    "typing-extensions; python_version< '3.11'",
+    "typing-extensions; python_version < '3.11'",
 ]
 
 dynamic = ["readme", "version"]
