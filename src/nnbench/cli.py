@@ -1,10 +1,11 @@
 import argparse
+import importlib
 import logging
 import sys
 from typing import Any
 
 from nnbench import BenchmarkRunner, ConsoleReporter, __version__
-from nnbench.config import parse_nnbench_config
+from nnbench.config import nnbenchConfig, parse_nnbench_config
 from nnbench.reporter import FileReporter
 
 _VERSION = f"%(prog)s version {__version__}"
@@ -69,13 +70,12 @@ def _log_level(log_level: str) -> str:
 _log_level.__name__ = "log level"
 
 
-def construct_parser() -> argparse.ArgumentParser:
-    config = parse_nnbench_config()
+def construct_parser(config: nnbenchConfig) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser("nnbench", formatter_class=CustomFormatter)
     parser.add_argument("--version", action="version", version=_VERSION)
     parser.add_argument(
         "--log-level",
-        default=config["log-level"],
+        default=config.log_level,
         type=_log_level,
         metavar="<level>",
         help="Log level to use for the nnbench package, defaults to NOTSET (no logging).",
@@ -164,18 +164,35 @@ def construct_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     """The main nnbench CLI entry point."""
-    parser = construct_parser()
+    config = parse_nnbench_config()
+    parser = construct_parser(config)
     try:
         args = parser.parse_args()
         if args.command == "run":
+            from nnbench.context import builtin_providers
+
             context: dict[str, Any] = {}
+            for p in config.context:
+                modname, classname = p.classpath.rsplit(".", 1)
+
+                # TODO: (n.junge) Avoid f-string interpolation in logs
+                logger.debug(f"Registering context provider {p.name!r}")
+
+                # TODO: Catch import errors if the module does not exist
+                klass = getattr(importlib.import_module(modname), classname)
+                builtin_providers[p.name] = klass(**p.arguments)
             for val in args.context:
                 try:
                     k, v = val.split("=")
                 except ValueError:
                     raise ValueError("context values need to be of the form <key>=<value>")
-                # TODO: Support builtin providers in the runner
-                context[k] = v
+                if k == "provider":
+                    try:
+                        context.update(builtin_providers[v]())
+                    except KeyError:
+                        raise KeyError(f"unknown context provider {v!r}") from None
+                else:
+                    context[k] = v
 
             record = BenchmarkRunner().run(
                 args.benchmarks,
