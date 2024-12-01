@@ -1,3 +1,5 @@
+"""The ``nnbench`` command line interface."""
+
 import argparse
 import importlib
 import logging
@@ -163,7 +165,7 @@ def construct_parser(config: nnbenchConfig) -> argparse.ArgumentParser:
 
 
 def main() -> int:
-    """The main nnbench CLI entry point."""
+    """The main ``nnbench`` CLI entry point."""
     config = parse_nnbench_config()
     parser = construct_parser(config)
     try:

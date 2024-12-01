@@ -45,9 +45,12 @@ class BenchmarkRunner:
     """
     An abstract benchmark runner class.
 
-    Collects benchmarks from a module or file using the collect() method.
-    Runs a previously collected benchmark workload with parameters in the run() method,
-    outputting the results to a JSON-like document.
+    Collects benchmarks from a module or file using the ``BenchmarkRunner.collect()``
+    method.
+
+    Runs a previously collected benchmark workload with parameters in the
+    ``BenchmarkRunner.run()`` method, outputting the results to a
+    ``BenchmarkRecord`` dataclass.
     """
 
     benchmark_type = Benchmark
