@@ -6,12 +6,3 @@ from .runner import BenchmarkRunner
 from .types import Benchmark, BenchmarkRecord, Memo, Parameters
 
 __version__ = "0.3.0"
-
-
-# TODO: This isn't great, make it functional instead?
-def default_runner() -> BenchmarkRunner:
-    return BenchmarkRunner()
-
-
-def default_reporter() -> BenchmarkReporter:
-    return ConsoleReporter()
