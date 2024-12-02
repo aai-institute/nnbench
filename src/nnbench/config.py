@@ -1,9 +1,9 @@
-"""Utilities for parsing an nnbench config block out of a pyproject.toml file."""
+"""Utilities for parsing a ``[tool.nnbench]`` config block out of a pyproject.toml file."""
 
 import logging
 import os
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -29,13 +29,15 @@ class ContextProviderDef:
     """Name under which the provider should be registered by nnbench."""
     classpath: str
     """Full path to the class or callable returning the context dict."""
-    arguments: dict[str, Any]
-    """Arguments needed to instantiate the context provider class,
-    given as key-value pairs in the table."""
+    arguments: dict[str, Any] = field(default_factory=dict)
+    """
+    Arguments needed to instantiate the context provider class,
+    given as key-value pairs in the table.
+    If the class path points to a function, no arguments may be given."""
 
 
 @dataclass(frozen=True)
-class nnbenchConfig:
+class NNBenchConfig:
     log_level: str
     """Log level to use for the ``nnbench`` module root logger."""
     context: list[ContextProviderDef]
@@ -56,7 +58,7 @@ class nnbenchConfig:
         ----------
         d: dict[str, Any]
             Mapping containing the [tool.nnbench] block as obtained by
-            ``tomllib.load``.
+            ``tomllib.load()``.
 
         Returns
         -------
@@ -93,7 +95,7 @@ def locate_pyproject() -> os.PathLike[str]:
     raise RuntimeError("could not locate pyproject.toml")
 
 
-def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -> nnbenchConfig:
+def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -> NNBenchConfig:
     """
     Load an nnbench config from a given pyproject.toml file.
 
@@ -107,7 +109,7 @@ def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -
 
     Returns
     -------
-    nnbenchConfig
+    NNBenchConfig
         The loaded config if found, or a default config.
 
     """
@@ -116,9 +118,9 @@ def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -
             pyproject_path = locate_pyproject()
         except RuntimeError:
             # pyproject.toml cannot be found, so return an empty config.
-            return nnbenchConfig.empty()
+            return NNBenchConfig.empty()
 
     with open(pyproject_path, "rb") as fp:
         pyproject_cfg = tomllib.load(fp)
     nnbench_cfg = pyproject_cfg.get("tool", {}).get("nnbench", {})
-    return nnbenchConfig.from_toml(nnbench_cfg)
+    return NNBenchConfig.from_toml(nnbench_cfg)

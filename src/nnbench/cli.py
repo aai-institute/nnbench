@@ -7,7 +7,7 @@ import sys
 from typing import Any
 
 from nnbench import BenchmarkRunner, ConsoleReporter, __version__
-from nnbench.config import nnbenchConfig, parse_nnbench_config
+from nnbench.config import NNBenchConfig, parse_nnbench_config
 from nnbench.reporter import FileReporter
 
 _VERSION = f"%(prog)s version {__version__}"
@@ -72,7 +72,7 @@ def _log_level(log_level: str) -> str:
 _log_level.__name__ = "log level"
 
 
-def construct_parser(config: nnbenchConfig) -> argparse.ArgumentParser:
+def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser("nnbench", formatter_class=CustomFormatter)
     parser.add_argument("--version", action="version", version=_VERSION)
     parser.add_argument(
@@ -185,7 +185,13 @@ def main() -> int:
 
                 # TODO: Catch import errors if the module does not exist
                 klass = getattr(importlib.import_module(modname), classname)
-                builtin_providers[p.name] = klass(**p.arguments)
+                if isinstance(klass, type):
+                    # classes can be instantiated with arguments,
+                    # while functions cannot.
+                    builtin_providers[p.name] = klass(**p.arguments)
+                else:
+                    builtin_providers[p.name] = klass
+
             for val in args.context:
                 try:
                     k, v = val.split("=", 1)
