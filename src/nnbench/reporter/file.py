@@ -10,8 +10,8 @@ from nnbench.types import BenchmarkRecord
 
 _Options = dict[str, Any]
 SerDe = tuple[
-    Callable[[BenchmarkRecord, IO, dict[str, Any]], None],
-    Callable[[IO, dict[str, Any]], BenchmarkRecord],
+    Callable[[BenchmarkRecord, IO, _Options], None],
+    Callable[[IO, _Options], BenchmarkRecord],
 ]
 
 
@@ -183,9 +183,10 @@ class FileReporter(BenchmarkReporter):
         Parameters
         ----------
         file: str | os.PathLike[str] | IO[str]
-            The file name to read from.
+            The file name, or object, to read from.
         mode: str
-            File mode to use. Can be any of the modes used in builtin ``open()``.
+            Mode to use when opening a new file from a path.
+            Can be any of the read modes supported by built-in ``open()``.
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
@@ -251,9 +252,10 @@ class FileReporter(BenchmarkReporter):
         record: BenchmarkRecord
             The record to write to the database.
         file: str | os.PathLike[str]
-            The file name to write to.
+            The file name, or object, to write to.
         mode: str
-            File mode to use. Can be any of the modes used in builtin ``open()``.
+            Mode to use when opening a new file from a path.
+            Can be any of the write modes supported by built-in ``open()``.
         driver: str | None
             File driver implementation to use. If None, the file driver inferred from the
             given file path's extension will be used.
@@ -266,6 +268,7 @@ class FileReporter(BenchmarkReporter):
             If no registered file driver matches the file extension and no other driver
             was explicitly specified.
         """
+        # TODO: Guard against file
         driver = driver or get_extension(file)
 
         if not driver:

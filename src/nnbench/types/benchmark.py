@@ -1,4 +1,4 @@
-"""Type interfaces for benchmarks and benchmark collections."""
+"""Types for benchmarks and records holding results of a run."""
 
 import copy
 import sys
@@ -17,6 +17,14 @@ from nnbench.types.interface import Interface
 
 @dataclass(frozen=True)
 class State:
+    """
+    A dataclass holding some basic information about a benchmark and its hierarchy
+    inside its *family* (i.e. a series of the same benchmark for different parameters).
+
+    For benchmarks registered with ``@nnbench.benchmark``, meaning no parametrization,
+    each benchmark constitutes its own family, and ``family_size == 1`` holds true.
+    """
+
     name: str
     family: str
     family_size: int
@@ -24,14 +32,23 @@ class State:
 
 
 def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None:
+    """A no-op setup/teardown callback that does nothing."""
     pass
 
 
 @dataclass(frozen=True)
 class BenchmarkRecord:
+    """
+    A dataclass representing the result of a benchmark run, i.e. the return value
+    of a call to ``BenchmarkRunner.run()``.
+    """
+
     run: str
+    """A name describing the run."""
     context: dict[str, Any]
+    """A map of key-value pairs describing context information around the benchmark run."""
     benchmarks: list[dict[str, Any]]
+    """The list of benchmark results, each given as a Python dictionary."""
 
     def to_json(self) -> dict[str, Any]:
         """
@@ -47,7 +64,7 @@ class BenchmarkRecord:
     def to_list(self) -> list[dict[str, Any]]:
         """
         Export a benchmark record to a list of individual results,
-        each with the benchmark context inlined.
+        each with the benchmark run name and context inlined.
         """
         results = []
         for b in self.benchmarks:
@@ -72,8 +89,7 @@ class BenchmarkRecord:
         Returns
         -------
         BenchmarkRecord
-            The resulting record with the context extracted.
-
+            The resulting record, with the context and run name extracted.
         """
         context: dict[str, Any]
         if isinstance(bms, dict):
@@ -102,32 +118,22 @@ class BenchmarkRecord:
 class Benchmark:
     """
     Data model representing a benchmark. Subclass this to define your own custom benchmark.
-
-    Parameters
-    ----------
-    fn: Callable[..., Any]
-        The function defining the benchmark.
-    name: str | None
-        A name to display for the given benchmark. If not given, will be constructed from the
-        function name and given parameters.
-    params: dict[str, Any]
-        A partial parametrization to apply to the benchmark function. Internal only,
-        you should not need to set this yourself.
-    setUp: Callable[..., None]
-        A setup hook run before the benchmark. Must take all members of `params` as inputs.
-    tearDown: Callable[..., None]
-        A teardown hook run after the benchmark. Must take all members of `params` as inputs.
-    tags: tuple[str, ...]
-        Additional tags to attach for bookkeeping and selective filtering during runs.
     """
 
     fn: Callable[..., Any]
+    """The function defining the benchmark."""
     name: str = ""
+    """A name to display for the given benchmark. If not given, a name will be constructed from the function name and given parameters."""
     params: dict[str, Any] = field(default_factory=dict)
+    """A partial parametrization to apply to the benchmark function. Internal only, you should not need to set this yourself."""
     setUp: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
+    """A setup hook run before the benchmark. Must take all members of ``params`` as inputs."""
     tearDown: Callable[[State, Mapping[str, Any]], None] = field(repr=False, default=NoOp)
+    """A teardown hook run after the benchmark. Must take all members of ``params`` as inputs."""
     tags: tuple[str, ...] = field(repr=False, default=())
+    """Additional tags to attach for bookkeeping and selective filtering during runs."""
     interface: Interface = field(init=False, repr=False)
+    """Benchmark interface, constructed from the given function. Implementation detail."""
 
     def __post_init__(self):
         if not self.name:
@@ -138,9 +144,11 @@ class Benchmark:
 @dataclass(init=False, frozen=True)
 class Parameters:
     """
-    A dataclass designed to hold benchmark parameters. This class is not functional
-    on its own, and needs to be subclassed according to your benchmarking workloads.
+    A dataclass designed to hold benchmark parameters.
 
-    The main advantage over passing parameters as a dictionary is, of course,
-    static analysis and type safety for your benchmarking code.
+    This class is not functional on its own, and needs to be subclassed
+    according to your benchmarking workloads.
+
+    The main advantage over passing parameters as a dictionary are static analysis
+    and type safety for your benchmarking code.
     """

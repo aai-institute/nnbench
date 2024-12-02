@@ -1,3 +1,5 @@
+"""Tools for automatic, type safe efficient memoization of values in benchmark runs."""
+
 import collections
 import functools
 import inspect

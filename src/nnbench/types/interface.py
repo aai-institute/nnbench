@@ -1,4 +1,4 @@
-"""Type interface for the function interface"""
+"""A dataclass representing a Python function interface."""
 
 import inspect
 import sys
@@ -18,34 +18,33 @@ Variable = tuple[str, type, Any]
 @dataclass(frozen=True)
 class Interface:
     """
-    Data model representing a function's interface. An instance of this class
-    is created using the `from_callable` class method.
+    Data model representing a function's interface.
 
-    Parameters:
-    ----------
-    names : tuple[str, ...]
-        Names of the function parameters.
-    types : tuple[type, ...]
-        Types of the function parameters.
-    defaults : tuple
-        A tuple of the function parameters' default values.
-    variables : tuple[Variable, ...]
-        A tuple of tuples, where each inner tuple contains the parameter name and type.
-    returntype: type
-        The function's return type annotation, or NoneType if left untyped.
+    An instance of this class is created using the ``Interface.from_callable()``
+    class method.
     """
 
     funcname: str
+    """Name of the function."""
     names: tuple[str, ...]
+    """Names of the function parameters."""
     types: tuple[type, ...]
+    """Type hints of the function parameters."""
     defaults: tuple
+    """The function parameters' default values, or inspect.Parameter.empty if a parameter has no default."""
     variables: tuple[Variable, ...]
+    """A tuple of tuples, where each inner tuple contains the parameter name, type, and default value."""
     returntype: type
+    """The function's return type annotation, or NoneType if left untyped."""
 
     @classmethod
     def from_callable(cls, fn: Callable, defaults: dict[str, Any]) -> Self:
         """
         Creates an interface instance from the given callable.
+
+        Wraps the information given by ``inspect.signature()``, with the option to
+        supply a ``defaults`` map and overwrite any default set in the function's
+        signature.
         """
         # Set `follow_wrapped=False` to get the partially filled interfaces.
         # Otherwise we get missing value errors for parameters supplied in benchmark decorators.

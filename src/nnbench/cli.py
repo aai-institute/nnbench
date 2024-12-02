@@ -1,3 +1,5 @@
+"""The ``nnbench`` command line interface."""
+
 import argparse
 import importlib
 import logging
@@ -163,7 +165,7 @@ def construct_parser(config: nnbenchConfig) -> argparse.ArgumentParser:
 
 
 def main() -> int:
-    """The main nnbench CLI entry point."""
+    """The main ``nnbench`` CLI entry point."""
     config = parse_nnbench_config()
     parser = construct_parser(config)
     try:
@@ -183,7 +185,7 @@ def main() -> int:
                 builtin_providers[p.name] = klass(**p.arguments)
             for val in args.context:
                 try:
-                    k, v = val.split("=")
+                    k, v = val.split("=", 1)
                 except ValueError:
                     raise ValueError("context values need to be of the form <key>=<value>")
                 if k == "provider":

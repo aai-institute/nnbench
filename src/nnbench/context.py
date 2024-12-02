@@ -50,14 +50,14 @@ class PythonInfo:
         result["buildno"] = buildno
         result["buildtime"] = buildtime
 
-        dependencies: dict[str, str] = {}
+        packages: dict[str, str] = {}
         for pkg in self.packages:
             try:
-                dependencies[pkg] = version(pkg)
+                packages[pkg] = version(pkg)
             except PackageNotFoundError:
-                dependencies[pkg] = ""
+                packages[pkg] = ""
 
-        result["packages"] = dependencies
+        result["packages"] = packages
         return {self.key: result}
 
 
@@ -140,6 +140,20 @@ class GitEnvironmentInfo:
 
 
 class CPUInfo:
+    """
+    A context helper providing information about the host machine's CPU
+    capabilities, operating system, and amount of memory.
+
+    Parameters
+    ----------
+    memunit: Literal["kB", "MB", "GB"]
+        The unit to display memory size in (either "kB" for kilobytes,
+        "MB" for Megabytes, or "GB" for Gigabytes).
+    frequnit: Literal["kHz", "MHz", "GHz"]
+        The unit to display CPU clock speeds in (either "kHz" for kilohertz,
+        "MHz" for Megahertz, or "GHz" for Gigahertz).
+    """
+
     key = "cpu"
 
     def __init__(

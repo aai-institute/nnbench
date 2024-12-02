@@ -1,3 +1,8 @@
+"""
+Collect values ('fixtures') by name for benchmark runs from certain files,
+similarly to pytest and its ``conftest.py``.
+"""
+
 import inspect
 import os
 from collections.abc import Callable, Iterable
@@ -39,19 +44,25 @@ class FixtureManager:
     A lean class responsible for resolving parameter values (aka 'fixtures')
     of benchmarks from provider functions.
 
-    To resolve a benchmark parameter (in resolve()), the class does
-    the following:
+    To resolve a benchmark parameter (in ``FixtureManager.resolve()``), the class
+    does the following:
+
         1. Obtain the path to the file containing the benchmark, as
-         the __file__ attribute of the benchmark function's origin module.
+        the ``__file__`` attribute of the benchmark function's origin module.
+
         2. Look for a `conf.py` file in the same directory.
+
         3. Import the `conf.py` module, look for a function named the same as
-         the benchmark parameter.
+        the benchmark parameter.
+
         4. If necessary, resolve any named inputs to the function **within**
-         the module scope.
+        the module scope.
+
         5. If no function member is found, and the benchmark file is not in `root`,
-         fall back to the parent directory, repeat steps 2-5, until `root` is reached.
+        fall back to the parent directory, repeat steps 2-5, until `root` is reached.
+
         6. If no `conf.py` contains any function matching the name, throw an
-         error (TODO: ImportError? custom?)
+        error.
     """
 
     def __init__(self, root: str | os.PathLike[str]) -> None:
@@ -65,10 +76,22 @@ class FixtureManager:
 
     def collect(self, mod: ModuleType, names: Iterable[str]) -> dict[str, Any]:
         """
-        Given a fixture module and a list of fixture names required (for a
+        Given a module containing fixtures (contents of a ``conf.py`` file imported
+        as a module), and a list of required fixture names (for a
         selected benchmark), collect values, computing transitive closures in the
-        meantime (i.e., inputs required to compute certain fixtures), and add
-        the resulting values to the cache.
+        process (i.e., all inputs required to compute the set of fixtures).
+
+        Parameters
+        ----------
+        mod: ModuleType
+            The module to import fixture values from.
+        names: Iterable[str]
+            Names of fixture values to compute and use in the invoking benchmark.
+
+        Returns
+        -------
+        dict[str, Any]
+            The mapping of fixture names to their values.
         """
         res: dict[str, Any] = {}
         for name in names:
@@ -100,6 +123,25 @@ class FixtureManager:
         return res
 
     def resolve(self, bm: Benchmark) -> dict[str, Any]:
+        """
+        Resolve fixture values for a benchmark.
+
+        Fixtures will be resolved only for benchmark inputs that do not have a
+        default value in place in the interface.
+
+        Fixtures need to be functions in a ``conf.py`` module in the benchmark
+        directory structure, and must *exactly* match input parameters by name.
+
+        Parameters
+        ----------
+        bm: Benchmark
+            The benchmark to resolve fixtures for.
+
+        Returns
+        -------
+        dict[str, Any]
+            The mapping of fixture values to use for the given benchmark.
+        """
         fixturevals: dict[str, Any] = {}
         # first, get the candidate fixture names, aka the benchmark param names.
         # We limit ourselves to names that do not have a default value.

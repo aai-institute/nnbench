@@ -1,5 +1,6 @@
 """
-A lightweight interface for refining, displaying, and streaming benchmark results to various sinks.
+An interface for displaying, writing, or streaming benchmark results to
+files, databases, or web services.
 """
 
 from .base import BenchmarkReporter
