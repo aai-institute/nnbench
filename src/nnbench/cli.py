@@ -170,7 +170,10 @@ def main() -> int:
     parser = construct_parser(config)
     try:
         args = parser.parse_args()
-        if args.command == "run":
+        if args.command is None:
+            parser.print_help()
+            return 1
+        elif args.command == "run":
             from nnbench.context import builtin_providers
 
             context: dict[str, Any] = {}

@@ -16,6 +16,10 @@ copyright: Copyright &copy; 2024 <a href="https://appliedai-institute.de" target
 nav:
   - Home: index.md
   - quickstart.md
+  - Command-line interface (CLI):
+    - cli/index.md
+    - cli/cli.md
+    - cli/pyproject.md
   - User Guide:
     - guides/index.md
     - guides/benchmarks.md
