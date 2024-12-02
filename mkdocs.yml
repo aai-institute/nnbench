@@ -19,6 +19,7 @@ nav:
   - User Guide:
     - guides/index.md
     - guides/benchmarks.md
+    - guides/cli.md
     - guides/customization.md
     - guides/organization.md
     - guides/runners.md 
