@@ -73,7 +73,7 @@ def compare(
     t = Table()
 
     rows: list[list[str]] = []
-    columns: list[str] = []
+    columns: list[str] = ["Benchmark run"]
 
     # Add metric names first, without duplicates.
     for record in records:
@@ -82,7 +82,7 @@ def compare(
             if name not in set(columns):
                 columns.append(name)
 
-    names = copy.deepcopy(columns)
+    names = copy.deepcopy(columns[1:])
 
     # Then parameters, if any
     if parameters is not None:
@@ -94,10 +94,10 @@ def compare(
     # Main loop, extracts values from the individual records,
     # or a placeholder if there are any.
     for record in records:
-        # TODO: Add record-level run name, extract
         # flatten facilitates dotted access to nested context values, e.g. git.branch
         ctx = flatten(record.context)
-        row = [get_value_by_name(record, name, _MISSING) for name in names]
+        row = [record.run]
+        row += [get_value_by_name(record, name, _MISSING) for name in names]
         # hacky, extra cols is likely now broken
         b = record.benchmarks[0]
         # TODO: Add record-level parameters struct as the union of all benchmark inputs
