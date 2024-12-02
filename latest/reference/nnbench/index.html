@@ -1226,24 +1226,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.default_runner" class="md-nav__link">
-    <span class="md-ellipsis">
-      default_runner
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.default_reporter" class="md-nav__link">
-    <span class="md-ellipsis">
-      default_reporter
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#modules" class="md-nav__link">
     <span class="md-ellipsis">
       Modules
@@ -1399,54 +1381,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
 
 
 
-<div class="doc doc-object doc-function">
-
-
-<h2 id="nnbench.default_runner" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">default_runner</span>
-
-
-<a href="#nnbench.default_runner" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">default_runner</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.runner.BenchmarkRunner" href="runner/#nnbench.runner.BenchmarkRunner">BenchmarkRunner</a></span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-            <details class="quote">
-              <summary>Source code in <code>src/nnbench/__init__.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="k">def</span> <span class="nf">default_runner</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">BenchmarkRunner</span><span class="p">:</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="k">return</span> <span class="n">BenchmarkRunner</span><span class="p">()</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h2 id="nnbench.default_reporter" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">default_reporter</span>
-
-
-<a href="#nnbench.default_reporter" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">default_reporter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="nnbench.reporter.BenchmarkReporter" href="reporter/base/#nnbench.reporter.base.BenchmarkReporter">BenchmarkReporter</a></span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-            <details class="quote">
-              <summary>Source code in <code>src/nnbench/__init__.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="k">def</span> <span class="nf">default_reporter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">BenchmarkReporter</span><span class="p">:</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a>    <span class="k">return</span> <span class="n">ConsoleReporter</span><span class="p">()</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
 
 
   </div>
@@ -1455,19 +1389,23 @@ released. For the most accurate information, please <strong><a href="../../..">a
 
 </div><h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permanent link">&para;</a></h2>
 <h3 id="cli"><a href="cli/">cli</a><a class="headerlink" href="#cli" title="Permanent link">&para;</a></h3>
+<p>The <code>nnbench</code> command line interface.</p>
 <h3 id="compare"><a href="compare/">compare</a><a class="headerlink" href="#compare" title="Permanent link">&para;</a></h3>
+<p>Contains machinery to compare multiple benchmark records side by side.</p>
 <h3 id="config"><a href="config/">config</a><a class="headerlink" href="#config" title="Permanent link">&para;</a></h3>
-<p>Utilities for parsing an nnbench config block out of a pyproject.toml.</p>
+<p>Utilities for parsing an nnbench config block out of a pyproject.toml file.</p>
 <h3 id="context"><a href="context/">context</a><a class="headerlink" href="#context" title="Permanent link">&para;</a></h3>
 <p>Utilities for collecting context key-value pairs as metadata in benchmark runs.</p>
 <h3 id="core"><a href="core/">core</a><a class="headerlink" href="#core" title="Permanent link">&para;</a></h3>
 <p>Data model, registration, and parametrization facilities for defining benchmarks.</p>
 <h3 id="fixtures"><a href="fixtures/">fixtures</a><a class="headerlink" href="#fixtures" title="Permanent link">&para;</a></h3>
+<p>Collect values ('fixtures') by name for benchmark runs from certain files,</p>
 <h3 id="reporter"><a href="reporter/">reporter</a><a class="headerlink" href="#reporter" title="Permanent link">&para;</a></h3>
-<p>A lightweight interface for refining, displaying, and streaming benchmark results to various sinks.</p>
+<p>An interface for displaying, writing, or streaming benchmark results to</p>
 <h3 id="runner"><a href="runner/">runner</a><a class="headerlink" href="#runner" title="Permanent link">&para;</a></h3>
 <p>The abstract benchmark runner interface, which can be overridden for custom benchmark workloads.</p>
 <h3 id="types"><a href="types/">types</a><a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<p>Custom types defined by <code>nnbench</code> for benchmarking workloads.</p>
 <h3 id="util"><a href="util/">util</a><a class="headerlink" href="#util" title="Permanent link">&para;</a></h3>
 <p>Various utilities related to benchmark collection, filtering, and more.</p>
 

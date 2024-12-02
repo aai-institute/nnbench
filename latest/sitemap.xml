@@ -2,146 +2,146 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://nnbench.github.io/latest/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/CONTRIBUTING/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/quickstart/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/guides/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/guides/benchmarks/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/guides/customization/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/guides/memoization/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/guides/organization/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/guides/runners/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/SUMMARY/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/cli/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/compare/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/config/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/context/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/core/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/fixtures/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/runner/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/util/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/base/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/console/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/duckdb_sql/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/file/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/reporter/util/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/types/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/types/benchmark/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/types/interface/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/reference/nnbench/types/memo/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/bq/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/duckdb/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/huggingface/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/mnist/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/prefect/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
     <url>
          <loc>https://nnbench.github.io/latest/tutorials/streamlit/</loc>
-         <lastmod>2024-11-28</lastmod>
+         <lastmod>2024-12-02</lastmod>
     </url>
 </urlset>
