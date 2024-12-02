@@ -20,21 +20,34 @@ def get_value_by_name(result: dict[str, Any]) -> str:
 class ConsoleReporter(BenchmarkReporter):
     """
     The base interface for a console reporter class.
+
+    Wraps a ``rich.Console()`` to display values in a rich-text table.
     """
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize a console reporter.
+
+        Parameters
+        ----------
+        *args: Any
+            Positional arguments, unused.
+        **kwargs: Any
+            Keyword arguments, forwarded directly to ``rich.Console()``.
+        """
         super().__init__(*args, **kwargs)
         # TODO: Add context manager to register live console prints
         self.console = Console(**kwargs)
 
     def display(self, record: BenchmarkRecord) -> None:
         """
-        Display a benchmark record in the console.
+        Display a benchmark record in the console as a rich-text table.
 
-        Benchmarks and context values will be filtered before display
-        if any filtering is applied.
+        Gives a summary of all present context values directly above the table,
+        as a pretty-printed JSON record.
 
-        Columns that do not contain any useful information are omitted by default.
+        By default, displays only the benchmark name, value, execution wall time,
+        and parameters.
 
         Parameters
         ----------

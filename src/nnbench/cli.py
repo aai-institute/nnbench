@@ -185,7 +185,7 @@ def main() -> int:
                 builtin_providers[p.name] = klass(**p.arguments)
             for val in args.context:
                 try:
-                    k, v = val.split("=")
+                    k, v = val.split("=", 1)
                 except ValueError:
                     raise ValueError("context values need to be of the form <key>=<value>")
                 if k == "provider":
