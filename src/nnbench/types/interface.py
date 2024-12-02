@@ -1,4 +1,4 @@
-"""Type interface for the function interface"""
+"""A dataclass representing a Python function interface."""
 
 import inspect
 import sys

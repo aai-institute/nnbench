@@ -1,4 +1,4 @@
-"""Type interfaces for benchmarks and benchmark collections."""
+"""Types for benchmarks and records holding results of a run."""
 
 import copy
 import sys

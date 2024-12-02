@@ -1,3 +1,8 @@
+"""
+Collect values ('fixtures') by name for benchmark runs from certain files,
+similarly to pytest and its ``conftest.py``.
+"""
+
 import inspect
 import os
 from collections.abc import Callable, Iterable
