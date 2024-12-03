@@ -252,7 +252,7 @@ class BenchmarkRunner:
                 if val != inspect.Parameter.empty
             }
             # ... then hydrate with the input parameters.
-            bmparams |= dparams
+            bmparams |= {k: v for k, v in dparams.items() if k in benchmark.interface.names}
             # If any arguments are still unresolved, go look them up as fixtures.
             if set(bmparams) < set(benchmark.interface.names):
                 # TODO: This breaks for a module name (like __main__).
