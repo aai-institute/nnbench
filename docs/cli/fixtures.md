@@ -22,8 +22,14 @@ def accuracy(model, data):
 To supply `model` and `data` to the benchmark, define both values as return values of similarly named functions in a `conf.py` file in the same directory.
 
 ```python
-# conf.py
+# Benchmark directory needs to be laid out like this:
+# 📂 benchmarks
+# ┣━━ base.py
+# ┗━━ conf.py
 
+# ---------------------------------------------------
+
+# base.py
 def model():
     return MyModel()
 
