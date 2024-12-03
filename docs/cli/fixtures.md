@@ -7,7 +7,7 @@ Instead, nnbench borrows a bit of pytest's fixture concept to source parameters 
 
 ## How to define fixture values for benchmarks
 
-Suppose you have a benchmark defined in a single file, `benchmarks.py`:
+Suppose you have a benchmark defined in a single file, `metrics.py`:
 
 ```python
 # benchmarks.py
@@ -22,14 +22,14 @@ def accuracy(model, data):
 To supply `model` and `data` to the benchmark, define both values as return values of similarly named functions in a `conf.py` file in the same directory.
 
 ```python
-# Benchmark directory needs to be laid out like this:
+# Benchmark directory layout:
 # 📂 benchmarks
-# ┣━━ base.py
-# ┗━━ conf.py
-
+# ┣━━ conf.py
+# ┣━━ metrics.py
+# ┣━━ ...
 # ---------------------------------------------------
 
-# base.py
+# benchmarks/conf.py
 def model():
     return MyModel()
 
@@ -87,7 +87,7 @@ Let's assume that the benchmarks in `nested/model.py` consume some fixture value
 # benchmarks/conf.py
 
 def path() -> str:
-    return "path/to/my/config"
+    return "path/to/my/dataset"
 
 
 def data(path: str):
@@ -97,9 +97,9 @@ def data(path: str):
 # -------------------------------
 # benchmarks/nested/conf.py
 
-def model(config):
+def model():
     """Model, needed only by the nested benchmarks."""
-    return MyModel.load(config)
+    return MyModel.load()
 ```
 
 If we have a benchmark in `benchmarks/nested/model.py` defined like this:
