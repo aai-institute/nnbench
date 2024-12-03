@@ -10,7 +10,7 @@ Instead, nnbench borrows a bit of pytest's fixture concept to source parameters 
 Suppose you have a benchmark defined in a single file, `metrics.py`:
 
 ```python
-# benchmarks.py
+# metrics.py
 import nnbench
 
 
@@ -20,15 +20,18 @@ def accuracy(model, data):
 ```
 
 To supply `model` and `data` to the benchmark, define both values as return values of similarly named functions in a `conf.py` file in the same directory.
+The layout of your benchmark directory should look like this:
+
+```commandline
+📂 benchmarks
+┣━━ conf.py
+┣━━ metrics.py
+┣━━ ...
+```
+
+Inside your `conf.py` file, you might define your values as shown below. Note that currently, all fixtures must be raw Python callables, and must match input values of benchmarks exactly.
 
 ```python
-# Benchmark directory layout:
-# 📂 benchmarks
-# ┣━━ conf.py
-# ┣━━ metrics.py
-# ┣━━ ...
-# ---------------------------------------------------
-
 # benchmarks/conf.py
 def model():
     return MyModel()
@@ -43,6 +46,10 @@ Then, nnbench will discover and auto-use these values when running this benchmar
 ```commandline
 $ nnbench run benchmarks.py 
 ```
+
+!!! Warning
+    Benchmarks with default values for their arguments will unconditionally use those defaults over potential fixtures.
+    That is, for a benchmark `def add(a: int, b: int = 1)`, only the named parameter `a` will be resolved.
 
 ## Fixtures with inputs
 
