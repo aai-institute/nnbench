@@ -44,16 +44,18 @@ def power(a: int, b: int) -> int:
 
 
 runner = nnbench.BenchmarkRunner()
+reporter = nnbench.ConsoleReporter()
 # run the above benchmarks with the parameters `a=2, b=10`...
 record = runner.run("__main__", params={"a": 2, "b": 10})
-rep = nnbench.BenchmarkReporter()
-rep.display(record)  # ...and print the results to the terminal.
+reporter.display(record)  # ...and print the results to the terminal.
 
 # results in a table look like the following:
-# name     function    date                 parameters         value    time_ns
-# -------  ----------  -------------------  -----------------  -------  ---------
-# product  product     2024-03-08T18:03:48  {'a': 2, 'b': 10}       20       1000
-# power    power       2024-03-08T18:03:48  {'a': 2, 'b': 10}     1024        750
+# ┏━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+# ┃ Benchmark ┃ Value ┃ Wall time (ns) ┃ Parameters        ┃
+# ┡━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+# │ product   │ 20    │ 1917           │ {'a': 2, 'b': 10} │
+# │ power     │ 1024  │ 583            │ {'a': 2, 'b': 10} │
+# └───────────┴───────┴────────────────┴───────────────────┘
 ```
 Watch the following video for a high level overview of the capabilities and inner workings of nnbench.
 
