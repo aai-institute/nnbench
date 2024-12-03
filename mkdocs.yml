@@ -20,6 +20,7 @@ nav:
     - cli/index.md
     - cli/cli.md
     - cli/pyproject.md
+    - cli/fixtures.md
   - User Guide:
     - guides/index.md
     - guides/benchmarks.md
