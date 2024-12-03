@@ -121,4 +121,6 @@ def accuracy(model, data):
 nnbench will source the `model` fixture from `benchmarks/nested/conf.py`, and fall back to the top-level `benchmarks/conf.py` to obtain `data`.
 
 !!! Info
-    Just like in pytest, nnbench collects the deepest-level fixture it finds for a given name, so if `benchmarks/nested/conf.py` also defined a `data` fixture, `accuracy` would use that instead.
+    Just like pytest, nnbench collects fixture values bottom-up, starting with the benchmark file's parent directory.
+    
+    For example, if the `benchmarks/nested/conf.py` above also defined a `data` fixture, the `accuracy` benchmark would use that instead.
