@@ -41,6 +41,59 @@ def timer(bm: dict[str, Any]) -> Generator[None, None, None]:
         bm["time_ns"] = end - start
 
 
+def jsonify_params(
+    params: dict[str, Any], repr_hooks: dict[type, Callable] | None = None
+) -> dict[str, Any]:
+    """
+    Construct a JSON representation of benchmark parameters.
+
+    This is necessary to break reference cycles from the parameters to the records,
+    which prevent garbage collection of memory-intensive values.
+
+    Parameters
+    ----------
+    params: dict[str, Any]
+        Benchmark parameters to compute a JSON representation of.
+    repr_hooks: dict[type, Callable] | None
+        A dictionary mapping parameter types to functions returning a JSON representation
+        of an instance of the type. Allows fine-grained control to achieve lossless,
+        reproducible serialization of input parameter information.
+
+    Returns
+    -------
+    dict[str, Any]
+        A JSON-serializable representation of the benchmark input parameters.
+    """
+    repr_hooks = repr_hooks or {}
+    natives = (float, int, str, bool, bytes, complex)
+    json_params: dict[str, Any] = {}
+
+    def _jsonify(val):
+        vtype = type(val)
+        if vtype in repr_hooks:
+            return repr_hooks[vtype](val)
+        if isinstance(val, natives):
+            return val
+        elif hasattr(val, "to_json"):
+            try:
+                return val.to_json()
+            except TypeError:
+                # if to_json() needs arguments, we're SOL.
+                pass
+
+        return repr(val)
+
+    for k, v in params.items():
+        if isinstance(v, tuple | list | set | frozenset):
+            container_type = type(v)
+            json_params[k] = container_type(map(_jsonify, v))
+        elif isinstance(v, dict):
+            json_params[k] = jsonify_params(v)
+        else:
+            json_params[k] = _jsonify(v)
+    return json_params
+
+
 class BenchmarkRunner:
     """
     An abstract benchmark runner class.
@@ -57,54 +110,6 @@ class BenchmarkRunner:
 
     def __init__(self):
         self.benchmarks: list[Benchmark] = list()
-
-    def jsonify_params(
-        self, params: dict[str, Any], repr_hooks: dict[type, Callable] | None = None
-    ) -> dict[str, Any]:
-        """
-        Construct a JSON representation of benchmark parameters.
-
-        This is necessary to break reference cycles from the parameters to the records,
-        which prevent garbage collection of memory-intensive values.
-
-        Parameters
-        ----------
-        params: dict[str, Any]
-            Benchmark parameters to compute a JSON representation of.
-        repr_hooks: dict[type, Callable] | None
-            A dictionary mapping parameter types to functions returning a JSON representation
-            of an instance of the type. Allows fine-grained control to achieve lossless,
-            reproducible serialization of input parameter information.
-
-        Returns
-        -------
-        dict[str, Any]
-            A JSON-serializable representation of the benchmark input parameters.
-        """
-        repr_hooks = repr_hooks or {}
-        natives = (float, int, str, bool, bytes, complex)
-        json_params: dict[str, Any] = {}
-
-        def _jsonify(val):
-            vtype = type(val)
-            if vtype in repr_hooks:
-                return repr_hooks[vtype](val)
-            if isinstance(val, natives):
-                return val
-            elif hasattr(val, "to_json"):
-                return val.to_json()
-            else:
-                return str(val)
-
-        for k, v in params.items():
-            if isinstance(v, tuple | list | set | frozenset):
-                container_type = type(v)
-                json_params[k] = container_type(map(_jsonify, v))
-            elif isinstance(v, dict):
-                json_params[k] = self.jsonify_params(v)
-            else:
-                json_params[k] = _jsonify(v)
-        return json_params
 
     def clear(self) -> None:
         """Clear all registered benchmarks."""
@@ -168,6 +173,7 @@ class BenchmarkRunner:
         params: dict[str, Any] | Parameters | None = None,
         tags: tuple[str, ...] = (),
         context: Sequence[ContextProvider] = (),
+        jsonifier: Callable[[dict[str, Any]], dict[str, Any]] = jsonify_params,
     ) -> BenchmarkRecord:
         """
         Run a previously collected benchmark workload.
@@ -186,9 +192,13 @@ class BenchmarkRunner:
             Tags to filter for when collecting benchmarks. Only benchmarks containing either of
             these tags are collected.
         context: Sequence[ContextProvider]
-            Additional context to log with the benchmark in the output JSON record. Useful for
+            Additional context to log with the benchmarks in the output JSON record. Useful for
             obtaining environment information and configuration, like CPU/GPU hardware info,
             ML model metadata, and more.
+        jsonifier: Callable[[dict[str, Any], dict[str, Any]]]
+            A function constructing a string representation from the input parameters.
+            Defaults to ``nnbench.runner.jsonify_params()``. Must produce a dictionary containing
+            only JSON-serializable values.
 
         Returns
         -------
@@ -245,13 +255,13 @@ class BenchmarkRunner:
             )
             family_indices[bm_family] += 1
 
-            # Assembling benchmark parameters: First grab all defaults from the interface...
+            # Assemble benchmark parameters. First grab all defaults from the interface,
             bmparams = {
                 name: _maybe_dememo(val, typ)
                 for name, typ, val in benchmark.interface.variables
                 if val != inspect.Parameter.empty
             }
-            # ... then hydrate with the input parameters.
+            # ... then hydrate with the appropriate subset of input parameters.
             bmparams |= {k: v for k, v in dparams.items() if k in benchmark.interface.names}
             # If any arguments are still unresolved, go look them up as fixtures.
             if set(bmparams) < set(benchmark.interface.names):
@@ -269,7 +279,6 @@ class BenchmarkRunner:
                 fm = FixtureManager(root)
                 bmparams |= fm.resolve(benchmark)
 
-            # TODO: Wrap this into an execution context
             res: dict[str, Any] = {
                 "name": benchmark.name,
                 "function": qualname(benchmark.fn),
@@ -277,7 +286,7 @@ class BenchmarkRunner:
                 "date": datetime.now().isoformat(timespec="seconds"),
                 "error_occurred": False,
                 "error_message": "",
-                "parameters": self.jsonify_params(bmparams),
+                "parameters": jsonifier(bmparams),
             }
             try:
                 benchmark.setUp(state, bmparams)
