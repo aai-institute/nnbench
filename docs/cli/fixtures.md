@@ -3,7 +3,7 @@
 One of the main problems when running `nnbench` on the command line is how to supply parameters.
 Default values for benchmarks are one solution, but that does not scale well, and requires frequent code changes when values change.
 
-Instead, nnbench borrows a bit of pytest's fixture concept to source parameters from special marker files, named `conf.py` in reference to pytest's `conftest.py`.
+Instead, nnbench borrows a bit of pytest's [fixture concept](https://docs.pytest.org/en/stable/how-to/fixtures.html) to source parameters from special marker files, named `conf.py` in reference to pytest's `conftest.py`.
 
 ## How to define fixture values for benchmarks
 
@@ -29,7 +29,7 @@ The layout of your benchmark directory should look like this:
 ┣━━ ...
 ```
 
-Inside your `conf.py` file, you might define your values as shown below. Note that currently, all fixtures must be raw Python callables, and must match input values of benchmarks exactly.
+Inside your `conf.py` file, you might define your values as shown below. Note that currently, all fixtures must be raw Python callables, and their names must match input values of benchmarks exactly.
 
 ```python
 # benchmarks/conf.py
@@ -118,7 +118,7 @@ def accuracy(model, data):
     ...
 ```
 
-nnbench will source the `model` fixture from `benchmarks/nested/conf.py`, and fall back to the top-level `benchmarks/conf.py` to obtain `data`.
+Now nnbench will source the `model` fixture from `benchmarks/nested/conf.py` and fall back to the top-level `benchmarks/conf.py` to obtain `data`.
 
 !!! Info
     Just like pytest, nnbench collects fixture values bottom-up, starting with the benchmark file's parent directory.
