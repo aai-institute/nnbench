@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://nnbench.github.io/latest/tutorials/bq/">
+        <link rel="canonical" href="https://nnbench.github.io/latest/cli/fixtures/">
       
       
-        <link rel="prev" href="../streamlit/">
+        <link rel="prev" href="../pyproject/">
       
       
-        <link rel="next" href="../duckdb/">
+        <link rel="next" href="../../guides/">
       
       
       <link rel="icon" href="../../_images/aai-favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Streaming benchmarks to a cloud database - nnbench</title>
+        <title>Using fixtures to supply parameters to benchmarks - nnbench</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#streaming-benchmarks-to-a-cloud-database" class="md-skip">
+        <a href="#using-fixtures-to-supply-parameters-to-benchmarks" class="md-skip">
           Skip to content
         </a>
       
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Streaming benchmarks to a cloud database
+              Using fixtures to supply parameters to benchmarks
             
           </span>
         </div>
@@ -310,22 +310,24 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../cli/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -342,7 +344,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Command-line interface (CLI)
@@ -356,7 +358,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../../cli/cli/" class="md-nav__link">
+      <a href="../cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -377,7 +379,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../../cli/pyproject/" class="md-nav__link">
+      <a href="../pyproject/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -395,10 +397,30 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../cli/fixtures/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Using fixtures to supply parameters to benchmarks
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -407,6 +429,53 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-define-fixture-values-for-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to define fixture values for benchmarks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixtures-with-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixtures with inputs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hierarchical-confpy-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hierarchical conf.py files
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -578,24 +647,22 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../tutorials/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -612,7 +679,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -626,7 +693,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../huggingface/" class="md-nav__link">
+      <a href="../../tutorials/huggingface/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -647,7 +714,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../mnist/" class="md-nav__link">
+      <a href="../../tutorials/mnist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -668,7 +735,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../prefect/" class="md-nav__link">
+      <a href="../../tutorials/prefect/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -689,7 +756,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../streamlit/" class="md-nav__link">
+      <a href="../../tutorials/streamlit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -707,30 +774,10 @@ released. For the most accurate information, please <strong><a href="../../..">a
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Streaming benchmarks to a cloud database
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../tutorials/bq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -739,71 +786,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-benchmarks" class="md-nav__link">
-    <span class="md-ellipsis">
-      The benchmarks
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-a-bigquery-client" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setting up a BigQuery client
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#creating-a-table" class="md-nav__link">
-    <span class="md-ellipsis">
-      Creating a table
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-bigquerys-schema-auto-detection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using BigQuery's schema auto-detection
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#recap-and-the-full-source-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      Recap and the full source code
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -816,7 +798,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
     <li class="md-nav__item">
-      <a href="../duckdb/" class="md-nav__link">
+      <a href="../../tutorials/duckdb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1415,45 +1397,27 @@ released. For the most accurate information, please <strong><a href="../../..">a
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-benchmarks" class="md-nav__link">
+  <a href="#how-to-define-fixture-values-for-benchmarks" class="md-nav__link">
     <span class="md-ellipsis">
-      The benchmarks
+      How to define fixture values for benchmarks
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-a-bigquery-client" class="md-nav__link">
+  <a href="#fixtures-with-inputs" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting up a BigQuery client
+      Fixtures with inputs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-a-table" class="md-nav__link">
+  <a href="#hierarchical-confpy-files" class="md-nav__link">
     <span class="md-ellipsis">
-      Creating a table
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-bigquerys-schema-auto-detection" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using BigQuery's schema auto-detection
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#recap-and-the-full-source-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      Recap and the full source code
+      Hierarchical conf.py files
     </span>
   </a>
   
@@ -1474,7 +1438,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
                   
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/tutorials/bq.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/cli/fixtures.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1482,96 +1446,104 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
 
 
-<h1 id="streaming-benchmarks-to-a-cloud-database">Streaming benchmarks to a cloud database<a class="headerlink" href="#streaming-benchmarks-to-a-cloud-database" title="Permanent link">&para;</a></h1>
-<p>Once you obtain the results of your benchmarks, you will most likely want to store them somewhere.
-Whether that is in storage as flat files, on a server, or in a database, <code>nnbench</code> allows you to write records anywhere, provided the destination supports JSON.</p>
-<p>This is a small guide containing a snippet on how to stream benchmark results to a Google Cloud BigQuery table.</p>
-<h2 id="the-benchmarks">The benchmarks<a class="headerlink" href="#the-benchmarks" title="Permanent link">&para;</a></h2>
-<p>Configure your benchmarks as normal, for example by separating them into a Python file.
-The following is a very simple example benchmark setup.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<h1 id="using-fixtures-to-supply-parameters-to-benchmarks">Using fixtures to supply parameters to benchmarks<a class="headerlink" href="#using-fixtures-to-supply-parameters-to-benchmarks" title="Permanent link">&para;</a></h1>
+<p>One of the main problems when running <code>nnbench</code> on the command line is how to supply parameters.
+Default values for benchmarks are one solution, but that does not scale well, and requires frequent code changes when values change.</p>
+<p>Instead, nnbench borrows a bit of pytest's <a href="https://docs.pytest.org/en/stable/how-to/fixtures.html">fixture concept</a> to source parameters from special marker files, named <code>conf.py</code> in reference to pytest's <code>conftest.py</code>.</p>
+<h2 id="how-to-define-fixture-values-for-benchmarks">How to define fixture values for benchmarks<a class="headerlink" href="#how-to-define-fixture-values-for-benchmarks" title="Permanent link">&para;</a></h2>
+<p>Suppose you have a benchmark defined in a single file, <code>metrics.py</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># metrics.py</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span> <span class="nn">nnbench</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="o">...</span>
 </span></code></pre></div>
-<h2 id="setting-up-a-bigquery-client">Setting up a BigQuery client<a class="headerlink" href="#setting-up-a-bigquery-client" title="Permanent link">&para;</a></h2>
-<p>In order to authenticate with BigQuery, follow the official <a href="https://cloud.google.com/bigquery/docs/authentication#client-libs">Google Cloud documentation</a>.
-In this case, we rely on Application Default Credentials (ADC), which can be configured with the <code>gcloud</code> CLI.</p>
-<p>To interact with BigQuery from Python, the <code>google-cloud-bigquery</code> package has to be installed.
-You can do this e.g. using pip via <code>pip install --upgrade google-cloud-bigquery</code>.</p>
-<h2 id="creating-a-table">Creating a table<a class="headerlink" href="#creating-a-table" title="Permanent link">&para;</a></h2>
-<p>Within your configured project, proceed by creating a destination table to write the benchmarks to.
-Consider the <a href="https://cloud.google.com/bigquery/docs/tables#python">BigQuery Python documentation on tables</a> for how to create a table programmatically.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the configured dataset does not exist, you will have to create it as well, either programmatically via the <code>bigquery.Client.create_dataset</code> API or in the Google Cloud console.</p>
+<p>To supply <code>model</code> and <code>data</code> to the benchmark, define both values as return values of similarly named functions in a <code>conf.py</code> file in the same directory.
+The layout of your benchmark directory should look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>📂 benchmarks
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>┣━━ conf.py
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>┣━━ metrics.py
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>┣━━ ...
+</span></code></pre></div>
+<p>Inside your <code>conf.py</code> file, you might define your values as shown below. Note that currently, all fixtures must be raw Python callables, and their names must match input values of benchmarks exactly.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># benchmarks/conf.py</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">def</span> <span class="nf">model</span><span class="p">():</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">return</span> <span class="n">MyModel</span><span class="p">()</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">def</span> <span class="nf">data</span><span class="p">():</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">return</span> <span class="n">TestDataset</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;path/to/my/dataset&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Then, nnbench will discover and auto-use these values when running this benchmark from the command line:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$ nnbench run benchmarks.py 
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Benchmarks with default values for their arguments will unconditionally use those defaults over potential fixtures.
+That is, for a benchmark <code>def add(a: int, b: int = 1)</code>, only the named parameter <code>a</code> will be resolved.</p>
 </div>
-<h2 id="using-bigquerys-schema-auto-detection">Using BigQuery's schema auto-detection<a class="headerlink" href="#using-bigquerys-schema-auto-detection" title="Permanent link">&para;</a></h2>
-<p>In order to skip tedious schema inference by hand, we can use BigQuery's <a href="https://cloud.google.com/bigquery/docs/schema-detect">schema auto-detection from JSON records</a>.
-All we have to do is configure a BigQuery load job to auto-detect the schema from the Python dictionaries in memory:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>    <span class="n">job_config</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">LoadJobConfig</span><span class="p">(</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        <span class="n">autodetect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source_format</span><span class="o">=</span><span class="n">bigquery</span><span class="o">.</span><span class="n">SourceFormat</span><span class="o">.</span><span class="n">NEWLINE_DELIMITED_JSON</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="p">)</span>
-</span></code></pre></div>
-<p>After that, write and stream the compacted benchmark record directly to your destination table.
-In this example, we decide to flatten the benchmark context to be able to extract scalar context values directly from the result table using raw SQL queries.
-Note that you have to use a custom separator (an underscore <code>"_"</code> in this case) for the context data, since BigQuery does not allow dots in column names.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>    <span class="n">load_job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">main</span><span class="p">()</span>
-</span></code></pre></div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>If you would like to save the context dictionary as a struct instead, use <code>mode = "inline"</code> in the call to <code>BenchmarkRecord.compact()</code>.</p>
-</div>
-<p>And that's all! To check that the records appear as expected, you can now query the data e.g. like so:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># check that the insert worked.</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SELECT name, value, time_ns, git_commit AS commit FROM </span><span class="si">{</span><span class="n">table_id</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="p">():</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-</span></code></pre></div>
-<h2 id="recap-and-the-full-source-code">Recap and the full source code<a class="headerlink" href="#recap-and-the-full-source-code" title="Permanent link">&para;</a></h2>
-<p>In this tutorial, we</p>
-<p>1) defined and ran a benchmark workload using <code>nnbench</code>.
-2) configured a Google Cloud BigQuery client and a load job to insert benchmark records into a table, and
-3) inserted the records into the destination table.</p>
-<p>The full source code for this tutorial is included below, and also in the <a href="https://github.com/aai-institute/nnbench/tree/main/examples/bq">nnbench repository</a>.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">google.cloud</span> <span class="kn">import</span> <span class="n">bigquery</span>
+<h2 id="fixtures-with-inputs">Fixtures with inputs<a class="headerlink" href="#fixtures-with-inputs" title="Permanent link">&para;</a></h2>
+<p>Like in pytest, fixtures can consume inputs. However, in nnbench, fixtures can consume other inputs by name only within the same module scope, i.e. members within the same <code>conf.py</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># conf.py</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">import</span> <span class="nn">nnbench</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">from</span> <span class="nn">nnbench.context</span> <span class="kn">import</span> <span class="n">GitEnvironmentInfo</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Revisiting the above example, we could also write the following:</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">def</span> <span class="nf">path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">return</span> <span class="s2">&quot;path/to/my/dataset&quot;</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="c1"># TODO: Fill these out with your appropriate resource names.</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">table_id</span> <span class="o">=</span> <span class="s2">&quot;&lt;PROJECT&gt;.&lt;DATASET&gt;.&lt;TABLE&gt;&quot;</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="n">job_config</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">LoadJobConfig</span><span class="p">(</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="n">autodetect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source_format</span><span class="o">=</span><span class="n">bigquery</span><span class="o">.</span><span class="n">SourceFormat</span><span class="o">.</span><span class="n">NEWLINE_DELIMITED_JSON</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="p">)</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="n">res</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">context</span><span class="o">=</span><span class="p">(</span><span class="n">GitEnvironmentInfo</span><span class="p">(),))</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">load_job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">load_table_from_json</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">to_json</span><span class="p">(),</span> <span class="n">table_id</span><span class="p">,</span> <span class="n">job_config</span><span class="o">=</span><span class="n">job_config</span><span class="p">)</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="n">load_job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>
-</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>    <span class="n">main</span><span class="p">()</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">return</span> <span class="n">TestDataset</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1"># ... but not this, since `config` is not a member of the conf.py module:</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="k">return</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>nnbench fixtures cannot have cycles in them - two fixtures may never depend on each other.</p>
+</div>
+<h2 id="hierarchical-confpy-files">Hierarchical <code>conf.py</code> files<a class="headerlink" href="#hierarchical-confpy-files" title="Permanent link">&para;</a></h2>
+<p>nnbench also supports sourcing fixtures from different levels in a directory hierarchy.
+Suppose we have a benchmark directory layout like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>📂 benchmarks
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>┣━━ 📂 nested
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>┃   ┣━━ conf.py
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>┃   ┗━━ model.py
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>┣━━ base.py
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>┗━━ conf.py
+</span></code></pre></div>
+<p>Let's assume that the benchmarks in <code>nested/model.py</code> consume some fixture values specific to them, and reuse some top-level fixtures as well.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># benchmarks/conf.py</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">def</span> <span class="nf">path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="k">return</span> <span class="s2">&quot;path/to/my/dataset&quot;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Test dataset, to be reused by all benchmarks.&quot;&quot;&quot;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="k">return</span> <span class="n">TestDataset</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="c1"># -------------------------------</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="c1"># benchmarks/nested/conf.py</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="k">def</span> <span class="nf">model</span><span class="p">():</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Model, needed only by the nested benchmarks.&quot;&quot;&quot;</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="k">return</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+</span></code></pre></div>
+<p>If we have a benchmark in <code>benchmarks/nested/model.py</code> defined like this:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># benchmarks/nested/model.py</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="o">...</span>
+</span></code></pre></div>
+<p>Now nnbench will source the <code>model</code> fixture from <code>benchmarks/nested/conf.py</code> and fall back to the top-level <code>benchmarks/conf.py</code> to obtain <code>data</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Just like pytest, nnbench collects fixture values bottom-up, starting with the benchmark file's parent directory.</p>
+<p>For example, if the <code>benchmarks/nested/conf.py</code> above also defined a <code>data</code> fixture, the <code>accuracy</code> benchmark would use that instead.</p>
+</div>
 
 
 
