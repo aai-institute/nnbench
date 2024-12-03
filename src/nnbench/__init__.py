@@ -5,4 +5,4 @@ from .reporter import BenchmarkReporter, ConsoleReporter, FileReporter
 from .runner import BenchmarkRunner
 from .types import Benchmark, BenchmarkRecord, Memo, Parameters
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
