@@ -41,7 +41,7 @@ class MNISTTestParameters(nnbench.Parameters):
 
 
 class ConvNet(nn.Module):
-    @nn.to_json
+    @nn.compact
     def __call__(self, x):
         x = nn.Conv(features=32, kernel_size=(3, 3))(x)
         x = nn.relu(x)
@@ -101,7 +101,7 @@ def load_mnist() -> ArrayMapping:
 
     mnist: ArrayMapping = {}
 
-    baseurl = "http://yann.lecun.com/exdb/mnist/"
+    baseurl = "https://storage.googleapis.com/cvdf-datasets/mnist/"
 
     for key, file in [
         ("x_train", "train-images-idx3-ubyte.gz"),
@@ -217,7 +217,7 @@ def mnist_jax():
 
     # the nnbench portion.
     runner = nnbench.BenchmarkRunner()
-    reporter = nnbench.reporter.FileReporter()
+    reporter = nnbench.FileReporter()
     params = MNISTTestParameters(params=state.params, data=data)
     result = runner.run(HERE, params=params)
     reporter.write(result, "result.json")

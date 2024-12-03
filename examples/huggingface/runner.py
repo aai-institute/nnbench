@@ -2,10 +2,10 @@ import nnbench
 
 
 def main() -> None:
-    console_reporter = nnbench.ConsoleReporter()
     runner = nnbench.BenchmarkRunner()
+    reporter = nnbench.ConsoleReporter()
     result = runner.run("benchmark.py", tags=("per-class",))
-    console_reporter.display(result)
+    reporter.display(result)
 
 
 if __name__ == "__main__":
