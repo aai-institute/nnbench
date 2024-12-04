@@ -186,15 +186,15 @@ class CPUInfo:
         try:
             # The CPU frequency is not available on some ARM devices
             freq_struct = psutil.cpu_freq()
-            result["min_frequency"] = freq_struct.min
-            result["max_frequency"] = freq_struct.max
+            result["min_frequency"] = float(freq_struct.min)
+            result["max_frequency"] = float(freq_struct.max)
             freq_conversion = self.conversion_table[self.frequnit[0]]
             # result is in MHz, so we convert to Hz and apply the conversion factor.
             result["frequency"] = freq_struct.current * 1e6 / freq_conversion
         except RuntimeError:
-            result["frequency"] = 0
-            result["min_frequency"] = 0
-            result["max_frequency"] = 0
+            result["frequency"] = 0.0
+            result["min_frequency"] = 0.0
+            result["max_frequency"] = 0.0
 
         result["frequency_unit"] = self.frequnit
         result["num_cpus"] = psutil.cpu_count(logical=False)
@@ -205,8 +205,11 @@ class CPUInfo:
         # result is in bytes, so no need for base conversion.
         result["total_memory"] = mem_struct.total / mem_conversion
         result["memory_unit"] = self.memunit
-        # TODO: Lacks CPU cache info, which requires a solution other than psutil.
         return {self.key: result}
 
 
-builtin_providers: dict[str, ContextProvider] = {"cpu": CPUInfo(), "python": PythonInfo()}
+builtin_providers: dict[str, ContextProvider] = {
+    "cpu": CPUInfo(),
+    "git": GitEnvironmentInfo(),
+    "python": PythonInfo(),
+}
