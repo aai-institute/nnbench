@@ -44,55 +44,50 @@ class NNBenchConfig:
     """A list of context provider definitions found in pyproject.toml."""
 
     @classmethod
-    def empty(cls) -> Self:
-        """An empty default config, returned if no pyproject.toml is found."""
-        return cls(log_level="NOTSET", context=[])
-
-    @classmethod
     def from_toml(cls, d: dict[str, Any]) -> Self:
         """
-        Returns an nnbench CLI config by parsing a [tool.nnbench] block from a
-        pyproject.toml file.
+        Returns an nnbench CLI config by processing fields obtained from
+        parsing a [tool.nnbench] block in a pyproject.toml file.
 
         Parameters
         ----------
         d: dict[str, Any]
-            Mapping containing the [tool.nnbench] block as obtained by
-            ``tomllib.load()``.
+            Mapping containing the [tool.nnbench] table contents,
+            as obtained by ``tomllib.load()``.
 
         Returns
         -------
         Self
             An nnbench config instance with the values from pyproject.toml,
-            with defaults for values that were not set explicitly.
+            and defaults for values that were not set explicitly.
         """
+        log_level = d.get("log-level", "NOTSET")
         provider_map = d.get("context", {})
         context = [ContextProviderDef(**cpd) for cpd in provider_map.values()]
-        log_level = d.get("log-level", "NOTSET")
         return cls(log_level=log_level, context=context)
 
 
-def locate_pyproject() -> os.PathLike[str]:
+def locate_pyproject(stop: os.PathLike[str] = Path.home()) -> os.PathLike[str] | None:
     """
     Locate a pyproject.toml file by walking up from the current directory,
-    and checking for file existence, stopping at the current user home
-    directory.
+    and checking for file existence, stopping at ``stop`` (by default, the
+    current user home directory).
 
-    If no pyproject.toml file can be found, a RuntimeError is raised.
+    If no pyproject.toml file can be found at any level, returns None.
 
     Returns
     -------
-    os.PathLike[str]
+    os.PathLike[str] | None
         The path to pyproject.toml.
-
     """
     cwd = Path.cwd()
     for p in (cwd, *cwd.parents):
         if (pyproject_cand := (p / "pyproject.toml")).exists():
             return pyproject_cand
-        if p == Path.home():
+        if p == stop:
             break
-    raise RuntimeError("could not locate pyproject.toml")
+    logger.debug(f"could not locate pyproject.toml in directory {cwd}")
+    return None
 
 
 def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -> NNBenchConfig:
@@ -111,16 +106,12 @@ def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -
     -------
     NNBenchConfig
         The loaded config if found, or a default config.
-
     """
+    pyproject_path = pyproject_path or locate_pyproject()
     if pyproject_path is None:
-        try:
-            pyproject_path = locate_pyproject()
-        except RuntimeError:
-            # pyproject.toml cannot be found, so return an empty config.
-            return NNBenchConfig.empty()
+        # pyproject.toml could not be found, so return an empty config.
+        return NNBenchConfig.from_toml({})
 
     with open(pyproject_path, "rb") as fp:
-        pyproject_cfg = tomllib.load(fp)
-    nnbench_cfg = pyproject_cfg.get("tool", {}).get("nnbench", {})
-    return NNBenchConfig.from_toml(nnbench_cfg)
+        pyproject = tomllib.load(fp)
+        return NNBenchConfig.from_toml(pyproject.get("tool", {}).get("nnbench", {}))
