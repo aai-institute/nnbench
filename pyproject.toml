@@ -52,7 +52,7 @@ dev = [
     "psutil",
     "pyarrow",
     "pytest>=7.4.0",
-    "pytest-memray",
+    "pytest-memray; platform_system != 'Windows'",
 ]
 docs = [
     "black",
