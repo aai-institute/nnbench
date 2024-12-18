@@ -6,7 +6,7 @@ You will define a benchmark, initialize a runner and reporter, and execute the b
 ## A short scikit-learn model benchmark 
 
 In the following simple example, we put the training and benchmarking logic in the same file. For more complex workloads, we recommend structuring your code into multiple files to improve project organization, similarly to unit tests.
-See the user guides (TODO: Add guides) at the bottom of this page for inspiration.
+Check the [user guide on structuring your benchmarks](guides/organization.md) for inspiration.
 
 ```python
 from sklearn.datasets import load_iris
