@@ -47,11 +47,12 @@ Discussions = "https://github.com/aai-institute/nnbench/discussions"
 [project.optional-dependencies]
 dev = [
     "build>=1.0.0",
+    "fsspec",
     "pre-commit>=3.3.3",
     "psutil",
     "pyarrow",
     "pytest>=7.4.0",
-    "fsspec",
+    "pytest-memray; platform_system != 'Windows'",
 ]
 docs = [
     "black",
