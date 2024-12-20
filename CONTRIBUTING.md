@@ -15,20 +15,18 @@ To get started with development, you can follow these steps:
     git clone https://github.com/aai-institute/nnbench.git
     ```
 
-2. Navigate to the directory and install the development dependencies into a virtual environment:
+2. Navigate to the directory and install the development dependencies into a virtual environment, e.g. using `uv`:
 
     ```shell
     cd nnbench
-    python3 -m venv venv --system-site-packages
-    source venv/bin/activate
-    python -m pip install -r requirements-dev.txt
-    python -m pip install -e . --no-deps
+    uv venv --seed -p 3.11
+    source .venv/bin/activate
     ```
 
 3. After making your changes, verify they adhere to our Python code style by running `pre-commit`:
     
     ```shell
-    pre-commit run --all-files
+    uvx pre-commit run --all-files --verbose --show-diff-on-failure
     ```
 
     You can also set up Git hooks through `pre-commit` to perform these checks automatically:
@@ -39,7 +37,7 @@ To get started with development, you can follow these steps:
 
 4. To run the tests, just invoke `pytest` from the package root directory:
     ```shell
-    pytest
+    uv run pytest -s
     ```
 
 ## Updating dependencies
@@ -47,15 +45,14 @@ To get started with development, you can follow these steps:
 Dependencies should stay locked for as long as possible, ideally for a whole release.
 If you have to update a dependency during development, you should do the following:
 
-1. If it is a core dependency needed for the package, add it to the `dependencies` section in the `pyproject.toml`.
-2. In case of a development dependency, add it to the `dev` section of the `project.optional-dependencies` table instead.
-3. Dependencies needed for documentation generation are found in the `docs` sections of `project.optional-dependencies`.
+1. If it is a core dependency needed for the package, add it to the `dependencies` section in the `pyproject.toml` via `uv add <dep>`.
+2. In case of a development dependency, add it to the `dev` section of the `project.dependency-groups` table instead (`uv add --group dev <dep>`).
+3. Dependencies needed for documentation generation are found in the `docs` sections of `project.dependency-groups` (`uv add --group docs <dep>`).
 
-After adding the dependency in either of these sections, use `pip-compile` to pin all dependencies again:
+After adding the dependency in either of these sections, use `uv lock` to pin all dependencies again:
 
 ```shell
-python -m pip install --upgrade pip-tools
-pip-compile --extra=dev --no-annotate --output-file=requirements-dev.txt pyproject.toml
+uv lock
 ```
 
 > [!IMPORTANT]
