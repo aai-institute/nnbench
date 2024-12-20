@@ -776,7 +776,7 @@ dependencies = [
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "build" },
     { name = "fsspec" },
@@ -784,7 +784,7 @@ dev = [
     { name = "psutil" },
     { name = "pyarrow" },
     { name = "pytest" },
-    { name = "pytest-memray" },
+    { name = "pytest-memray", marker = "platform_system != 'Windows'" },
 ]
 docs = [
     { name = "black" },
@@ -803,28 +803,34 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "black", marker = "extra == 'docs'" },
-    { name = "build", marker = "extra == 'dev'", specifier = ">=1.0.0" },
-    { name = "docstring-parser", marker = "extra == 'docs'" },
-    { name = "fsspec", marker = "extra == 'dev'" },
-    { name = "mike", marker = "extra == 'docs'" },
-    { name = "mkdocs", marker = "extra == 'docs'" },
-    { name = "mkdocs-callouts", marker = "extra == 'docs'" },
-    { name = "mkdocs-gen-files", marker = "extra == 'docs'" },
-    { name = "mkdocs-include-dir-to-nav", marker = "extra == 'docs'" },
-    { name = "mkdocs-literate-nav", marker = "extra == 'docs'" },
-    { name = "mkdocs-material", marker = "extra == 'docs'" },
-    { name = "mkdocs-section-index", marker = "extra == 'docs'" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'" },
-    { name = "neoteroi-mkdocs", marker = "extra == 'docs'" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.3.3" },
-    { name = "psutil", marker = "extra == 'dev'" },
-    { name = "pyarrow", marker = "extra == 'dev'" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
-    { name = "pytest-memray", marker = "extra == 'dev'" },
     { name = "rich" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=1.1.0" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "build", specifier = ">=1.0.0" },
+    { name = "fsspec" },
+    { name = "pre-commit", specifier = ">=3.3.3" },
+    { name = "psutil" },
+    { name = "pyarrow" },
+    { name = "pytest", specifier = ">=7.4.0" },
+    { name = "pytest-memray", marker = "platform_system != 'Windows'" },
+]
+docs = [
+    { name = "black" },
+    { name = "docstring-parser" },
+    { name = "mike" },
+    { name = "mkdocs" },
+    { name = "mkdocs-callouts" },
+    { name = "mkdocs-gen-files" },
+    { name = "mkdocs-include-dir-to-nav" },
+    { name = "mkdocs-literate-nav" },
+    { name = "mkdocs-material" },
+    { name = "mkdocs-section-index" },
+    { name = "mkdocstrings", extras = ["python"] },
+    { name = "neoteroi-mkdocs" },
 ]
 
 [[package]]
