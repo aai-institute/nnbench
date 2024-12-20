@@ -1437,17 +1437,15 @@ as well as any project-related communication through <a href="https://github.com
 </span></code></pre></div>
 </li>
 <li>
-<p>Navigate to the directory and install the development dependencies into a virtual environment:</p>
+<p>Navigate to the directory and install the development dependencies into a virtual environment, e.g. using <code>uv</code>:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>nnbench
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv<span class="w"> </span>--system-site-packages
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w"> </span>--no-deps
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>venv<span class="w"> </span>--seed<span class="w"> </span>-p<span class="w"> </span><span class="m">3</span>.11
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
 </span></code></pre></div>
 </li>
 <li>
 <p>After making your changes, verify they adhere to our Python code style by running <code>pre-commit</code>:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uvx<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files<span class="w"> </span>--verbose<span class="w"> </span>--show-diff-on-failure
 </span></code></pre></div>
 <p>You can also set up Git hooks through <code>pre-commit</code> to perform these checks automatically:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pre-commit<span class="w"> </span>install
@@ -1455,7 +1453,7 @@ as well as any project-related communication through <a href="https://github.com
 </li>
 <li>
 <p>To run the tests, just invoke <code>pytest</code> from the package root directory:
-    <div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pytest
+    <div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-s
 </span></code></pre></div></p>
 </li>
 </ol>
@@ -1463,13 +1461,12 @@ as well as any project-related communication through <a href="https://github.com
 <p>Dependencies should stay locked for as long as possible, ideally for a whole release.
 If you have to update a dependency during development, you should do the following:</p>
 <ol>
-<li>If it is a core dependency needed for the package, add it to the <code>dependencies</code> section in the <code>pyproject.toml</code>.</li>
-<li>In case of a development dependency, add it to the <code>dev</code> section of the <code>project.optional-dependencies</code> table instead.</li>
-<li>Dependencies needed for documentation generation are found in the <code>docs</code> sections of <code>project.optional-dependencies</code>.</li>
+<li>If it is a core dependency needed for the package, add it to the <code>dependencies</code> section in the <code>pyproject.toml</code> via <code>uv add &lt;dep&gt;</code>.</li>
+<li>In case of a development dependency, add it to the <code>dev</code> section of the <code>project.dependency-groups</code> table instead (<code>uv add --group dev &lt;dep&gt;</code>).</li>
+<li>Dependencies needed for documentation generation are found in the <code>docs</code> sections of <code>project.dependency-groups</code> (<code>uv add --group docs &lt;dep&gt;</code>).</li>
 </ol>
-<p>After adding the dependency in either of these sections, use <code>pip-compile</code> to pin all dependencies again:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip-tools
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>pip-compile<span class="w"> </span>--extra<span class="o">=</span>dev<span class="w"> </span>--no-annotate<span class="w"> </span>--output-file<span class="o">=</span>requirements-dev.txt<span class="w"> </span>pyproject.toml
+<p>After adding the dependency in either of these sections, use <code>uv lock</code> to pin all dependencies again:</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>lock
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
