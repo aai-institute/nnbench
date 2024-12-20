@@ -44,7 +44,7 @@ Repository = "https://github.com/aai-institute/nnbench.git"
 Issues = "https://github.com/aai-institute/nnbench/issues"
 Discussions = "https://github.com/aai-institute/nnbench/discussions"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "build>=1.0.0",
     "fsspec",
