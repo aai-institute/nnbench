@@ -16,12 +16,12 @@ See the [quickstart](https://aai-institute.github.io/nnbench/latest/quickstart/)
 
 ⚠️ nnbench is an experimental project - expect bugs and sharp edges.
 
-Install it directly from source, for example either using `pip` or `poetry`:
+Install it directly from source, for example either using `pip` or `uv`:
 
 ```shell
 pip install nnbench
 # or
-poetry add nnbench
+uv add nnbench
 ```
 
 ## A ⚡️- quick demo
