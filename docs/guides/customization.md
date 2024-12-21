@@ -79,8 +79,8 @@ To supply context to your benchmarks, you can give a sequence of context provide
 import nnbench
 
 # uses the `platinfo` context provider from above to log platform metadata.
-runner = nnbench.BenchmarkRunner()
-result = runner.run(__name__, params={}, context=[platinfo])
+benchmarks = nnbench.collect(__name__)
+result = nnbench.run(benchmarks, params={}, context=[platinfo])
 ```
 
 ## Being type safe by using `nnbench.Parameters`
@@ -104,8 +104,8 @@ def prod(a: int, b: int) -> int:
 
 
 params = MyParams(a=1, b=2)
-runner = nnbench.BenchmarkRunner()
-result = runner.run(__name__, params=params)
+benchmarks = nnbench.collect(__name__)
+result = nnbench.run(benchmarks, params=params)
 ```
 
 While this does not have a concrete advantage in terms of type safety over a raw dictionary, it guards against accidental modification of parameters breaking reproducibility.

@@ -2,9 +2,9 @@ import nnbench
 
 
 def main() -> None:
-    runner = nnbench.BenchmarkRunner()
+    benchmarks = nnbench.collect("benchmark.py", tags=("per-class",))
     reporter = nnbench.ConsoleReporter()
-    result = runner.run("benchmark.py", tags=("per-class",))
+    result = nnbench.run(benchmarks)
     reporter.display(result)
 
 

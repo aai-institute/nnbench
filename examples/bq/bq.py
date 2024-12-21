@@ -14,8 +14,8 @@ def main():
         autodetect=True, source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON
     )
 
-    runner = nnbench.BenchmarkRunner()
-    res = runner.run("benchmarks.py", params={"a": 1, "b": 1}, context=(GitEnvironmentInfo(),))
+    benchmarks = nnbench.collect("benchmarks.py")
+    res = nnbench.run(benchmarks, params={"a": 1, "b": 1}, context=(GitEnvironmentInfo(),))
 
     load_job = client.load_table_from_json(res.to_json(), table_id, job_config=job_config)
     load_job.result()

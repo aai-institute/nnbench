@@ -31,10 +31,9 @@ class PrefectReporter(reporter.BenchmarkReporter):
 def run_metric_benchmarks(
     model: base.BaseEstimator, X_test: np.ndarray, y_test: np.ndarray
 ) -> nnbench.types.BenchmarkRecord:
-    runner = nnbench.BenchmarkRunner()
-    results = runner.run(
-        os.path.join(dir_path, "benchmark.py"),
-        tags=("metric",),
+    benchmarks = nnbench.collect(os.path.join(dir_path, "benchmark.py"), tags=("metric",))
+    results = nnbench.run(
+        benchmarks,
         params={"model": model, "X_test": X_test, "y_test": y_test},
     )
     return results
@@ -44,10 +43,9 @@ def run_metric_benchmarks(
 def run_metadata_benchmarks(
     model: base.BaseEstimator, X: np.ndarray
 ) -> nnbench.types.BenchmarkRecord:
-    runner = nnbench.BenchmarkRunner()
-    result = runner.run(
-        os.path.join(dir_path, "benchmark.py"),
-        tags=("model-meta",),
+    benchmarks = nnbench.collect(os.path.join(dir_path, "benchmark.py"), tags=("model-meta",))
+    result = nnbench.run(
+        benchmarks,
         params={"model": model, "X": X},
     )
     return result
@@ -73,7 +71,7 @@ async def train_and_benchmark(
     metadata_results: types.BenchmarkRecord = run_metadata_benchmarks(model=model, X=X_test)
 
     metadata_results.context.update(data_params)
-    metadata_results.context.update(context.PythonInfo())
+    metadata_results.context.update(context.PythonInfo()())
 
     await reporter.write(
         record=metadata_results, key="model-attributes", description="Model Attributes"
@@ -84,7 +82,7 @@ async def train_and_benchmark(
     )
 
     metric_results.context.update(data_params)
-    metric_results.context.update(context.PythonInfo())
+    metric_results.context.update(context.PythonInfo()())
     await reporter.write(metric_results, key="model-performance", description="Model Performance")
     return metadata_results, metric_results
 

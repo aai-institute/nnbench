@@ -16,14 +16,14 @@ To properly structure our project, we avoid mixing training pipeline code and be
 
 This definition is short and sweet, and contains a few important details:
 
-* Both functions are given the `@nnbench.benchmark` decorator - this enables our runner to find and collect them before starting the benchmark run.
+* Both functions are given the `@nnbench.benchmark` decorator - this allows us to find and collect them before starting the benchmark run.
 * The `modelsize` benchmark is given a custom name (`"Model size (MB)"`), indicating that the resulting number is the combined size of the model weights in megabytes.
 This is done for display purposes, to improve interpretability when reporting results.
 * The `params` argument is the same in both benchmarks, both in name and type. This is important, since it ensures that both benchmarks will be run with the same model weights.
 
 That's all - now we can shift over to our main pipeline code and see what is necessary to execute the benchmarks and visualize the results.
 
-## Setting up a benchmark runner and parameters
+## Setting up a benchmark run and parameters
 
 After finishing the benchmark setup, we only need a few more lines to augment our pipeline.
 

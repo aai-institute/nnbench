@@ -23,8 +23,8 @@ import nnbench
 from nnbench.context import GitEnvironmentInfo
 from nnbench.reporter.file import FileReporter
 
-runner = nnbench.BenchmarkRunner()
-record = runner.run("benchmarks.py", params={"a": 1, "b": 1}, context=(GitEnvironmentInfo(),))
+benchmarks = nnbench.collect("benchmarks.py")
+record = nnbench.run(benchmarks, params={"a": 1, "b": 1}, context=(GitEnvironmentInfo(),))
 
 file_reporter = FileReporter()
 file_reporter.write(record, "record.json", driver="ndjson")
