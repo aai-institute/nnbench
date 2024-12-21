@@ -1578,7 +1578,7 @@ In the following <code>IndexLabelMapMemo</code> class, we store a dictionary map
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>There is no need to type-hint <code>TokenClassificationModelMemo</code>s in the corresponding benchmarks -
-the benchmark runner takes care of filling in the memoized values for the memos themselves.</p>
+the benchmark running method takes care of filling in the memoized values for the memos themselves.</p>
 </div>
 <p>Because we implemented our memoized values as four different memo class types, this modularizes the benchmark input parameters -
 we only need to reference memos when they are actually used. Considering the recall benchmarks:</p>
