@@ -43,10 +43,10 @@ def power(a: int, b: int) -> int:
     return a ** b
 
 
-runner = nnbench.BenchmarkRunner()
 reporter = nnbench.ConsoleReporter()
 # run the above benchmarks with the parameters `a=2, b=10`...
-record = runner.run("__main__", params={"a": 2, "b": 10})
+benchmarks = nnbench.collect("__main__")
+record = nnbench.run(benchmarks, params={"a": 2, "b": 10})
 reporter.display(record)  # ...and print the results to the terminal.
 
 # results in a table look like the following:
