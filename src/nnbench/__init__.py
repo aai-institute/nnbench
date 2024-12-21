@@ -2,7 +2,7 @@
 
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter, ConsoleReporter, FileReporter
-from .runner import BenchmarkRunner
+from .runner import collect, run
 from .types import Benchmark, BenchmarkRecord, Memo, Parameters
 
 __version__ = "0.4.0"
