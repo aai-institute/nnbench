@@ -6,7 +6,7 @@ import logging
 import sys
 from typing import Any
 
-from nnbench import BenchmarkRunner, ConsoleReporter, __version__
+from nnbench import ConsoleReporter, __version__, collect, run
 from nnbench.config import NNBenchConfig, parse_nnbench_config
 from nnbench.reporter import FileReporter
 
@@ -205,9 +205,9 @@ def main() -> int:
                 else:
                     context[k] = v
 
-            record = BenchmarkRunner().run(
-                args.benchmarks,
-                tags=tuple(args.tags),
+            benchmarks = collect(args.benchmarks, tags=tuple(args.tags))
+            record = run(
+                benchmarks,
                 context=[lambda: context],
             )
 

@@ -29,7 +29,7 @@ class PythonInfo:
 
     Parameters
     ----------
-    packages: str
+    packages: Sequence[str]
         Names of the requested packages under which they exist in the current environment.
         For packages installed through ``pip``, this equals the PyPI package name.
     """
@@ -37,7 +37,7 @@ class PythonInfo:
     key = "python"
 
     def __init__(self, packages: Sequence[str] = ()):
-        self.packages = packages
+        self.packages = tuple(packages)
 
     def __call__(self) -> dict[str, Any]:
         from importlib.metadata import PackageNotFoundError, version

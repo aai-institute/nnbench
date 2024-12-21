@@ -7,45 +7,29 @@ from nnbench.context import cpuarch, python_version, system
 
 
 def test_runner_collection(testfolder: str) -> None:
-    r = nnbench.BenchmarkRunner()
+    benchmarks = nnbench.collect(os.path.join(testfolder, "standard.py"), tags=("runner-collect",))
+    assert len(benchmarks) == 1
 
-    r.collect(os.path.join(testfolder, "standard.py"), tags=("runner-collect",))
-    assert len(r.benchmarks) == 1
-    r.clear()
+    benchmarks = nnbench.collect(testfolder, tags=("non-existing-tag",))
+    assert len(benchmarks) == 0
 
-    r.collect(testfolder, tags=("non-existing-tag",))
-    assert len(r.benchmarks) == 0
-    r.clear()
-
-    r.collect(testfolder, tags=("runner-collect",))
-    assert len(r.benchmarks) == 1
+    benchmarks = nnbench.collect(testfolder, tags=("runner-collect",))
+    assert len(benchmarks) == 1
 
 
 def test_tag_selection(testfolder: str) -> None:
     PATH = os.path.join(testfolder, "tags.py")
 
-    r = nnbench.BenchmarkRunner()
-
-    r.collect(PATH)
-    assert len(r.benchmarks) == 3
-    r.clear()
-
-    r.collect(PATH, tags=("tag1",))
-    assert len(r.benchmarks) == 2
-    r.clear()
-
-    r.collect(PATH, tags=("tag2",))
-    assert len(r.benchmarks) == 1
-    r.clear()
+    assert len(nnbench.collect(PATH)) == 3
+    assert len(nnbench.collect(PATH, tags=("tag1",))) == 2
+    assert len(nnbench.collect(PATH, tags=("tag2",))) == 1
 
 
 def test_context_assembly(testfolder: str) -> None:
-    r = nnbench.BenchmarkRunner()
-
     context_providers = [system, cpuarch, python_version]
-    result = r.run(
-        testfolder,
-        tags=("standard",),
+    benchmarks = nnbench.collect(testfolder, tags=("standard",))
+    result = nnbench.run(
+        benchmarks,
         params={"x": 1, "y": 1},
         context=context_providers,
     )
@@ -57,17 +41,15 @@ def test_context_assembly(testfolder: str) -> None:
 
 
 def test_error_on_duplicate_context_keys_in_runner(testfolder: str) -> None:
-    r = nnbench.BenchmarkRunner()
-
     def duplicate_context_provider() -> dict[str, str]:
         return {"system": "DuplicateSystem"}
 
     context_providers = [system, duplicate_context_provider]
 
+    benchmarks = nnbench.collect(testfolder, tags=("standard",))
     with pytest.raises(ValueError, match="got multiple values for context key 'system'"):
-        r.run(
-            testfolder,
-            tags=("standard",),
+        nnbench.run(
+            benchmarks,
             params={"x": 1, "y": 1},
             context=context_providers,
         )
@@ -78,11 +60,9 @@ def test_filter_benchmarks_on_params(testfolder: str) -> None:
     def prod(a: int, b: int = 1) -> int:
         return a * b
 
-    r = nnbench.BenchmarkRunner()
-    r.benchmarks.append(prod)
-    # TODO (nicholasjng): This is hacky
-    rec1 = r.run("", params={"a": 1, "b": 2})
+    benchmarks = [prod]
+    rec1 = nnbench.run(benchmarks, params={"a": 1, "b": 2})
     assert rec1.benchmarks[0]["parameters"] == {"a": 1, "b": 2}
     # Assert that the defaults are also present if not overridden.
-    rec2 = r.run("", params={"a": 1})
+    rec2 = nnbench.run(benchmarks, params={"a": 1})
     assert rec2.benchmarks[0]["parameters"] == {"a": 1, "b": 1}
