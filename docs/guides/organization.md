@@ -75,8 +75,8 @@ Now, to only run data quality benchmarks marked "foo", pass the corresponding ta
 ```python
 import nnbench
 
-runner = nnbench.BenchmarkRunner()
-foo_data_metrics = runner.run("benchmarks/data_quality.py", params=..., tags=("foo",))
+benchmarks = nnbench.collect("benchmarks/data_quality.py", tags=("foo",))
+foo_data_metrics = nnbench.run(benchmarks, params=..., )
 ```
 
 !!!tip

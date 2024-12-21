@@ -91,7 +91,7 @@ In the following `IndexLabelMapMemo` class, we store a dictionary mapping the la
 
 !!! Info
     There is no need to type-hint `TokenClassificationModelMemo`s in the corresponding benchmarks -
-    the benchmark runner takes care of filling in the memoized values for the memos themselves.
+    the benchmark running method takes care of filling in the memoized values for the memos themselves.
 
 Because we implemented our memoized values as four different memo class types, this modularizes the benchmark input parameters -
 we only need to reference memos when they are actually used. Considering the recall benchmarks:

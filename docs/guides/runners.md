@@ -1,17 +1,8 @@
 # Collecting and running benchmarks
 
-nnbench provides the `BenchmarkRunner` as a compact interface to collect and run benchmarks selectively.
+nnbench provides the `nnbench.collect` and `nnbench.run` APIs as a compact interface to collect and run benchmarks selectively.
 
-##  The abstract `BenchmarkRunner`  class
-Let's first instantiate and then walk through the base class.
-
-```python
-from nnbench import BenchmarkRunner
-
-runner = BenchmarkRunner()
-```
-
-Use the `BenchmarkRunner.collect()` method to collect benchmarks from files or directories.  
+Use the `nnbench.collect()` method to collect benchmarks from files or directories.  
 Assume we have the following benchmark setup:
 ```python
 # dir_a/bm1.py
@@ -46,26 +37,29 @@ def the_last_benchmark(d: int) -> int:
 Now we can collect benchmarks from files:
 
 ```python
-runner.collect('dir_a/bm1.py')
+import nnbench
+
+
+benchmarks = nnbench.collect('dir_a/bm1.py')
 ```
 Or directories:
 
 ```python
-runner.collect('dir_b')
+benchmarks = nnbench.collect('dir_b')
 ```
 
-This collection can happen iteratively. So, after executing the two collections our runner has all four benchmarks ready for execution.
-
-To remove the collected benchmarks again, use the `BenchmarkRunner.clear()` method.
 You can also supply tags to the runner to selectively collect only benchmarks with the appropriate tag.
 For example, after clearing the runner again, you can collect all benchmarks with the `"tag"` tag as such:
 
 ```python
-runner.collect('dir_b', tags=("tag",))
+import nnbench
+
+
+tagged_benchmarks = nnbench.collect('dir_b', tags=("tag",))
 ```
 
-To run the benchmarks, call the `BenchmarkRunner.run()` method and supply the necessary parameters required by the collected benchmarks.
+To run the benchmarks, call the `nnbench.run()` method and supply the necessary parameters required by the collected benchmarks.
 
 ```python
-runner.run("dir_b", params={"b": 1, "c": 2, "d": 3})
+result = nnbench.run(benchmarks, params={"b": 1, "c": 2, "d": 3})
 ```
