@@ -44,8 +44,9 @@ def power(a: int, b: int) -> int:
 
 
 reporter = nnbench.ConsoleReporter()
-# run the above benchmarks with the parameters `a=2, b=10`...
+# first, collect the above benchmarks directly from the current module...
 benchmarks = nnbench.collect("__main__")
+# ... then run the benchmarks with the parameters `a=2, b=10`...
 record = nnbench.run(benchmarks, params={"a": 2, "b": 10})
 reporter.display(record)  # ...and print the results to the terminal.
 
