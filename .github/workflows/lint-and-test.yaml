@@ -15,13 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
-      - name: Install Python 3.10 interpreter
-        run: uv python install 3.10
-      - name: Install the project
-        run: uv sync --group dev
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.10"
       - name: Run pre-commit checks
-        run: uvx pre-commit run --all-files --verbose --show-diff-on-failure
+        run: uv run pre-commit run --all-files --verbose --show-diff-on-failure
   test:
     name: Test nnbench on ${{ matrix.os }} on Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
@@ -33,13 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
-      - name: Install Python ${{ matrix.python-version }}
-        run: uv python install ${{ matrix.python-version }}
-      - name: Install the project in developer mode
-        run: uv sync --group dev
-      - name: Execute python tests
-        run: uv run pytest -s
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Test with Python ${{ matrix.python-version }}
+        run: uv run --frozen pytest -s
   docs:
     name: Publish latest documentation for nnbench
     runs-on: ubuntu-latest
@@ -48,9 +44,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
-      - name: Install Python 3.11 interpreter
-        run: uv python install 3.11
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
       - name: Install the project
         run: uv sync --group docs
       - name: Build documentation using mike
