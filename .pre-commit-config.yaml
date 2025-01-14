@@ -16,13 +16,13 @@ repos:
        types_or: [ python, pyi ]
        args: [--ignore-missing-imports, --explicit-package-bases]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.6
+    rev: v0.9.1
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.5.15
+    rev: 0.5.18
     hooks:
       - id: uv-lock
         name: Lock project dependencies
