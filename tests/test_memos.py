@@ -2,8 +2,7 @@ from collections.abc import Generator
 
 import pytest
 
-from nnbench.types import Memo, cached_memo
-from nnbench.types.memo import clear_memo_cache, memo_cache_size
+from nnbench.memo import Memo, cached_memo, clear_memo_cache, memo_cache_size
 
 
 @pytest.fixture

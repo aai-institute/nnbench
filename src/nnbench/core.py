@@ -8,9 +8,8 @@ import warnings
 from collections.abc import Callable, Iterable
 from typing import Any, Union, get_args, get_origin, overload
 
-from nnbench.types import Benchmark
-from nnbench.types.benchmark import NoOp
-from nnbench.types.memo import is_memo, is_memo_type
+from nnbench.memo import is_memo, is_memo_type
+from nnbench.types import Benchmark, NoOp
 
 
 def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:

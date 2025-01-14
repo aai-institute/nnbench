@@ -10,7 +10,7 @@ import streamlit as st
 from prefect import deployments
 from prefect.results import PersistedResultBlob
 
-from nnbench import types
+import nnbench
 
 LOCAL_PREFECT_URL = "http://127.0.0.1:4200"
 LOCAL_PREFECT_PERSISTENCE_FOLDER = Path.home() / ".prefect" / "storage"
@@ -41,7 +41,7 @@ async def run_bms(params: dict[str, Any]) -> str:
 def get_bm_artifacts(storage_key: str) -> None:
     blob_path = LOCAL_PREFECT_PERSISTENCE_FOLDER / storage_key
     blob = PersistedResultBlob.parse_raw(blob_path.read_bytes())
-    bm_records: tuple[types.BenchmarkRecord, ...] = pickle.loads(base64.b64decode(blob.data))
+    bm_records: tuple[nnbench.BenchmarkRecord, ...] = pickle.loads(base64.b64decode(blob.data))
 
     bms = [pd.DataFrame(record.benchmarks) for record in bm_records]
     for df in bms:
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         get_bm_artifacts(storage_key)
         st.write("Benchmark Results")
         for i, benchmark in reversed(list(enumerate(st.session_state["benchmarks"]))):
-            with st.expander(f"Benchmark Run {i+1}"):
+            with st.expander(f"Benchmark Run {i + 1}"):
                 meta, metric, ctx = benchmark
                 st.write("Model Attributes")
                 st.table(meta)

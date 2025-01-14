@@ -17,8 +17,8 @@ from typing import Any
 
 from nnbench.context import ContextProvider
 from nnbench.fixtures import FixtureManager
+from nnbench.memo import is_memo, is_memo_type
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
-from nnbench.types.memo import is_memo, is_memo_type
 from nnbench.util import import_file_as_module, ismodule
 
 logger = logging.getLogger("nnbench.runner")
@@ -127,7 +127,7 @@ def collect(path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) 
         module = sys.modules[str(path_or_module)]
     else:
         raise ValueError(
-            f"expected a module name, Python file, or directory, " f"got {str(path_or_module)!r}"
+            f"expected a module name, Python file, or directory, got {str(path_or_module)!r}"
         )
 
     # iterate through the module dict members to register
