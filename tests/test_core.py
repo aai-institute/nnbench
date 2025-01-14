@@ -1,6 +1,7 @@
 import pytest
 
 import nnbench
+import nnbench.types
 from nnbench import benchmark, parametrize, product
 
 from .test_utils import has_expected_args

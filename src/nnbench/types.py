@@ -1,18 +1,17 @@
 """Types for benchmarks and records holding results of a run."""
 
 import copy
+import inspect
 import sys
 from collections.abc import Callable, Mapping
 from dataclasses import asdict, dataclass, field
 from types import MappingProxyType
-from typing import Any
+from typing import Any, TypeVar
 
 if sys.version_info >= (3, 11):
     from typing import Self
 else:
     from typing_extensions import Self
-
-from nnbench.types.interface import Interface
 
 
 @dataclass(frozen=True)
@@ -114,6 +113,70 @@ class BenchmarkRecord:
         return cls(run=run, benchmarks=benchmarks, context=context)
 
 
+@dataclass(init=False, frozen=True)
+class Parameters:
+    """
+    A dataclass designed to hold benchmark parameters.
+
+    This class is not functional on its own, and needs to be subclassed
+    according to your benchmarking workloads.
+
+    The main advantage over passing parameters as a dictionary are static analysis
+    and type safety for your benchmarking code.
+    """
+
+
+T = TypeVar("T")
+Variable = tuple[str, type, Any]
+
+
+@dataclass(frozen=True)
+class Interface:
+    """
+    Data model representing a function's interface.
+
+    An instance of this class is created using the ``Interface.from_callable()``
+    class method.
+    """
+
+    funcname: str
+    """Name of the function."""
+    names: tuple[str, ...]
+    """Names of the function parameters."""
+    types: tuple[type, ...]
+    """Type hints of the function parameters."""
+    defaults: tuple
+    """The function parameters' default values, or inspect.Parameter.empty if a parameter has no default."""
+    variables: tuple[Variable, ...]
+    """A tuple of tuples, where each inner tuple contains the parameter name, type, and default value."""
+    returntype: type
+    """The function's return type annotation, or NoneType if left untyped."""
+
+    @classmethod
+    def from_callable(cls, fn: Callable, defaults: dict[str, Any]) -> Self:
+        """
+        Creates an interface instance from the given callable.
+
+        Wraps the information given by ``inspect.signature()``, with the option to
+        supply a ``defaults`` map and overwrite any default set in the function's
+        signature.
+        """
+        # Set `follow_wrapped=False` to get the partially filled interfaces.
+        # Otherwise we get missing value errors for parameters supplied in benchmark decorators.
+        sig = inspect.signature(fn, follow_wrapped=False)
+        ret = sig.return_annotation
+        _defaults = {k: defaults.get(k, v.default) for k, v in sig.parameters.items()}
+        # defaults are the signature parameters, then the partial parametrization.
+        return cls(
+            fn.__name__,
+            tuple(sig.parameters.keys()),
+            tuple(p.annotation for p in sig.parameters.values()),
+            tuple(_defaults.values()),
+            tuple((k, v.annotation, _defaults[k]) for k, v in sig.parameters.items()),
+            type(ret) if ret is None else ret,
+        )
+
+
 @dataclass(frozen=True)
 class Benchmark:
     """
@@ -139,16 +202,3 @@ class Benchmark:
         if not self.name:
             super().__setattr__("name", self.fn.__name__)
         super().__setattr__("interface", Interface.from_callable(self.fn, self.params))
-
-
-@dataclass(init=False, frozen=True)
-class Parameters:
-    """
-    A dataclass designed to hold benchmark parameters.
-
-    This class is not functional on its own, and needs to be subclassed
-    according to your benchmarking workloads.
-
-    The main advantage over passing parameters as a dictionary are static analysis
-    and type safety for your benchmarking code.
-    """

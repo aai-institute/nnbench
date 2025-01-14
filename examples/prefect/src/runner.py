@@ -8,7 +8,7 @@ from prefect.artifacts import create_table_artifact
 from sklearn import base
 
 import nnbench
-from nnbench import context, reporter, types
+from nnbench import context, reporter
 
 dir_path = os.path.dirname(__file__)
 
@@ -18,7 +18,10 @@ class PrefectReporter(reporter.BenchmarkReporter):
         self.logger = get_run_logger()
 
     async def write(
-        self, record: types.BenchmarkRecord, key: str, description: str = "Benchmark and Context"
+        self,
+        record: nnbench.BenchmarkRecord,
+        key: str,
+        description: str = "Benchmark and Context",
     ) -> None:
         await create_table_artifact(
             key=key,
@@ -30,7 +33,7 @@ class PrefectReporter(reporter.BenchmarkReporter):
 @task
 def run_metric_benchmarks(
     model: base.BaseEstimator, X_test: np.ndarray, y_test: np.ndarray
-) -> nnbench.types.BenchmarkRecord:
+) -> nnbench.BenchmarkRecord:
     benchmarks = nnbench.collect(os.path.join(dir_path, "benchmark.py"), tags=("metric",))
     results = nnbench.run(
         benchmarks,
@@ -40,9 +43,7 @@ def run_metric_benchmarks(
 
 
 @task
-def run_metadata_benchmarks(
-    model: base.BaseEstimator, X: np.ndarray
-) -> nnbench.types.BenchmarkRecord:
+def run_metadata_benchmarks(model: base.BaseEstimator, X: np.ndarray) -> nnbench.BenchmarkRecord:
     benchmarks = nnbench.collect(os.path.join(dir_path, "benchmark.py"), tags=("model-meta",))
     result = nnbench.run(
         benchmarks,
@@ -54,7 +55,7 @@ def run_metadata_benchmarks(
 @flow(persist_result=True)
 async def train_and_benchmark(
     data_params: dict[str, int | float] | None = None,
-) -> tuple[types.BenchmarkRecord, ...]:
+) -> tuple[nnbench.BenchmarkRecord, ...]:
     if data_params is None:
         data_params = {}
 
@@ -68,7 +69,7 @@ async def train_and_benchmark(
     X_test = regressor_and_test_data[1]
     y_test = regressor_and_test_data[2]
 
-    metadata_results: types.BenchmarkRecord = run_metadata_benchmarks(model=model, X=X_test)
+    metadata_results: nnbench.BenchmarkRecord = run_metadata_benchmarks(model=model, X=X_test)
 
     metadata_results.context.update(data_params)
     metadata_results.context.update(context.PythonInfo()())
@@ -77,7 +78,7 @@ async def train_and_benchmark(
         record=metadata_results, key="model-attributes", description="Model Attributes"
     )
 
-    metric_results: types.BenchmarkRecord = run_metric_benchmarks(
+    metric_results: nnbench.BenchmarkRecord = run_metric_benchmarks(
         model=model, X_test=X_test, y_test=y_test
     )
 

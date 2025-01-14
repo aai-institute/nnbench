@@ -47,25 +47,26 @@ import gc
 import numpy as np
 
 import nnbench
-from nnbench.types import Memo, cached_memo
-from nnbench.types.memo import evict_memo, get_memo_by_value
+from nnbench.memo import Memo, cached_memo, evict_memo, get_memo_by_value
+
 
 class Model:
     def __init__(self, arr: np.ndarray):
         self.array = arr
-    
+
     def apply(self, arr: np.ndarray) -> np.ndarray:
         return self.array @ arr
+
 
 class ModelMemo(Memo[Model]):
     def __init__(self, path):
         self.path = path
-    
+
     @cached_memo
     def __call__(self) -> Model:
         arr = np.load(self.path)
         return Model(arr)
-    
+
 
 def tearDown(state, params):
     print("Evicting memo for benchmark parameter 'model':")

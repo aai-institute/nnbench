@@ -1,6 +1,6 @@
 import inspect
 
-from nnbench.types.interface import Interface
+from nnbench.types import Interface
 
 
 def test_interface_with_no_arguments():

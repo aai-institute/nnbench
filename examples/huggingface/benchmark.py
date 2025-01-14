@@ -17,7 +17,7 @@ from transformers import (
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 import nnbench
-from nnbench.types import Memo, cached_memo
+from nnbench.memo import Memo, cached_memo
 
 
 class TokenClassificationModelMemo(Memo[Module]):
