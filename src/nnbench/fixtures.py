@@ -148,7 +148,7 @@ class FixtureManager:
         names = [
             n
             for n, d in zip(bm.interface.names, bm.interface.defaults)
-            if d == inspect.Parameter.empty
+            if d is inspect.Parameter.empty
         ]
         nameset, fixtureset = set(names), set()
         # then, load the benchmark function's origin module,
@@ -192,8 +192,8 @@ class FixtureManager:
 
         # TODO: This should not throw an error, inline the typecheck into before benchmark
         # execution, then handle it there.
-        if fixtureset < nameset:
-            missing, *_ = nameset - fixtureset
-            raise RuntimeError(f"could not locate fixture {missing!r} for benchmark {bm.name!r}")
+        # if fixtureset < nameset:
+        #     missing, *_ = nameset - fixtureset
+        #     raise RuntimeError(f"could not locate fixture {missing!r} for benchmark {bm.name!r}")
 
         return fixturevals

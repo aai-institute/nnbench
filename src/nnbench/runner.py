@@ -233,7 +233,7 @@ def run(
         bmparams = {
             name: _maybe_dememo(val, typ)
             for name, typ, val in benchmark.interface.variables
-            if val != inspect.Parameter.empty
+            if val is not inspect.Parameter.empty
         }
         # ... then hydrate with the appropriate subset of input parameters.
         bmparams |= {k: v for k, v in dparams.items() if k in benchmark.interface.names}
