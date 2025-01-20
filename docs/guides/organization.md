@@ -40,10 +40,11 @@ This is helpful when running multiple benchmark workloads separately, as you can
 ```python
 import nnbench
 
-runner = nnbench.BenchmarkRunner()
-data_metrics = runner.run("benchmarks/data_quality.py", params=...)
+data_quality_benchmarks = nnbench.collect("benchmarks/data_quality.py")
+data_metrics = nnbench.run(data_quality_benchmarks, params=...)
 # same for model metrics, where instead you pass benchmarks/model_perf.py.
-model_metrics = runner.run("benchmarks/model_perf.py", params=...)
+model_perf_benchmarks = nnbench.collect("benchmarks/model_perf.py")
+model_metrics = nnbench.run(model_perf_benchmarks, params=...)
 ```
 
 ## Tip 3: Attach tags to benchmarks for selective filtering
@@ -70,7 +71,7 @@ def bar(data) -> int:
     ...
 ```
 
-Now, to only run data quality benchmarks marked "foo", pass the corresponding tag to `BenchmarkRunner.run()`:
+Now, to only run data quality benchmarks marked "foo", pass the corresponding tag to `nnbench.run()`:
 
 ```python
 import nnbench

@@ -44,13 +44,11 @@ Then, using the `BenchmarkReporter` we report the resulting accuracy metric by p
 ```python
 import nnbench
 
-
-r = nnbench.BenchmarkRunner()
-reporter = nnbench.BenchmarkReporter()
-
+benchmarks = nnbench.collect(__main__)
+reporter = nnbench.ConsoleReporter()
 # To collect in the current file, pass "__main__" as module name.
-result = r.run("__main__", params={"model": model, "X_test": X_test, "y_test": y_test})
-reporter.display(result)
+record = nnbench.run(benchmarks, params={"model": model, "X_test": X_test, "y_test": y_test})
+reporter.display(record)
 ```
 
 The resulting output might look like this:
