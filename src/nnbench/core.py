@@ -4,12 +4,11 @@ import inspect
 import itertools
 import sys
 import types
-import warnings
 from collections.abc import Callable, Iterable
 from typing import Any, Union, get_args, get_origin, overload
 
 from nnbench.memo import is_memo, is_memo_type
-from nnbench.types import Benchmark, NoOp
+from nnbench.types import Benchmark, BenchmarkFamily, NoOp
 
 
 def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
@@ -92,7 +91,7 @@ def benchmark(
 
     The resulting benchmark can either be completely (i.e., the resulting function takes no
     more arguments) or incompletely parametrized. In the latter case, the remaining free
-    parameters need to be passed in the calls to `BenchmarkRunner.run()`.
+    parameters need to be passed in the calls to `nnbench.run()`.
 
     Parameters
     ----------
@@ -130,13 +129,13 @@ def parametrize(
     tearDown: Callable[..., None] = NoOp,
     namegen: Callable[..., str] = _default_namegen,
     tags: tuple[str, ...] = (),
-) -> Callable[[Callable], list[Benchmark]]:
+) -> Callable[[Callable], BenchmarkFamily]:
     """
     Define a family of benchmarks over a function with varying parameters.
 
     The resulting benchmarks can either be completely (i.e., the resulting function takes no
     more arguments) or incompletely parametrized. In the latter case, the remaining free
-    parameters need to be passed in the call to `BenchmarkRunner.run()`.
+    parameters need to be passed in the call to `nnbench.run()`.
 
     Parameters
     ----------
@@ -155,35 +154,19 @@ def parametrize(
 
     Returns
     -------
-    Callable[[Callable], list[Benchmark]]
+    Callable[[Callable], BenchmarkFamily]
         A parametrized decorator returning the benchmark family.
     """
 
-    # TODO(nicholasjng): Return a BenchmarkFamily object.
-    def decorator(fn: Callable) -> list[Benchmark]:
-        benchmarks = []
-        names = set()
-        for params in parameters:
-            _check_against_interface(params, fn)
-
-            name = namegen(fn, **params)
-            if name in names:
-                warnings.warn(
-                    f"Got duplicate name {name!r} for benchmark {fn.__name__}(). "
-                    f"Perhaps you specified a parameter configuration twice?"
-                )
-            names.add(name)
-
-            bm = Benchmark(
-                fn,
-                name=name,
-                params=params,
-                setUp=setUp,
-                tearDown=tearDown,
-                tags=tags,
-            )
-            benchmarks.append(bm)
-        return benchmarks
+    def decorator(fn: Callable) -> BenchmarkFamily:
+        return BenchmarkFamily(
+            fn,
+            parameters,
+            name=namegen,
+            setUp=setUp,
+            tearDown=tearDown,
+            tags=tags,
+        )
 
     return decorator
 
@@ -194,13 +177,13 @@ def product(
     namegen: Callable[..., str] = _default_namegen,
     tags: tuple[str, ...] = (),
     **iterables: Iterable,
-) -> Callable[[Callable], list[Benchmark]]:
+) -> Callable[[Callable], BenchmarkFamily]:
     """
     Define a family of benchmarks over a cartesian product of one or more iterables.
 
     The resulting benchmarks can either be completely (i.e., the resulting function takes no
     more arguments) or incompletely parametrized. In the latter case, the remaining free
-    parameters need to be passed in the call to `BenchmarkRunner.run()`.
+    parameters need to be passed in the call to `nnbench.run()`.
 
     Parameters
     ----------
@@ -219,36 +202,24 @@ def product(
 
     Returns
     -------
-    Callable[[Callable], list[Benchmark]]
+    Callable[[Callable], BenchmarkFamily]
         A parametrized decorator returning the benchmark family.
     """
 
-    # TODO(nicholasjng): Return a BenchmarkFamily object.
-    def decorator(fn: Callable) -> list[Benchmark]:
-        benchmarks = []
-        names = set()
-        varnames = iterables.keys()
-        for values in itertools.product(*iterables.values()):
-            params = dict(zip(varnames, values))
-            _check_against_interface(params, fn)
+    def decorator(fn: Callable) -> BenchmarkFamily:
+        names, values = iterables.keys(), iterables.values()
 
-            name = namegen(fn, **params)
-            if name in names:
-                warnings.warn(
-                    f"Got duplicate name {name!r} for benchmark {fn.__name__}(). "
-                    f"Perhaps you specified a parameter configuration twice?"
-                )
-            names.add(name)
+        # NB: This line forces the exhaustion of all input iterables by nature of the
+        # cartesian product (values need to be persisted to be accessed multiple times).
+        parameters = (dict(zip(names, vals)) for vals in itertools.product(*values))
 
-            bm = Benchmark(
-                fn,
-                name=name,
-                params=params,
-                setUp=setUp,
-                tearDown=tearDown,
-                tags=tags,
-            )
-            benchmarks.append(bm)
-        return benchmarks
+        return BenchmarkFamily(
+            fn,
+            parameters,
+            name=namegen,
+            setUp=setUp,
+            tearDown=tearDown,
+            tags=tags,
+        )
 
     return decorator

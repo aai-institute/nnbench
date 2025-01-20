@@ -39,7 +39,7 @@ def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None
 class BenchmarkRecord:
     """
     A dataclass representing the result of a benchmark run, i.e. the return value
-    of a call to ``BenchmarkRunner.run()``.
+    of a call to ``nnbench.run()``.
     """
 
     run: str
@@ -205,11 +205,38 @@ class Benchmark:
 
 
 class BenchmarkFamily(Iterable[Benchmark]):
-    def __init__(self, fn: Callable[..., Any], params: Iterable[dict[str, Any]]):
+    def __init__(
+        self,
+        fn: Callable[..., Any],
+        params: Iterable[dict[str, Any]],
+        name: str | Callable[..., str],
+        setUp: Callable[..., None] = NoOp,
+        tearDown: Callable[..., None] = NoOp,
+        tags: tuple[str, ...] = (),
+    ):
         self.fn = fn
         self.params = params
+        if isinstance(name, str):
+            # if name is a str, we assume it's an f-string that should be
+            # interpolated with ALL the parameters.
+            self.name = lambda _fn, **kwargs: name.format(**kwargs)
+        else:
+            self.name = name
+        self.setUp = setUp
+        self.tearDown = tearDown
+        self.tags = tags
 
     def __iter__(self):
-        # TODO(nicholasjng): Yield benchmark members as currently done in
-        #  `core.{parametrize,product}`.
-        pass
+        """
+        Dispatch benchmarks lazily, creating a name from the arguments as dictated
+        by ``self.name``
+        """
+        for p in self.params:
+            yield Benchmark(
+                fn=self.fn,
+                params=p,
+                name=self.name(self.fn, **p),
+                setUp=self.setUp,
+                tearDown=self.tearDown,
+                tags=self.tags,
+            )
