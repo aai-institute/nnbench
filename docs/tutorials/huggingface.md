@@ -53,12 +53,8 @@ We also use `nnbench.parametrize` to get the per-class metrics.
 As the parametrization method needs the same arguments for each benchmark, we use Python's builtin `functools.partial` to fill the arguments.
 
 ```python
---8<-- "examples/huggingface/benchmark.py:131:139"
+--8<-- "examples/huggingface/benchmark.py:63:67"
 ```
-
-!!! Tip
-    In this parametrization, the model path is hardcoded to "dslim/distilbert-NER" on the HuggingFace hub.
-    When benchmarking other models, be sure to change this path to the actual model you want to benchmark.
 
 After this, the benchmarking code is actually very simple, as in most of the other examples.
 You find it in the nnbench repository in `examples/huggingface/runner.py`.
