@@ -1,5 +1,7 @@
 name: Lint and test nnbench
 
+permissions: {}
+
 on:
   push:
     branches:
