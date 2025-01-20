@@ -1,5 +1,7 @@
 name: Build and publish Python wheel and sdist
 
+permissions: {}
+
 on:
   workflow_dispatch:
   release:
