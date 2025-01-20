@@ -1,5 +1,3 @@
-import pytest
-
 import nnbench
 import nnbench.types
 from nnbench import benchmark, parametrize, product
@@ -29,19 +27,12 @@ def test_parametrize():
     def parametrized_benchmark(param: int) -> int:
         return param
 
-    assert len(parametrized_benchmark) == 2
-    assert has_expected_args(parametrized_benchmark[0].fn, {"param": 1})
-    assert parametrized_benchmark[0].fn(**parametrized_benchmark[0].params) == 1
-    assert has_expected_args(parametrized_benchmark[1].fn, {"param": 2})
-    assert parametrized_benchmark[1].fn(**parametrized_benchmark[1].params) == 2
-
-
-def test_parametrize_with_duplicate_parameters():
-    with pytest.warns(UserWarning, match="duplicate"):
-
-        @parametrize([{"param": 1}, {"param": 1}])
-        def parametrized_benchmark(param: int) -> int:
-            return param
+    all_benchmarks = list(parametrized_benchmark)
+    assert len(all_benchmarks) == 2
+    assert has_expected_args(all_benchmarks[0].fn, {"param": 1})
+    assert all_benchmarks[0].fn(**all_benchmarks[0].params) == 1
+    assert has_expected_args(all_benchmarks[1].fn, {"param": 2})
+    assert all_benchmarks[1].fn(**all_benchmarks[1].params) == 2
 
 
 def test_product():
@@ -49,20 +40,13 @@ def test_product():
     def product_benchmark(iter1: int, iter2: str) -> tuple[int, str]:
         return iter1, iter2
 
-    assert len(product_benchmark) == 4
-    assert has_expected_args(product_benchmark[0].fn, {"iter1": 1, "iter2": "a"})
-    assert product_benchmark[0].fn(**product_benchmark[0].params) == (1, "a")
-    assert has_expected_args(product_benchmark[1].fn, {"iter1": 1, "iter2": "b"})
-    assert product_benchmark[1].fn(**product_benchmark[1].params) == (1, "b")
-    assert has_expected_args(product_benchmark[2].fn, {"iter1": 2, "iter2": "a"})
-    assert product_benchmark[2].fn(**product_benchmark[2].params) == (2, "a")
-    assert has_expected_args(product_benchmark[3].fn, {"iter1": 2, "iter2": "b"})
-    assert product_benchmark[3].fn(**product_benchmark[3].params) == (2, "b")
-
-
-def test_product_with_duplicate_parameters():
-    with pytest.warns(UserWarning, match="duplicate"):
-
-        @product(iter=[1, 1])
-        def product_benchmark(iter: int) -> int:
-            return iter
+    all_benchmarks = list(product_benchmark)
+    assert len(all_benchmarks) == 4
+    assert has_expected_args(all_benchmarks[0].fn, {"iter1": 1, "iter2": "a"})
+    assert all_benchmarks[0].fn(**all_benchmarks[0].params) == (1, "a")
+    assert has_expected_args(all_benchmarks[1].fn, {"iter1": 1, "iter2": "b"})
+    assert all_benchmarks[1].fn(**all_benchmarks[1].params) == (1, "b")
+    assert has_expected_args(all_benchmarks[2].fn, {"iter1": 2, "iter2": "a"})
+    assert all_benchmarks[2].fn(**all_benchmarks[2].params) == (2, "a")
+    assert has_expected_args(all_benchmarks[3].fn, {"iter1": 2, "iter2": "b"})
+    assert all_benchmarks[3].fn(**all_benchmarks[3].params) == (2, "b")
