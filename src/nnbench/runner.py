@@ -9,7 +9,7 @@ import platform
 import sys
 import time
 import uuid
-from collections.abc import Callable, Generator, Sequence
+from collections.abc import Callable, Generator, Iterable, Sequence
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -148,7 +148,7 @@ def collect(path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) 
 
 
 def run(
-    benchmarks: Benchmark | Sequence[Benchmark],  # TODO: Support benchmark iterators
+    benchmarks: Benchmark | Iterable[Benchmark],
     name: str | None = None,
     params: dict[str, Any] | Parameters | None = None,
     context: Sequence[ContextProvider] = (),
@@ -203,8 +203,8 @@ def run(
     if not benchmarks:
         return BenchmarkRecord(run=_run, context=ctx, benchmarks=[])
 
-    for bm in benchmarks:
-        family_sizes[bm.interface.funcname] += 1
+    # for bm in benchmarks:
+    #     family_sizes[bm.interface.funcname] += 1
 
     if isinstance(params, Parameters):
         dparams = asdict(params)
