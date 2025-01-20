@@ -615,27 +615,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../memoization/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Using memoization for memory efficient benchmarks
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1029,27 +1008,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
   
-    <li class="md-nav__item">
-      <a href="../../reference/nnbench/memo/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    memo
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     
     
     
@@ -1058,7 +1016,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1_7" >
         
           
           
@@ -1074,14 +1032,14 @@ released. For the most accurate information, please <strong><a href="../../..">a
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_1_8" id="__nav_6_1_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_1_7" id="__nav_6_1_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_1_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1_7">
             <span class="md-nav__icon md-icon"></span>
             reporter
           </label>
@@ -1402,10 +1360,11 @@ As an example, if you have a set of benchmarks to establish data quality, and be
 <p>This is helpful when running multiple benchmark workloads separately, as you can just point your benchmark runner to each of these separate files:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">BenchmarkRunner</span><span class="p">()</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">data_metrics</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks/data_quality.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">data_quality_benchmarks</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="s2">&quot;benchmarks/data_quality.py&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">data_metrics</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">data_quality_benchmarks</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">)</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># same for model metrics, where instead you pass benchmarks/model_perf.py.</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">model_metrics</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;benchmarks/model_perf.py&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">model_perf_benchmarks</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="s2">&quot;benchmarks/model_perf.py&quot;</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">model_metrics</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model_perf_benchmarks</span><span class="p">,</span> <span class="n">params</span><span class="o">=...</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="tip-3-attach-tags-to-benchmarks-for-selective-filtering">Tip 3: Attach tags to benchmarks for selective filtering<a class="headerlink" href="#tip-3-attach-tags-to-benchmarks-for-selective-filtering" title="Permanent link">&para;</a></h2>
 <p>For structuring benchmarks within files, you can also use <strong>tags</strong>, which are tuples of strings attached to a benchmark:</p>
@@ -1427,7 +1386,7 @@ As an example, if you have a set of benchmarks to establish data quality, and be
 </span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="o">...</span>
 </span></code></pre></div>
-<p>Now, to only run data quality benchmarks marked "foo", pass the corresponding tag to <code>BenchmarkRunner.run()</code>:</p>
+<p>Now, to only run data quality benchmarks marked "foo", pass the corresponding tag to <code>nnbench.run()</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">benchmarks</span> <span class="o">=</span> <span class="n">nnbench</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="s2">&quot;benchmarks/data_quality.py&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,))</span>

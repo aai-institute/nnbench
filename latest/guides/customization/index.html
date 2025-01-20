@@ -615,27 +615,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../memoization/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Using memoization for memory efficient benchmarks
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1029,27 +1008,6 @@ released. For the most accurate information, please <strong><a href="../../..">a
   
   
   
-    <li class="md-nav__item">
-      <a href="../../reference/nnbench/memo/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    memo
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     
     
     
@@ -1058,7 +1016,7 @@ released. For the most accurate information, please <strong><a href="../../..">a
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1_7" >
         
           
           
@@ -1074,14 +1032,14 @@ released. For the most accurate information, please <strong><a href="../../..">a
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_1_8" id="__nav_6_1_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_1_7" id="__nav_6_1_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_1_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1_7">
             <span class="md-nav__icon md-icon"></span>
             reporter
           </label>
@@ -1434,7 +1392,7 @@ As an example, the context value <code>{"cpuarch": "arm64"}</code> gives informa
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="s2">&quot;python_version&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="p">}</span>
 </span></code></pre></div>
-<p>To supply context to your benchmarks, you can give a sequence of context providers to <code>BenchmarkRunner.run()</code>:</p>
+<p>To supply context to your benchmarks, you can give a sequence of context providers to <code>nnbench.run()</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">nnbench</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># uses the `platinfo` context provider from above to log platform metadata.</span>
