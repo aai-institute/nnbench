@@ -1,85 +1,17 @@
 import os
 import tempfile
 import time
-from collections.abc import Sequence
 from functools import cache, lru_cache, partial
 
 import torch
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from training import tokenize_and_align_labels
-from transformers import (
-    AutoModelForTokenClassification,
-    AutoTokenizer,
-    DataCollatorForTokenClassification,
-)
+from transformers import DataCollatorForTokenClassification
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 import nnbench
-from nnbench.memo import Memo, cached_memo
-
-
-class TokenClassificationModelMemo(Memo[Module]):
-    def __init__(self, path: str):
-        self.path = path
-
-    @cached_memo
-    def __call__(self) -> Module:
-        model: Module = AutoModelForTokenClassification.from_pretrained(
-            self.path, use_safetensors=True
-        )
-        return model
-
-    def __str__(self):
-        return self.path
-
-
-class TokenizerMemo(Memo[PreTrainedTokenizerBase]):
-    def __init__(self, path: str):
-        self.path = path
-
-    @cached_memo
-    def __call__(self) -> PreTrainedTokenizerBase:
-        tokenizer: PreTrainedTokenizerBase = AutoTokenizer.from_pretrained(self.path)
-        return tokenizer
-
-    def __str__(self):
-        return self.path
-
-
-class ConllValidationMemo(Memo[Dataset]):
-    def __init__(self, path: str, split: str):
-        self.path = path
-        self.split = split
-
-    @cached_memo
-    def __call__(self) -> Dataset:
-        dataset = load_dataset(self.path)
-        path = dataset.cache_files[self.split][0]["filename"]
-        dataset = Dataset.from_file(path)
-        return dataset
-
-    def __str__(self):
-        return self.path + "/" + self.split
-
-
-class IndexLabelMapMemo(Memo[dict[int, str]]):
-    def __init__(self, path: str, split: str):
-        self.path = path
-        self.split = split
-
-    @cached_memo
-    def __call__(self) -> dict[int, str]:
-        dataset = load_dataset(self.path)
-        path = dataset.cache_files[self.split][0]["filename"]
-        dataset = Dataset.from_file(path)
-        label_names: Sequence[str] = dataset.features["ner_tags"].feature.names
-        id2label = {i: label for i, label in enumerate(label_names)}
-        return id2label
-
-    def __str__(self):
-        return self.path + "/" + self.split
 
 
 @cache
@@ -129,12 +61,8 @@ def run_eval_loop(model, dataloader, padding_id=-100):
 
 
 parametrize_label = partial(
-    nnbench.product,
-    model=[TokenClassificationModelMemo("dslim/distilbert-NER")],
-    tokenizer=[TokenizerMemo("dslim/distilbert-NER")],
-    valdata=[ConllValidationMemo(path="conllpp", split="validation")],
-    index_label_mapping=[IndexLabelMapMemo(path="conllpp", split="validation")],
-    class_label=["O", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC", "B-MISC", "I-MISC"],
+    nnbench.parametrize,
+    ["O", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC", "B-MISC", "I-MISC"],
     tags=("metric", "per-class"),
 )()
 
