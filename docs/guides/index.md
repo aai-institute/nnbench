@@ -9,4 +9,3 @@ The following guides are available, covering the core concepts of nnbench:
 * [Adding context, customizing benchmarks, and supplying parameters](customization.md)
 * [Organizing benchmark code efficiently](organization.md)
 * [Collecting and running benchmarks by hand](runners.md)
-* [Using memoization for memory efficiency](memoization.md)
