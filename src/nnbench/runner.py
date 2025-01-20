@@ -17,8 +17,10 @@ from typing import Any
 
 from nnbench.context import ContextProvider
 from nnbench.fixtures import FixtureManager
-from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
+from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters, State
 from nnbench.util import import_file_as_module, ismodule
+
+Benchmarkable = Benchmark | BenchmarkFamily
 
 logger = logging.getLogger("nnbench.runner")
 
@@ -92,7 +94,9 @@ def jsonify_params(
     return json_params
 
 
-def collect(path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) -> list[Benchmark]:
+def collect(
+    path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()
+) -> list[Benchmark | BenchmarkFamily]:
     # TODO: functools.cache this guy
     """
     Discover benchmarks in a module or source file.
@@ -134,20 +138,19 @@ def collect(path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) 
         if k.startswith("__") and k.endswith("__"):
             # dunder names are ignored.
             continue
-        elif isinstance(v, Benchmark):
+        elif isinstance(v, Benchmarkable):
             if not tags or set(tags) & set(v.tags):
                 benchmarks.append(v)
         elif isinstance(v, list | tuple | set | frozenset):
             for bm in v:
-                if isinstance(bm, Benchmark):
+                if isinstance(bm, Benchmarkable):
                     if not tags or set(tags) & set(bm.tags):
                         benchmarks.append(bm)
-
     return benchmarks
 
 
 def run(
-    benchmarks: Benchmark | Iterable[Benchmark],
+    benchmarks: Benchmark | BenchmarkFamily | Iterable[Benchmark | BenchmarkFamily],
     name: str | None = None,
     params: dict[str, Any] | Parameters | None = None,
     context: Sequence[ContextProvider] = (),
@@ -158,8 +161,8 @@ def run(
 
     Parameters
     ----------
-    benchmarks: Sequence[Benchmark]
-        The list of discovered benchmarks to run.
+    benchmarks: Benchmark | BenchmarkFamily | Iterable[Benchmark | BenchmarkFamily]
+        A benchmark, family of benchmarks, or collection of discovered benchmarks to run.
     name: str | None
         A name for the currently started run. If None, a name will be automatically generated.
     params: dict[str, Any] | Parameters | None
@@ -181,6 +184,16 @@ def run(
         "name" giving the benchmark run name, "context" holding the context information,
         and "benchmarks", holding an array with the benchmark results.
     """
+
+    def benchmark_iterator(
+        _bm: Iterable[Benchmark | BenchmarkFamily],
+    ) -> Generator[Benchmark, None, None]:
+        for _b in _bm:
+            if isinstance(_b, Benchmark):
+                yield _b
+            else:
+                yield from _b
+
     _run = name or "nnbench-" + platform.node() + "-" + uuid.uuid1().hex[:8]
 
     family_sizes: dict[str, Any] = collections.defaultdict(int)
@@ -195,15 +208,12 @@ def run(
             raise ValueError(f"got multiple values for context key {dupe!r}")
         ctx.update(val)
 
-    if isinstance(benchmarks, Benchmark):
-        benchmarks = [benchmarks]
-
     # if we didn't find any benchmarks, return an empty record.
     if not benchmarks:
         return BenchmarkRecord(run=_run, context=ctx, benchmarks=[])
 
-    # for bm in benchmarks:
-    #     family_sizes[bm.interface.funcname] += 1
+    if isinstance(benchmarks, Benchmarkable):
+        benchmarks = [benchmarks]
 
     if isinstance(params, Parameters):
         dparams = asdict(params)
@@ -212,7 +222,7 @@ def run(
 
     results: list[dict[str, Any]] = []
 
-    for benchmark in benchmarks:
+    for benchmark in benchmark_iterator(benchmarks):
         bm_family = benchmark.interface.funcname
         state = State(
             name=benchmark.name,

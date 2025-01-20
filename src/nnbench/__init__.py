@@ -3,6 +3,6 @@
 from .core import benchmark, parametrize, product
 from .reporter import BenchmarkReporter, ConsoleReporter, FileReporter
 from .runner import collect, run
-from .types import Benchmark, BenchmarkRecord, Parameters
+from .types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters
 
 __version__ = "0.4.0"
