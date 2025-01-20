@@ -17,7 +17,6 @@ from typing import Any
 
 from nnbench.context import ContextProvider
 from nnbench.fixtures import FixtureManager
-from nnbench.memo import is_memo, is_memo_type
 from nnbench.types import Benchmark, BenchmarkRecord, Parameters, State
 from nnbench.util import import_file_as_module, ismodule
 
@@ -96,7 +95,7 @@ def jsonify_params(
 def collect(path_or_module: str | os.PathLike[str], tags: tuple[str, ...] = ()) -> list[Benchmark]:
     # TODO: functools.cache this guy
     """
-    Discover benchmarks in a module and memoize them for later use.
+    Discover benchmarks in a module or source file.
 
     Parameters
     ----------
@@ -213,12 +212,6 @@ def run(
 
     results: list[dict[str, Any]] = []
 
-    def _maybe_dememo(v, expected_type):
-        """Compute and memoize a value if a memo is given for a variable."""
-        if is_memo(v) and not is_memo_type(expected_type):
-            return v()
-        return v
-
     for benchmark in benchmarks:
         bm_family = benchmark.interface.funcname
         state = State(
@@ -231,8 +224,8 @@ def run(
 
         # Assemble benchmark parameters. First grab all defaults from the interface,
         bmparams = {
-            name: _maybe_dememo(val, typ)
-            for name, typ, val in benchmark.interface.variables
+            name: val
+            for name, _, val in benchmark.interface.variables
             if val is not inspect.Parameter.empty
         }
         # ... then hydrate with the appropriate subset of input parameters.

@@ -1,7 +1,6 @@
 """A framework for organizing and running benchmark workloads on machine learning models."""
 
 from .core import benchmark, parametrize, product
-from .memo import Memo
 from .reporter import BenchmarkReporter, ConsoleReporter, FileReporter
 from .runner import collect, run
 from .types import Benchmark, BenchmarkRecord, Parameters
