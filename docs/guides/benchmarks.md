@@ -70,11 +70,9 @@ Lastly, we set up a benchmark runner in the `main.py`. There, we supply the para
 # main.py
 import nnbench
 
-
-r = nnbench.BenchmarkRunner()
-reporter = nnbench.BenchmarkReporter()
-
-result = r.run("benchmarks.py", params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
+reporter = nnbench.ConsoleReporter()
+benchmarks = nnbench.collect("benchmarks.py")
+result = nnbench.run(benchmarks, params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
 reporter.display(result)
 ```
 
@@ -115,17 +113,15 @@ def benchmark_accuracy(n_estimators: int, max_depth: int, random_state: int) -> 
 ```
 
 Notice that the parametrization is still incomplete, as we did not supply a `random_state` argument.
-The unfilled arguments are given in `BenchmarkRunner.run()` via a dictionary passed as the `params` keyword argument.
+The unfilled arguments are given in `nnbench.run()` via a dictionary passed as the `params` keyword argument.
 
 ```python
 # main.py
 import nnbench
 
-
-r = nnbench.BenchmarkRunner()
-reporter = nnbench.BenchmarkReporter()
-
-result = r.run("benchmarks.py", params={"random_state": 42})
+benchmarks = nnbench.collect("benchmarks.py")
+reporter = nnbench.ConsoleReporter()
+result = nnbench.run(benchmarks, params={"random_state": 42})
 reporter.display(result)
 ```
 

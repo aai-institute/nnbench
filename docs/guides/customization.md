@@ -73,7 +73,7 @@ def platinfo() -> dict[str, str]:
     }
 ```
 
-To supply context to your benchmarks, you can give a sequence of context providers to `BenchmarkRunner.run()`:
+To supply context to your benchmarks, you can give a sequence of context providers to `nnbench.run()`:
 
 ```python
 import nnbench
