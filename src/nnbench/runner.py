@@ -18,7 +18,7 @@ from typing import Any
 from nnbench.context import ContextProvider
 from nnbench.fixtures import FixtureManager
 from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters, State
-from nnbench.util import import_file_as_module, ismodule
+from nnbench.util import exists_module, import_file_as_module
 
 Benchmarkable = Benchmark | BenchmarkFamily
 
@@ -126,7 +126,7 @@ def collect(
     elif ppath.is_file():
         logger.debug(f"Collecting benchmarks from file {ppath}.")
         module = import_file_as_module(path_or_module)
-    elif ismodule(path_or_module):
+    elif exists_module(path_or_module):
         module = sys.modules[str(path_or_module)]
     else:
         raise ValueError(

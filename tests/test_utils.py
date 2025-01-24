@@ -2,12 +2,12 @@ import inspect
 
 import pytest
 
-from nnbench.util import ismodule, modulename
+from nnbench.util import exists_module, modulename
 
 
 @pytest.mark.parametrize("name,expected", [("sys", True), ("yaml", True), ("pipapo", False)])
 def test_ismodule(name: str, expected: bool) -> None:
-    actual = ismodule(name)
+    actual = exists_module(name)
     assert expected == actual
 
 

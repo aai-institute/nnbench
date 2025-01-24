@@ -87,7 +87,7 @@ def unflatten(d: dict[str, Any], sep: str = ".") -> dict[str, Any]:
     return unflattened
 
 
-def ismodule(name: str | os.PathLike[str]) -> bool:
+def exists_module(name: str | os.PathLike[str]) -> bool:
     """Checks if the current interpreter has an available Python module named `name`."""
     name = str(name)
     if name in sys.modules:
