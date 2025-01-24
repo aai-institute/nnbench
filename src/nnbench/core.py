@@ -1,43 +1,10 @@
 """Data model, registration, and parametrization facilities for defining benchmarks."""
 
-import inspect
 import itertools
-import sys
-import types
 from collections.abc import Callable, Iterable
-from typing import Any, Union, get_args, get_origin, overload
+from typing import Any, overload
 
 from nnbench.types import Benchmark, BenchmarkFamily, NoOp
-
-
-def _check_against_interface(params: dict[str, Any], fun: Callable) -> None:
-    sig = inspect.signature(fun)
-    fvarnames = set(sig.parameters.keys())
-    fvartypes = {k: v.annotation for k, v in sig.parameters.items()}
-    varnames = set(params.keys())
-    if not varnames <= fvarnames:
-        # never empty due to the if condition.
-        diffvar, *_ = varnames - fvarnames
-        raise TypeError(
-            f"benchmark {fun.__name__}() got an unexpected keyword argument {diffvar!r}"
-        )
-    # at this point, params.keys() <= argnames.
-    for k, v in params.items():
-        fvtype = fvartypes[k]
-        # if no type annotation is given, everything is allowed.
-        if fvtype == inspect.Parameter.empty:
-            continue
-        # to unwrap generic containers like list[str].
-        expected_type = get_origin(fvtype) or fvtype
-        # in case of a union like str | int, check args instead.
-        union_type = Union if sys.version_info < (3, 10) else types.UnionType
-        if expected_type is union_type:
-            expected_type = get_args(fvtype)
-        if not isinstance(v, expected_type):
-            raise TypeError(
-                f"benchmark {fun.__name__}(): expected type {fvtype}, "
-                f"got type {type(v)} for parametrized argument {k!r}"
-            )
 
 
 def _default_namegen(fn: Callable, **kwargs: Any) -> str:
