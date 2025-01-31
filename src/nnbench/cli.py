@@ -100,6 +100,12 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         default="benchmarks",
     )
     run_parser.add_argument(
+        "-j",
+        type=int,
+        default=None,
+        help="Number of processes to use for running benchmarks in parallel, default: no parallelism"
+    )
+    run_parser.add_argument(
         "--context",
         action="append",
         metavar="<key=value>",
@@ -205,6 +211,7 @@ def main() -> int:
                 else:
                     context[k] = v
 
+            # TODO: Add multiprocessing/joblib branch for parallel execution.
             benchmarks = collect(args.benchmarks, tags=tuple(args.tags))
             record = run(
                 benchmarks,
