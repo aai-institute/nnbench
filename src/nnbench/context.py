@@ -5,7 +5,8 @@ import sys
 from collections.abc import Callable, Sequence
 from typing import Any, Literal
 
-ContextProvider = Callable[[], dict[str, Any]]
+Context = dict[str, Any]
+ContextProvider = Callable[[], Context]
 """A function providing a dictionary of context values."""
 
 
