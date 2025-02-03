@@ -9,13 +9,13 @@ import platform
 import sys
 import time
 import uuid
-from collections.abc import Callable, Generator, Iterable, Sequence
+from collections.abc import Callable, Generator, Iterable
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from nnbench.context import ContextProvider
+from nnbench.context import Context, ContextProvider
 from nnbench.fixtures import FixtureManager
 from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters, State
 from nnbench.util import exists_module, import_file_as_module
@@ -153,7 +153,7 @@ def run(
     benchmarks: Benchmark | BenchmarkFamily | Iterable[Benchmark | BenchmarkFamily],
     name: str | None = None,
     params: dict[str, Any] | Parameters | None = None,
-    context: Sequence[ContextProvider] = (),
+    context: Context | Iterable[ContextProvider] = (),
     jsonifier: Callable[[dict[str, Any]], dict[str, Any]] = jsonify_params,
 ) -> BenchmarkRecord:
     """
@@ -199,14 +199,17 @@ def run(
     family_sizes: dict[str, Any] = collections.defaultdict(int)
     family_indices: dict[str, Any] = collections.defaultdict(int)
 
-    ctx: dict[str, Any] = {}
-    for provider in context:
-        val = provider()
-        duplicates = set(ctx.keys()) & set(val.keys())
-        if duplicates:
-            dupe, *_ = duplicates
-            raise ValueError(f"got multiple values for context key {dupe!r}")
-        ctx.update(val)
+    if isinstance(context, dict):
+        ctx = context
+    else:
+        ctx = dict()
+        for provider in context:
+            val = provider()
+            duplicates = set(ctx.keys()) & set(val.keys())
+            if duplicates:
+                dupe, *_ = duplicates
+                raise ValueError(f"got multiple values for context key {dupe!r}")
+            ctx.update(val)
 
     # if we didn't find any benchmarks, return an empty record.
     if not benchmarks:

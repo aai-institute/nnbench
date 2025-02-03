@@ -3,12 +3,20 @@
 import argparse
 import importlib
 import logging
+import multiprocessing
 import sys
+import time
+from collections.abc import Iterable
+from functools import partial
+from os import PathLike
+from pathlib import Path
 from typing import Any
 
 from nnbench import ConsoleReporter, __version__, collect, run
 from nnbench.config import NNBenchConfig, parse_nnbench_config
+from nnbench.context import Context, ContextProvider
 from nnbench.reporter import FileReporter
+from nnbench.types import BenchmarkRecord
 
 _VERSION = f"%(prog)s version {__version__}"
 logger = logging.getLogger("nnbench")
@@ -72,6 +80,21 @@ def _log_level(log_level: str) -> str:
 _log_level.__name__ = "log level"
 
 
+def collect_and_run(
+    path: str | PathLike[str],
+    name: str | None = None,
+    tags: tuple[str, ...] = (),
+    context: Context | Iterable[ContextProvider] = (),
+) -> BenchmarkRecord:
+    benchmarks = collect(path, tags=tags)
+    record = run(
+        benchmarks,
+        name=name,
+        context=context,
+    )
+    return record
+
+
 def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser("nnbench", formatter_class=CustomFormatter)
     parser.add_argument("--version", action="version", version=_VERSION)
@@ -98,6 +121,13 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         metavar="<benchmarks>",
         help="Python file or directory of files containing benchmarks to run.",
         default="benchmarks",
+    )
+    run_parser.add_argument(
+        "-j",
+        type=int,
+        default=-1,
+        dest="jobs",
+        help="Number of processes to use for running benchmarks in parallel, default: -1 (no parallelism)",
     )
     run_parser.add_argument(
         "--context",
@@ -164,12 +194,12 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """The main ``nnbench`` CLI entry point."""
     config = parse_nnbench_config()
     parser = construct_parser(config)
     try:
-        args = parser.parse_args()
+        args = parser.parse_args(argv)
         if args.command is None:
             parser.print_help()
             return 1
@@ -205,11 +235,38 @@ def main() -> int:
                 else:
                     context[k] = v
 
-            benchmarks = collect(args.benchmarks, tags=tuple(args.tags))
-            record = run(
-                benchmarks,
-                context=[lambda: context],
-            )
+            n_jobs: int = args.jobs
+            if n_jobs < 2:
+                record = collect_and_run(
+                    args.benchmarks,
+                    tags=tuple(args.tags),
+                    context=context,
+                )
+            else:
+
+                def flatten(lists):
+                    for _l in lists:
+                        yield from _l
+
+                compute_fn = partial(
+                    collect_and_run,
+                    name=f"nnbench-{time.time_ns()}",  # TODO: Use a better name here
+                    tags=tuple(args.tags),
+                    context=context,
+                )
+                with multiprocessing.Pool(n_jobs) as p:
+                    bm_path = Path(args.benchmarks)
+                    # unroll paths in case a directory is passed.
+                    if bm_path.is_dir():
+                        benchmarks = [p for p in bm_path.iterdir() if p.suffix == ".py"]
+                    else:
+                        benchmarks = [bm_path]
+                    res = p.map(compute_fn, benchmarks)
+                    record = BenchmarkRecord(
+                        run=res[0].run,
+                        context=res[0].context,
+                        benchmarks=list(flatten(r.benchmarks for r in res)),
+                    )
 
             outfile = args.outfile
             if outfile == sys.stdout:
@@ -232,4 +289,4 @@ def main() -> int:
         return 0
     except Exception as e:
         sys.stderr.write(f"error: {e}")
-        sys.exit(1)
+        return 1
