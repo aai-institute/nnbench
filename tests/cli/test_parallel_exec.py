@@ -2,8 +2,7 @@ import time
 from pathlib import Path
 
 from nnbench.cli import main
-
-DELAY_SECONDS = 10
+from tests.cli import DELAY_SECONDS
 
 
 def test_parallel_execution_for_slow_benchmarks():
@@ -19,6 +18,6 @@ def test_parallel_execution_for_slow_benchmarks():
     start = time.time()
     args = ["run", f"{bm_path}", "-j2"]
     rc = main(args)
-    end = time.time() - start
+    end = time.time()
     assert rc == 0, f"running nnbench {' '.join(args)} failed with exit code {rc}"
     assert end - start < n_jobs * DELAY_SECONDS
