@@ -17,6 +17,7 @@ from nnbench.config import NNBenchConfig, parse_nnbench_config
 from nnbench.context import Context, ContextProvider
 from nnbench.reporter import FileReporter
 from nnbench.types import BenchmarkRecord
+from nnbench.util import all_python_files
 
 _VERSION = f"%(prog)s version {__version__}"
 logger = logging.getLogger("nnbench")
@@ -258,7 +259,7 @@ def main(argv: list[str] | None = None) -> int:
                     bm_path = Path(args.benchmarks)
                     # unroll paths in case a directory is passed.
                     if bm_path.is_dir():
-                        benchmarks = [p for p in bm_path.iterdir() if p.suffix == ".py"]
+                        benchmarks = all_python_files(bm_path)
                     else:
                         benchmarks = [bm_path]
                     res = p.map(compute_fn, benchmarks)

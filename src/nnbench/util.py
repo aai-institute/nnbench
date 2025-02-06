@@ -5,6 +5,7 @@ import importlib.util
 import itertools
 import os
 import sys
+from collections.abc import Generator
 from importlib.machinery import ModuleSpec
 from pathlib import Path
 from types import ModuleType
@@ -164,3 +165,20 @@ def import_file_as_module(file: str | os.PathLike[str]) -> ModuleType:
     sys.modules[modname] = module
     spec.loader.exec_module(module)
     return module
+
+
+def all_python_files(_dir: str | os.PathLike[str]) -> Generator[Path, None, None]:
+    if sys.version_info >= (3, 12):
+        pathgen = Path(_dir).walk(top_down=True)
+    else:
+        pathgen = os.walk(_dir, topdown=True)
+
+    for root, dirs, files in pathgen:
+        proot = Path(root)
+        # do not descend into potentially large __pycache__ dirs.
+        if "__pycache__" in dirs:
+            dirs.remove("__pycache__")
+        for file in files:
+            fp = proot / file
+            if fp.suffix == ".py":
+                yield fp
