@@ -18,7 +18,7 @@ from typing import Any
 from nnbench.context import Context, ContextProvider
 from nnbench.fixtures import FixtureManager
 from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters, State
-from nnbench.util import exists_module, import_file_as_module
+from nnbench.util import all_python_files, exists_module, import_file_as_module
 
 Benchmarkable = Benchmark | BenchmarkFamily
 
@@ -118,7 +118,7 @@ def collect(
     benchmarks: list[Benchmark] = []
     ppath = Path(path_or_module)
     if ppath.is_dir():
-        pythonpaths = (p for p in ppath.iterdir() if p.suffix == ".py")
+        pythonpaths = all_python_files(ppath)
         for py in pythonpaths:
             logger.debug(f"Collecting benchmarks from submodule {py.name!r}.")
             benchmarks.extend(collect(py, tags))
