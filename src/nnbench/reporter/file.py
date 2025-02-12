@@ -184,11 +184,12 @@ _file_io_mapping: dict[str, type[BenchmarkFileIO]] = {
 }
 
 
-def get_file_io_class(name: str) -> BenchmarkFileIO:
+def get_file_io_class(file: str | os.PathLike[str]) -> BenchmarkFileIO:
+    ext = get_extension(file)
     try:
-        return _file_io_mapping[name]()
+        return _file_io_mapping[ext]()
     except KeyError:
-        raise ValueError(f"unsupported benchmark file format {name!r}") from None
+        raise ValueError(f"unsupported benchmark file format {ext!r}") from None
 
 
 def register_file_io_class(name: str, klass: type[BenchmarkFileIO], clobber: bool = False) -> None:
