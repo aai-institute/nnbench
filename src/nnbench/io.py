@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-from typing import IO, TYPE_CHECKING, Any, Protocol, TextIO
+from typing import IO, TYPE_CHECKING, Any, AnyStr, Protocol, cast
 
 from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
@@ -10,16 +10,26 @@ if TYPE_CHECKING:
     from _typeshed import OpenBinaryMode, OpenTextMode, SupportsRead, SupportsWrite
 
 
+class NamedReader(SupportsRead[AnyStr]):
+    @property
+    def name(self) -> str: ...
+
+    def __iter__(self) -> AnyStr: ...
+
+
+class NamedWriter(SupportsWrite[AnyStr]):
+    @property
+    def name(self) -> str: ...
+
+
 # TODO: Make common base class.
-class BenchmarkIO(Protocol):
-    def read(self, fp: SupportsRead[str], options: dict[str, Any]) -> BenchmarkRecord: ...
+class BenchmarkFileIO(Protocol):
+    def read(self, fp: NamedReader, options: dict[str, Any]) -> BenchmarkRecord: ...
 
-    def write(
-        self, record: BenchmarkRecord, fp: SupportsWrite[str], options: dict[str, Any]
-    ) -> None: ...
+    def write(self, record: BenchmarkRecord, fp: NamedWriter, options: dict[str, Any]) -> None: ...
 
 
-class YAMLFileIO(BenchmarkIO):
+class YAMLFileIO(BenchmarkFileIO):
     extensions = (".yaml", ".yml")
 
     def __init__(self):
@@ -30,18 +40,16 @@ class YAMLFileIO(BenchmarkIO):
         except ImportError:
             raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    def read(self, fp: SupportsRead[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: NamedReader, options: dict[str, Any]) -> BenchmarkRecord:
         del options
         bms = self.yaml.safe_load(fp)
         return BenchmarkRecord.expand(bms)
 
-    def write(
-        self, record: BenchmarkRecord, fp: SupportsWrite[str], options: dict[str, Any]
-    ) -> None:
+    def write(self, record: BenchmarkRecord, fp: NamedWriter, options: dict[str, Any]) -> None:
         self.yaml.safe_dump(record.to_json(), fp, **options)
 
 
-class JSONFileIO(BenchmarkIO):
+class JSONFileIO(BenchmarkFileIO):
     extensions = (".json", ".ndjson")
 
     def __init__(self):
@@ -49,7 +57,7 @@ class JSONFileIO(BenchmarkIO):
 
         self.json = json
 
-    def read(self, fp: SupportsRead[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: NamedReader, options: dict[str, Any]) -> BenchmarkRecord:
         newline_delimited = fp.name.endswith(".ndjson")
         benchmarks: list[dict[str, Any]]
         if newline_delimited:
@@ -58,7 +66,7 @@ class JSONFileIO(BenchmarkIO):
             benchmarks = self.json.load(fp, **options)
         return BenchmarkRecord.expand(benchmarks)
 
-    def write(self, record: BenchmarkRecord, fp: TextIO, options: dict[str, Any]) -> None:
+    def write(self, record: BenchmarkRecord, fp: NamedWriter, options: dict[str, Any]) -> None:
         newline_delimited = fp.name.endswith(".ndjson")
         if newline_delimited:
             bms = record.to_list()
@@ -67,7 +75,7 @@ class JSONFileIO(BenchmarkIO):
             self.json.dump(record.to_json(), fp, **options)
 
 
-class CSVFileIO(BenchmarkIO):
+class CSVFileIO(BenchmarkFileIO):
     extensions = (".csv",)
 
     def __init__(self):
@@ -75,7 +83,7 @@ class CSVFileIO(BenchmarkIO):
 
         self.csv = csv
 
-    def read(self, fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: NamedReader, options: dict[str, Any]) -> BenchmarkRecord:
         import json
 
         reader = self.csv.DictReader(fp, **options)
@@ -94,7 +102,7 @@ class CSVFileIO(BenchmarkIO):
                 bm["context"] = json.loads(strctx)
         return BenchmarkRecord.expand(benchmarks)
 
-    def write(self, record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+    def write(self, record: BenchmarkRecord, fp: NamedWriter, options: dict[str, Any]) -> None:
         bm = record.to_list()
         writer = self.csv.DictWriter(fp, fieldnames=bm[0].keys(), **options)
         writer.writeheader()
@@ -103,7 +111,7 @@ class CSVFileIO(BenchmarkIO):
             writer.writerow(b)
 
 
-class ParquetFileIO(BenchmarkIO):
+class ParquetFileIO(BenchmarkFileIO):
     extensions = (".parquet", ".pq")
 
     def __init__(self):
@@ -111,12 +119,12 @@ class ParquetFileIO(BenchmarkIO):
 
         self.pyarrow_parquet = pq
 
-    def read(self, fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: NamedReader, options: dict[str, Any]) -> BenchmarkRecord:
         table = self.pyarrow_parquet.read_table(fp, **options)
         benchmarks: list[dict[str, Any]] = table.to_pylist()
         return BenchmarkRecord.expand(benchmarks)
 
-    def write(self, record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
+    def write(self, record: BenchmarkRecord, fp: NamedWriter, options: dict[str, Any]) -> None:
         from pyarrow import Table
 
         table = Table.from_pylist(record.to_list())
@@ -142,7 +150,7 @@ def get_protocol(url: str | os.PathLike[str]) -> str:
     return "file"
 
 
-file_io_mapping: dict[str, type[BenchmarkIO]] = {
+file_io_mapping: dict[str, type[BenchmarkFileIO]] = {
     ".yaml": YAMLFileIO,
     ".yml": YAMLFileIO,
     ".json": JSONFileIO,
@@ -158,9 +166,10 @@ class FileReporter(BenchmarkReporter):
         self, file_like: str | os.PathLike[str] | IO, mode: OpenTextMode | OpenBinaryMode
     ) -> IO:
         if hasattr(file_like, "read") or hasattr(file_like, "write"):
-            return file_like
+            return cast(IO, file_like)
         elif isinstance(file_like, str | os.PathLike):
             protocol = get_protocol(file_like)
+            fd: IO
             if protocol == "file":
                 fd = open(file_like, mode)
             else:
@@ -183,7 +192,7 @@ class FileReporter(BenchmarkReporter):
         """
         Reads a benchmark record from the given file path.
 
-        The file driver is chosen based on the extension in the ``file`` pathname.
+        The file IO is chosen based on the extension in the ``file`` pathname.
 
         Parameters
         ----------
@@ -193,7 +202,7 @@ class FileReporter(BenchmarkReporter):
             Mode to use when opening a new file from a path.
             Can be any of the read modes supported by built-in ``open()``.
         options: dict[str, Any] | None
-            Options to pass to the respective file driver implementation.
+            Options to pass to the respective file IO implementation.
 
         Returns
         -------
@@ -214,7 +223,7 @@ class FileReporter(BenchmarkReporter):
         except KeyError:
             raise ValueError(f"unimplemented benchmark file format {ext!r}") from None
         with fd as fp:
-            return file_io.read(fp, options or {})
+            return file_io.read(fp, options or {})  # type: ignore
 
     def write(
         self,
@@ -226,7 +235,7 @@ class FileReporter(BenchmarkReporter):
         """
         Writes a benchmark record to the given file path.
 
-        The file driver is chosen based on the extension found on the ``file`` path.
+        The file IO is chosen based on the extension found on the ``file`` path.
 
         Parameters
         ----------
@@ -238,7 +247,7 @@ class FileReporter(BenchmarkReporter):
             Mode to use when opening a new file from a path.
             Can be any of the write modes supported by built-in ``open()``.
         options: dict[str, Any] | None
-            Options to pass to the respective file driver implementation.
+            Options to pass to the respective file IO implementation.
 
         Raises
         ------
@@ -252,4 +261,4 @@ class FileReporter(BenchmarkReporter):
         except KeyError:
             raise ValueError(f"unimplemented benchmark file format {ext!r}") from None
         with fd as fp:
-            file_io.write(record, fp, options or {})
+            file_io.write(record, fp, options or {})  # type: ignore
