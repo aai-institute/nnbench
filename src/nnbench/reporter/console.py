@@ -4,7 +4,6 @@ from typing import Any
 from rich.console import Console
 from rich.table import Table
 
-from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 
 _MISSING = "-----"
@@ -17,7 +16,7 @@ def get_value_by_name(result: dict[str, Any]) -> str:
     return str(result.get("value", _MISSING))
 
 
-class ConsoleReporter(BenchmarkReporter):
+class ConsoleReporter:
     """
     The base interface for a console reporter class.
 

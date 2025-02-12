@@ -1,156 +1,162 @@
 import os
 import re
-import threading
-from collections.abc import Callable
 from pathlib import Path
-from typing import IO, Any
+from typing import IO, Any, Literal, Protocol, cast
 
-from nnbench.reporter.base import BenchmarkReporter
 from nnbench.types import BenchmarkRecord
 
-_Options = dict[str, Any]
-SerDe = tuple[
-    Callable[[BenchmarkRecord, IO, _Options], None],
-    Callable[[IO, _Options], BenchmarkRecord],
-]
+
+def make_file_descriptor(
+    file: str | os.PathLike[str] | IO,
+    mode: Literal["r", "w", "rb", "wb"],  # TODO: Extend this to append/x modes
+    **open_kwargs: Any,
+) -> IO:
+    if hasattr(file, "read") or hasattr(file, "write"):
+        return cast(IO, file)
+    elif isinstance(file, str | os.PathLike):
+        protocol = get_protocol(file)
+        fd: IO
+        if protocol == "file":
+            fd = open(file, mode, **open_kwargs)
+        else:
+            try:
+                import fsspec
+            except ImportError:
+                raise RuntimeError("non-local URIs require the fsspec package")
+            fs = fsspec.filesystem(protocol)  # fs: AbstractFileSystem
+            # NB(njunge): I sure hope this is standardized by fsspec
+            fd = fs.open(file, mode, **open_kwargs)
+        return fd
+    raise TypeError("filename must be a str, bytes, file or PathLike object")
 
 
-_file_drivers: dict[str, SerDe] = {}
-_file_driver_lock = threading.Lock()
+class BenchmarkFileIO(Protocol):
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord: ...
+
+    def write(
+        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+    ) -> None: ...
 
 
-def yaml_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
-    try:
-        import yaml
-    except ImportError:
-        raise ModuleNotFoundError("`pyyaml` is not installed")
+class YAMLFileIO(BenchmarkFileIO):
+    extensions = (".yaml", ".yml")
 
-    yaml.safe_dump(record.to_json(), fp, **options)
+    def __init__(self):
+        try:
+            import yaml
 
+            self.yaml = yaml
+        except ImportError:
+            raise ModuleNotFoundError("`pyyaml` is not installed")
 
-def yaml_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
-    try:
-        import yaml
-    except ImportError:
-        raise ModuleNotFoundError("`pyyaml` is not installed")
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+        del options
+        with make_file_descriptor(fp, mode="r") as fd:
+            bms = self.yaml.safe_load(fd)
+        return BenchmarkRecord.expand(bms)
 
-    bms = yaml.safe_load(fp)
-    return BenchmarkRecord.expand(bms)
-
-
-def json_save(record: BenchmarkRecord, fp: IO[str], options: dict[str, Any]) -> None:
-    import json
-
-    json.dump(record.to_json(), fp, **options)
-
-
-def json_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
-    import json
-
-    benchmarks = json.load(fp, **options)
-    return BenchmarkRecord.expand(benchmarks)
+    def write(
+        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+    ) -> None:
+        with make_file_descriptor(fp, mode="w") as fd:
+            self.yaml.safe_dump(record.to_json(), fd, **options)
 
 
-def ndjson_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
-    # mode is unused, since NDJSON requires every individual benchmark to be one line.
-    import json
+class JSONFileIO(BenchmarkFileIO):
+    extensions = (".json", ".ndjson")
 
-    bms = record.to_list()
-    fp.write("\n".join([json.dumps(b, **options) for b in bms]))
+    def __init__(self):
+        import json
 
+        self.json = json
 
-def ndjson_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
-    import json
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+        newline_delimited = Path(fp).suffix == ".ndjson"
+        benchmarks: list[dict[str, Any]]
+        with make_file_descriptor(fp, mode="r") as fd:
+            if newline_delimited:
+                benchmarks = [self.json.loads(line, **options) for line in fd]
+            else:
+                benchmarks = self.json.load(fd, **options)
+            return BenchmarkRecord.expand(benchmarks)
 
-    benchmarks: list[dict[str, Any]]
-    benchmarks = [json.loads(line, **options) for line in fp]
-    return BenchmarkRecord.expand(benchmarks)
-
-
-def csv_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
-    # mode is unused, since NDJSON requires every individual benchmark to be one line.
-    import csv
-
-    bm = record.to_list()
-    writer = csv.DictWriter(fp, fieldnames=bm[0].keys(), **options)
-    writer.writeheader()
-
-    for b in bm:
-        writer.writerow(b)
-
-
-def csv_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
-    import csv
-    import json
-
-    reader = csv.DictReader(fp, **options)
-
-    benchmarks: list[dict[str, Any]] = []
-    # apparently csv.DictReader has no appropriate type hint for __next__,
-    # so we supply one ourselves.
-    bm: dict[str, Any]
-    for bm in reader:
-        benchmarks.append(bm)
-        # it can happen that the context is inlined as a stringified JSON object
-        # (e.g. in CSV), so we optionally JSON-load the context.
-        if "context" in bm:
-            strctx: str = bm["context"]
-            # TODO: This does not play nicely with doublequote, maybe re.sub?
-            strctx = strctx.replace("'", '"')
-            bm["context"] = json.loads(strctx)
-    return BenchmarkRecord.expand(benchmarks)
+    def write(
+        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+    ) -> None:
+        newline_delimited = Path(fp).suffix == ".ndjson"
+        with make_file_descriptor(fp, mode="w") as fd:
+            if newline_delimited:
+                bms = record.to_list()
+                fd.write("\n".join([self.json.dumps(b, **options) for b in bms]))
+            else:
+                self.json.dump(record.to_json(), fd, **options)
 
 
-def parquet_save(record: BenchmarkRecord, fp: IO, options: dict[str, Any]) -> None:
-    import pyarrow as pa
-    import pyarrow.parquet as pq
+class CSVFileIO(BenchmarkFileIO):
+    extensions = (".csv",)
 
-    table = pa.Table.from_pylist(record.to_list())
-    pq.write_table(table, fp, **options)
+    def __init__(self):
+        import csv
+
+        self.csv = csv
+
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+        import json
+
+        with make_file_descriptor(fp, mode="r") as fd:
+            reader = self.csv.DictReader(fd, **options)
+            benchmarks: list[dict[str, Any]] = []
+            # csv.DictReader has no appropriate type hint for __next__,
+            # so we supply one ourselves.
+            bm: dict[str, Any]
+            for bm in reader:
+                benchmarks.append(bm)
+                # it can happen that the context is inlined as a stringified JSON object
+                # (e.g. in CSV), so we optionally JSON-load the context.
+                if "context" in bm:
+                    strctx: str = bm["context"]
+                    # TODO: This does not play nicely with doublequote, maybe re.sub?
+                    strctx = strctx.replace("'", '"')
+                    bm["context"] = json.loads(strctx)
+            return BenchmarkRecord.expand(benchmarks)
+
+    def write(
+        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+    ) -> None:
+        bm = record.to_list()
+        with make_file_descriptor(fp, mode="w") as fd:
+            writer = self.csv.DictWriter(fd, fieldnames=bm[0].keys(), **options)
+            writer.writeheader()
+
+            for b in bm:
+                writer.writerow(b)
 
 
-def parquet_load(fp: IO, options: dict[str, Any]) -> BenchmarkRecord:
-    import pyarrow.parquet as pq
+class ParquetFileIO(BenchmarkFileIO):
+    extensions = (".parquet", ".pq")
 
-    table = pq.read_table(fp, **options)
-    benchmarks: list[dict[str, Any]] = table.to_pylist()
-    return BenchmarkRecord.expand(benchmarks)
+    def __init__(self):
+        import pyarrow.parquet as pq
 
+        self.pyarrow_parquet = pq
 
-def get_driver_implementation(name: str) -> SerDe:
-    try:
-        return _file_drivers[name]
-    except KeyError:
-        raise KeyError(f"unsupported file format {name!r}") from None
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+        table = self.pyarrow_parquet.read_table(str(fp), **options)
+        benchmarks: list[dict[str, Any]] = table.to_pylist()
+        return BenchmarkRecord.expand(benchmarks)
 
+    def write(
+        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+    ) -> None:
+        from pyarrow import Table
 
-def register_driver_implementation(name: str, impl: SerDe, clobber: bool = False) -> None:
-    if name in _file_drivers and not clobber:
-        raise RuntimeError(
-            f"driver {name!r} is already registered "
-            f"(to force registration, rerun with clobber=True)"
-        )
-
-    with _file_driver_lock:
-        _file_drivers[name] = impl
-
-
-def deregister_driver_implementation(name: str) -> SerDe | None:
-    with _file_driver_lock:
-        return _file_drivers.pop(name, None)
-
-
-register_driver_implementation(".yaml", (yaml_save, yaml_load))
-register_driver_implementation(".yml", (yaml_save, yaml_load))
-register_driver_implementation(".json", (json_save, json_load))
-register_driver_implementation(".ndjson", (ndjson_save, ndjson_load))
-register_driver_implementation(".csv", (csv_save, csv_load))
-register_driver_implementation(".parquet", (parquet_save, parquet_load))
+        table = Table.from_pylist(record.to_list())
+        self.pyarrow_parquet.write_table(table, str(fp), **options)
 
 
 def get_extension(f: str | os.PathLike[str] | IO) -> str:
     """
-    Given a file path or file-like object, returns file extension
+    Given a path or file-like object, returns file extension
     (can be the empty string, if the file has no extension).
     """
     if isinstance(f, str | os.PathLike):
@@ -167,31 +173,50 @@ def get_protocol(url: str | os.PathLike[str]) -> str:
     return "file"
 
 
-class FileReporter(BenchmarkReporter):
+_file_io_mapping: dict[str, type[BenchmarkFileIO]] = {
+    ".yaml": YAMLFileIO,
+    ".yml": YAMLFileIO,
+    ".json": JSONFileIO,
+    ".ndjson": JSONFileIO,
+    ".csv": CSVFileIO,
+    ".parquet": ParquetFileIO,
+    ".pq": ParquetFileIO,
+}
+
+
+def get_file_io_class(name: str) -> BenchmarkFileIO:
+    try:
+        return _file_io_mapping[name]()
+    except KeyError:
+        raise ValueError(f"unsupported benchmark file format {name!r}") from None
+
+
+def register_file_io_class(name: str, klass: type[BenchmarkFileIO], clobber: bool = False) -> None:
+    if name in _file_io_mapping and not clobber:
+        raise RuntimeError(
+            f"driver {name!r} is already registered "
+            f"(to force registration, rerun with clobber=True)"
+        )
+    _file_io_mapping[name] = klass
+
+
+class FileReporter:
     def read(
         self,
-        file: str | os.PathLike[str] | IO[str],
-        mode: str = "r",
-        driver: str | None = None,
+        file: str | os.PathLike[str],
         options: dict[str, Any] | None = None,
     ) -> BenchmarkRecord:
         """
         Reads a benchmark record from the given file path.
 
-        The file driver is chosen based on the extension in the ``file`` pathname.
+        The file IO is chosen based on the extension in the ``file`` pathname.
 
         Parameters
         ----------
-        file: str | os.PathLike[str] | IO[str]
+        file: str | os.PathLike[str]
             The file name, or object, to read from.
-        mode: str
-            Mode to use when opening a new file from a path.
-            Can be any of the read modes supported by built-in ``open()``.
-        driver: str | None
-            File driver implementation to use. If None, the file driver inferred from the
-            given file path's extension will be used.
         options: dict[str, Any] | None
-            Options to pass to the respective file driver implementation.
+            Options to pass to the respective file IO implementation.
 
         Returns
         -------
@@ -201,51 +226,23 @@ class FileReporter(BenchmarkReporter):
         Raises
         ------
         ValueError
-            If no registered file driver matches the file extension and no other driver
-            was explicitly specified.
+            If the extension of the given file is not supported.
         """
-        driver = driver or get_extension(file)
 
-        if not driver:
-            raise ValueError(
-                f"could not infer a file driver to write file {str(file)!r}, "
-                f"and no file driver was specified (available drivers: "
-                f"{', '.join(repr(d) for d in _file_drivers)})"
-            )
-        _, de = get_driver_implementation(driver)
-
-        if isinstance(file, str | os.PathLike):
-            protocol = get_protocol(file)
-            if protocol == "file":
-                fd = open(file, mode)
-            else:
-                try:
-                    import fsspec
-                except ImportError:
-                    raise RuntimeError("non-local URIs require the fsspec package")
-                fs = fsspec.filesystem(protocol)
-                # NB(njunge): I sure hope this is standardized by fsspec
-                fd = fs.open(file, mode)
-        elif hasattr(file, "read"):
-            fd = file
-        else:
-            raise TypeError("filename must be a str, bytes, file or PathLike object")
-
-        with fd as fp:
-            return de(fp, options or {})
+        ext = get_extension(file)
+        file_io = get_file_io_class(ext)
+        return file_io.read(file, options or {})
 
     def write(
         self,
         record: BenchmarkRecord,
-        file: str | os.PathLike[str] | IO[str],
-        mode: str = "w",
-        driver: str | None = None,
+        file: str | os.PathLike[str],
         options: dict[str, Any] | None = None,
     ) -> None:
         """
         Writes a benchmark record to the given file path.
 
-        The file driver is chosen based on the extension found on the ``file`` path.
+        The file IO is chosen based on the extension found on the ``file`` path.
 
         Parameters
         ----------
@@ -253,47 +250,14 @@ class FileReporter(BenchmarkReporter):
             The record to write to the database.
         file: str | os.PathLike[str]
             The file name, or object, to write to.
-        mode: str
-            Mode to use when opening a new file from a path.
-            Can be any of the write modes supported by built-in ``open()``.
-        driver: str | None
-            File driver implementation to use. If None, the file driver inferred from the
-            given file path's extension will be used.
         options: dict[str, Any] | None
-            Options to pass to the respective file driver implementation.
+            Options to pass to the respective file IO implementation.
 
         Raises
         ------
         ValueError
-            If no registered file driver matches the file extension and no other driver
-            was explicitly specified.
+            If the extension of the given file is not supported.
         """
-        # TODO: Guard against file
-        driver = driver or get_extension(file)
-
-        if not driver:
-            raise ValueError(
-                f"could not infer a file driver to write file {str(file)!r}, "
-                f"and no file driver was specified (available drivers: "
-                f"{', '.join(repr(d) for d in _file_drivers)})"
-            )
-        ser, _ = get_driver_implementation(driver)
-
-        if isinstance(file, str | os.PathLike):
-            protocol = get_protocol(file)
-            if protocol == "file":
-                fd = open(file, mode)
-            else:
-                try:
-                    import fsspec
-                except ImportError:
-                    raise RuntimeError("non-local URIs require the fsspec package")
-                fs = fsspec.filesystem(protocol)
-                fd = fs.open(file, mode)
-        elif hasattr(file, "write"):
-            fd = file
-        else:
-            raise TypeError("filename must be a str, bytes, file or PathLike object")
-
-        with fd as fp:
-            ser(record, fp, options or {})
+        ext = get_extension(file)
+        file_io = get_file_io_class(ext)
+        file_io.write(record, file, options or {})

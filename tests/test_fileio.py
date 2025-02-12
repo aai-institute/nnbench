@@ -20,10 +20,8 @@ def test_fileio_writes_no_compression_inline(tmp_path: Path, ext: str) -> None:
         benchmarks=[{"name": "foo", "value": 1}, {"name": "bar", "value": 2}],
     )
     file = tmp_path / f"record.{ext}"
-    writemode = "wb" if ext == "parquet" else "w"
-    f.write(rec, file, mode=writemode)
-    readmode = "rb" if ext == "parquet" else "r"
-    rec2 = f.read(file, mode=readmode)
+    f.write(rec, file)
+    rec2 = f.read(file)
     # Python stdlib csv coerces everything to string.
     if ext == "csv":
         for bm1, bm2 in zip(rec.benchmarks, rec2.benchmarks):
