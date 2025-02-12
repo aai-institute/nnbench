@@ -15,7 +15,7 @@ from typing import Any
 from nnbench import ConsoleReporter, __version__, collect, run
 from nnbench.config import NNBenchConfig, parse_nnbench_config
 from nnbench.context import Context, ContextProvider
-from nnbench.reporter import FileReporter
+from nnbench.reporter import FileReporter, IOType, get_io_type
 from nnbench.types import BenchmarkRecord
 from nnbench.util import all_python_files
 
@@ -270,12 +270,24 @@ def main(argv: list[str] | None = None) -> int:
                     )
 
             outfile = args.outfile
-            if outfile == sys.stdout:
+            io_type = get_io_type(outfile)
+            if io_type == IOType.STDOUT:
                 reporter = ConsoleReporter()
                 reporter.display(record)
-            else:
-                f = FileReporter()
-                f.write(record, outfile)
+            elif io_type == IOType.FILE:
+                from nnbench.reporter.file import get_file_io_class
+
+                file_io = get_file_io_class(outfile)
+                file_io.write(record, outfile, {})
+            elif io_type == IOType.DATABASE:
+                raise NotImplementedError
+            elif io_type == IOType.SERVICE:
+                from nnbench.reporter.service import get_service_io_class
+
+                io = get_service_io_class(outfile)
+                io.write(record, outfile, {})
+            else:  # IOType.UNKNOWN
+                raise ValueError(f"unsupported URI format {outfile!r}")
         elif args.command == "compare":
             from nnbench.compare import compare
 

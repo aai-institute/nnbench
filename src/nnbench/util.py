@@ -4,12 +4,13 @@ import importlib
 import importlib.util
 import itertools
 import os
+import re
 import sys
 from collections.abc import Generator
 from importlib.machinery import ModuleSpec
 from pathlib import Path
 from types import ModuleType
-from typing import Any
+from typing import IO, Any
 
 
 def flatten(d: dict[str, Any], sep: str = ".", prefix: str = "") -> dict:
@@ -182,3 +183,22 @@ def all_python_files(_dir: str | os.PathLike[str]) -> Generator[Path, None, None
             fp = proot / file
             if fp.suffix == ".py":
                 yield fp
+
+
+def get_protocol(url: str | os.PathLike[str]) -> str:
+    url = str(url)
+    parts = re.split(r"(::|://)", url, maxsplit=1)
+    if len(parts) > 1:
+        return parts[0]
+    return "file"
+
+
+def get_extension(f: str | os.PathLike[str] | IO) -> str:
+    """
+    Given a path or file-like object, returns file extension
+    (can be the empty string, if the file has no extension).
+    """
+    if isinstance(f, str | os.PathLike):
+        return Path(f).suffix
+    else:
+        return Path(f.name).suffix
