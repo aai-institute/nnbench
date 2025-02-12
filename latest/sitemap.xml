@@ -81,10 +81,6 @@
          <lastmod>2025-02-12</lastmod>
     </url>
     <url>
-         <loc>https://aai-institute.github.io/nnbench/latest/reference/nnbench/io/</loc>
-         <lastmod>2025-02-12</lastmod>
-    </url>
-    <url>
          <loc>https://aai-institute.github.io/nnbench/latest/reference/nnbench/runner/</loc>
          <lastmod>2025-02-12</lastmod>
     </url>
@@ -101,15 +97,7 @@
          <lastmod>2025-02-12</lastmod>
     </url>
     <url>
-         <loc>https://aai-institute.github.io/nnbench/latest/reference/nnbench/reporter/base/</loc>
-         <lastmod>2025-02-12</lastmod>
-    </url>
-    <url>
          <loc>https://aai-institute.github.io/nnbench/latest/reference/nnbench/reporter/console/</loc>
-         <lastmod>2025-02-12</lastmod>
-    </url>
-    <url>
-         <loc>https://aai-institute.github.io/nnbench/latest/reference/nnbench/reporter/duckdb_sql/</loc>
          <lastmod>2025-02-12</lastmod>
     </url>
     <url>
