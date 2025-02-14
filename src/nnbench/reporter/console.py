@@ -1,9 +1,11 @@
 import json
+import os
 from typing import Any
 
 from rich.console import Console
 from rich.table import Table
 
+from nnbench.reporter.file import BenchmarkFileIO
 from nnbench.types import BenchmarkRecord
 
 _MISSING = "-----"
@@ -16,7 +18,7 @@ def get_value_by_name(result: dict[str, Any]) -> str:
     return str(result.get("value", _MISSING))
 
 
-class ConsoleReporter:
+class ConsoleReporter(BenchmarkFileIO):
     """
     The base interface for a console reporter class.
 
@@ -38,7 +40,15 @@ class ConsoleReporter:
         # TODO: Add context manager to register live console prints
         self.console = Console(**kwargs)
 
-    def display(self, record: BenchmarkRecord) -> None:
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+        raise NotImplementedError
+
+    def write(
+        self,
+        record: BenchmarkRecord,
+        outfile: str | os.PathLike[str] = None,
+        options: dict[str, Any] | None = None,
+    ) -> None:
         """
         Display a benchmark record in the console as a rich-text table.
 
@@ -52,7 +62,12 @@ class ConsoleReporter:
         ----------
         record: BenchmarkRecord
             The benchmark record to display.
+        outfile: str | os.PathLike[str]
+            For compatibility with the `BenchmarkFileIO` interface, unused.
+        options: dict[str, Any]
+            Display options used to format the resulting table.
         """
+        del outfile
         t = Table()
 
         rows: list[list[str]] = []

@@ -230,8 +230,7 @@ class FileReporter:
             If the extension of the given file is not supported.
         """
 
-        ext = get_extension(file)
-        file_io = get_file_io_class(ext)
+        file_io = get_file_io_class(file)
         return file_io.read(file, options or {})
 
     def write(
@@ -259,6 +258,5 @@ class FileReporter:
         ValueError
             If the extension of the given file is not supported.
         """
-        ext = get_extension(file)
-        file_io = get_file_io_class(ext)
+        file_io = get_file_io_class(file)
         file_io.write(record, file, options or {})

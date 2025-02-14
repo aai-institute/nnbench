@@ -7,6 +7,7 @@ from transformers import (
 )
 
 import nnbench
+from nnbench.reporter import ConsoleReporter
 
 dataset = load_dataset("conllpp")
 path = dataset.cache_files["validation"][0]["filename"]
@@ -29,9 +30,9 @@ def main() -> None:
     }
 
     benchmarks = nnbench.collect("benchmark.py", tags=("per-class",))
-    reporter = nnbench.ConsoleReporter()
+    reporter = ConsoleReporter()
     result = nnbench.run(benchmarks, params=params)
-    reporter.display(result)
+    reporter.write(result)
 
 
 if __name__ == "__main__":

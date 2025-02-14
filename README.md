@@ -31,6 +31,7 @@ To understand how nnbench works, you can run the following in your Python interp
 ```python
 # example.py
 import nnbench
+from nnbench.reporter import ConsoleReporter
 
 
 @nnbench.benchmark
@@ -43,12 +44,12 @@ def power(a: int, b: int) -> int:
     return a ** b
 
 
-reporter = nnbench.ConsoleReporter()
+reporter = ConsoleReporter()
 # first, collect the above benchmarks directly from the current module...
 benchmarks = nnbench.collect("__main__")
 # ... then run the benchmarks with the parameters `a=2, b=10`...
 record = nnbench.run(benchmarks, params={"a": 2, "b": 10})
-reporter.display(record)  # ...and print the results to the terminal.
+reporter.write(record)  # ...and print the results to the terminal.
 
 # results in a table look like the following:
 # ┏━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓

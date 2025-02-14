@@ -64,7 +64,7 @@ def benchmark_accuracy(n_estimators: int, max_depth: int, random_state: int) -> 
     This training benchmark is designed as a local, simple, and self-contained example to showcase nnbench. 
     In a real world scenario, to follow best practices, you may want to separate the data preparation and model training steps from the benchmarking logic and pass the corresponding artifacts as a parameter to the benchmark. See the user guide for more information.
 
-Lastly, we set up a benchmark runner in the `main.py`. There, we supply the parameters (`n_estimators`, `max_depth`, `random_state`) necessary in the function definition as a dictionary to the `params` keyword argument. 
+Lastly, we set up a benchmark runner in the `main.py`. There, we supply the parameters (`n_estimators`, `max_depth`, `random_state`) necessary in the function definition as a dictionary to the `params` keyword argument.
 
 ```python
 # main.py
@@ -73,7 +73,7 @@ import nnbench
 reporter = nnbench.ConsoleReporter()
 benchmarks = nnbench.collect("benchmarks.py")
 result = nnbench.run(benchmarks, params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
-reporter.display(result)
+reporter.write(result)
 ```
 
 When we execute the `main.py` we get the following output:
@@ -122,7 +122,7 @@ import nnbench
 benchmarks = nnbench.collect("benchmarks.py")
 reporter = nnbench.ConsoleReporter()
 result = nnbench.run(benchmarks, params={"random_state": 42})
-reporter.display(result)
+reporter.write(result)
 ```
 
 Executing the parametrized benchmark, we get an output similar to this:
