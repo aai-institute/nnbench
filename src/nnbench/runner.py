@@ -41,7 +41,7 @@ def timer(bm: dict[str, Any]) -> Generator[None, None, None]:
         bm["time_ns"] = end - start
 
 
-def jsonify_params(
+def jsonify(
     params: dict[str, Any], repr_hooks: dict[type, Callable] | None = None
 ) -> dict[str, Any]:
     """
@@ -88,7 +88,7 @@ def jsonify_params(
             container_type = type(v)
             json_params[k] = container_type(map(_jsonify, v))
         elif isinstance(v, dict):
-            json_params[k] = jsonify_params(v)
+            json_params[k] = jsonify(v)
         else:
             json_params[k] = _jsonify(v)
     return json_params
@@ -120,7 +120,6 @@ def collect(
     if ppath.is_dir():
         pythonpaths = all_python_files(ppath)
         for py in pythonpaths:
-            logger.debug(f"Collecting benchmarks from submodule {py.name!r}.")
             benchmarks.extend(collect(py, tags))
         return benchmarks
     elif ppath.is_file():
@@ -154,7 +153,7 @@ def run(
     name: str | None = None,
     params: dict[str, Any] | Parameters | None = None,
     context: Context | Iterable[ContextProvider] = (),
-    jsonifier: Callable[[dict[str, Any]], dict[str, Any]] = jsonify_params,
+    jsonifier: Callable[[dict[str, Any]], dict[str, Any]] = jsonify,
 ) -> BenchmarkRecord:
     """
     Run a previously collected benchmark workload.
@@ -168,7 +167,7 @@ def run(
     params: dict[str, Any] | Parameters | None
         Parameters to use for the benchmark run. Names have to match positional and keyword
         argument names of the benchmark functions.
-    context: Sequence[ContextProvider]
+    context: Iterable[ContextProvider]
         Additional context to log with the benchmarks in the output JSON record. Useful for
         obtaining environment information and configuration, like CPU/GPU hardware info,
         ML model metadata, and more.
@@ -210,10 +209,6 @@ def run(
                 dupe, *_ = duplicates
                 raise ValueError(f"got multiple values for context key {dupe!r}")
             ctx.update(val)
-
-    # if we didn't find any benchmarks, return an empty record.
-    if not benchmarks:
-        return BenchmarkRecord(run=_run, context=ctx, benchmarks=[])
 
     if isinstance(benchmarks, Benchmarkable):
         benchmarks = [benchmarks]

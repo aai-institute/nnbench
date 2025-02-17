@@ -1,8 +1,10 @@
 """Utilities for parsing a ``[tool.nnbench]`` config block out of a pyproject.toml file."""
 
+import importlib
 import logging
 import os
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -16,6 +18,8 @@ else:
     from typing_extensions import Self
 
 logger = logging.getLogger("nnbench.config")
+
+DEFAULT_JSONIFIER = "nnbench.runner.jsonify"
 
 
 @dataclass
@@ -42,6 +46,7 @@ class NNBenchConfig:
     """Log level to use for the ``nnbench`` module root logger."""
     context: list[ContextProviderDef]
     """A list of context provider definitions found in pyproject.toml."""
+    jsonifier: str | Callable[[dict[str, Any]], dict[str, Any]] = DEFAULT_JSONIFIER
 
     @classmethod
     def from_toml(cls, d: dict[str, Any]) -> Self:
@@ -115,3 +120,10 @@ def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -
     with open(pyproject_path, "rb") as fp:
         pyproject = tomllib.load(fp)
         return NNBenchConfig.from_toml(pyproject.get("tool", {}).get("nnbench", {}))
+
+
+def import_(resource: str) -> Any:
+    modname, classname = resource.rsplit(".", 1)
+    # TODO: Catch import errors if the module does not exist
+    klass = getattr(importlib.import_module(modname), classname)
+    return klass
