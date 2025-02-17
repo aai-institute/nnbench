@@ -120,8 +120,16 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         "benchmarks",
         nargs="?",
         metavar="<benchmarks>",
-        help="Python file or directory of files containing benchmarks to run.",
         default="benchmarks",
+        help="Python file or directory of files containing benchmarks to run.",
+    )
+    run_parser.add_argument(
+        "-n",
+        "--name",
+        type=str,
+        default=f"nnbench-{time.time_ns()}",
+        metavar="<name>",
+        help="A name to assign to the benchmark run, for example for record keeping in a database.",
     )
     run_parser.add_argument(
         "-j",
@@ -240,6 +248,7 @@ def main(argv: list[str] | None = None) -> int:
             if n_jobs < 2:
                 record = collect_and_run(
                     args.benchmarks,
+                    name=args.name,
                     tags=tuple(args.tags),
                     context=context,
                 )
@@ -251,7 +260,7 @@ def main(argv: list[str] | None = None) -> int:
 
                 compute_fn = partial(
                     collect_and_run,
-                    name=f"nnbench-{time.time_ns()}",  # TODO: Use a better name here
+                    name=args.name,
                     tags=tuple(args.tags),
                     context=context,
                 )
