@@ -30,21 +30,25 @@ This is the responsibility of the `nnbench run` subcommand.
 
 ```commandline
 $ nnbench run -h                                                                         
-usage: nnbench run [-h] [--context <key=value>] [-t <tag>] [-o <file>] [<benchmarks>]
+usage: nnbench run [-h] [-n <name>] [-j <N>] [--context <key=value>] [-t <tag>] [-o <file>] [--jsonifier <classpath>] [<benchmarks>]
 
 positional arguments:
-  <benchmarks>          Python file or directory of files containing benchmarks to run.
+  <benchmarks>          A Python file or directory of files containing benchmarks to run.
 
 options:
   -h, --help            show this help message and exit
+  -n, --name <name>     A name to assign to the benchmark run, for example for record keeping in a database.
+  -j <N>                Number of processes to use for running benchmarks in parallel, default: -1 (no parallelism)
   --context <key=value>
                         Additional context values giving information about the benchmark run.
   -t, --tag <tag>       Only run benchmarks marked with one or more given tag(s).
   -o, --output-file <file>
                         File or stream to write results to, defaults to stdout.
+  --jsonifier <classpath>
+                        Function to create a JSON representation of input parameters with, helping make runs reproducible.
 ```
 
-So to run a benchmark workload contained in a single `benchmarks.py` file, you would run `nnbench run benchmarks.py`.
+To run a benchmark workload contained in a single `benchmarks.py` file, you would run `nnbench run benchmarks.py`.
 For tips on how to structure and annotate your benchmarks, refer to the [organization](../guides/organization.md) guide.
 
 For injecting context values on the command line, you need to give the key-value pair explicitly by passing the `--context` switch.

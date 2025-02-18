@@ -22,7 +22,7 @@ model = RandomForestClassifier()
 model.fit(X_train, y_train)
 ```
 
-To benchmark your model, you encapsulate the benchmark code into a function and apply the `@benchmark` decorator. 
+To benchmark your model, you encapsulate the benchmark code into a function and apply the `@nnbench.benchmark` decorator. 
 This marks the function for collection to our benchmark runner later.
 
 ```python
@@ -31,7 +31,7 @@ import numpy as np
 from sklearn import base, metrics
 
 
-@nnbench.benchmark()
+@nnbench.benchmark
 def accuracy(model: base.BaseEstimator, X_test: np.ndarray, y_test: np.ndarray) -> float:
     y_pred = model.predict(X_test)
     accuracy = metrics.accuracy_score(y_test, y_pred)
@@ -39,7 +39,7 @@ def accuracy(model: base.BaseEstimator, X_test: np.ndarray, y_test: np.ndarray) 
 ```
 
 Now we can instantiate a benchmark runner to collect and run the accuracy benchmark.
-Then, using the `BenchmarkReporter` we report the resulting accuracy metric by printing it to the terminal in a table.
+Then, using the `ConsoleReporter` we report the resulting accuracy metric by printing it to the terminal in a table.
 
 ```python
 import nnbench
