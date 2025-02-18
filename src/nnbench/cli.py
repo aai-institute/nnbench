@@ -123,7 +123,7 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         nargs="?",
         metavar="<benchmarks>",
         default="benchmarks",
-        help="Python file or directory of files containing benchmarks to run.",
+        help="A Python file or directory of files containing benchmarks to run.",
     )
     run_parser.add_argument(
         "-n",
@@ -138,6 +138,7 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         type=int,
         default=-1,
         dest="jobs",
+        metavar="<N>",
         help="Number of processes to use for running benchmarks in parallel, default: -1 (no parallelism)",
     )
     run_parser.add_argument(

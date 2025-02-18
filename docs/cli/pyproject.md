@@ -65,4 +65,4 @@ Context values:
 ```
 
 !!! Tip
-    This feature is a work in progress. The ability to register custom runner, reporter, and comparison classes will be implemented in future releases of nnbench.
+    This feature is a work in progress. The ability to register custom IO and comparison classes will be implemented in future releases of nnbench.

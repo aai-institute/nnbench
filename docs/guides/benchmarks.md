@@ -49,46 +49,50 @@ To mark such a function as a benchmark, we apply the `@benchmark` decorator.
 ```python
 # benchmarks.py
 import nnbench
-from training import prepare_data, train_rf, accuracy
+from training import prepare_data, train_rf, accuracy as _accuracy
 
-@nnbench.benchmark()
-def benchmark_accuracy(n_estimators: int, max_depth: int, random_state: int) -> float:
+@nnbench.benchmark
+def accuracy(n_estimators: int, max_depth: int, random_state: int) -> float:
     X_train, X_test, y_train, y_test = prepare_data()
     rf = train_rf(X_train=X_train, y_train=y_train, n_estimators=n_estimators,
                   max_depth=max_depth, random_state=random_state)
-    acc = accuracy(model=rf, X_test=X_test, y_test=y_test)
+    y_pred = rf.predict(X_test)
+    acc = _accuracy(model=rf, y_test=y_test, y_pred=y_pred)
     return acc
 ```
 
 !!! warning
     This training benchmark is designed as a local, simple, and self-contained example to showcase nnbench. 
-    In a real world scenario, to follow best practices, you may want to separate the data preparation and model training steps from the benchmarking logic and pass the corresponding artifacts as a parameter to the benchmark. See the user guide for more information.
+    In a real world scenario, to follow best practices, you may want to separate the data preparation and model training steps from the benchmarking logic and pass the corresponding artifacts as a parameter to the benchmark.
+    See the user guide for more information.
 
-Lastly, we set up a benchmark runner in the `main.py`. There, we supply the parameters (`n_estimators`, `max_depth`, `random_state`) necessary in the function definition as a dictionary to the `params` keyword argument.
+Lastly, we set up a benchmark runner in `main.py`. There, we supply the parameters (`n_estimators`, `max_depth`, `random_state`) necessary in the function definition as a dictionary to the `params` keyword argument.
 
 ```python
 # main.py
 import nnbench
+from nnbench.reporter import ConsoleReporter
 
-reporter = nnbench.ConsoleReporter()
+reporter = ConsoleReporter()
 benchmarks = nnbench.collect("benchmarks.py")
 result = nnbench.run(benchmarks, params={"n_estimators": 100, "max_depth": 5, "random_state": 42})
 reporter.write(result)
 ```
 
-When we execute the `main.py` we get the following output:
+When we execute `main.py`, we get the following output:
 
 
 ```bash
-python main.py  
+python main.py
 
-
-name         value
---------  --------
-accuracy  0.933333
+# ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃ Benchmark ┃ Value              ┃ Wall time (ns) ┃ Parameters                                                ┃
+# ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+# │ accuracy  │ 0.9555555555555556 │ 49305875       │ {'n_estimators': 100, 'max_depth': 5, 'random_state': 42} │
+# └───────────┴────────────────────┴────────────────┴───────────────────────────────────────────────────────────┘
 ```
 
-## `@nnbench.parametrize` for multiple configuration benchmarks
+## `@nnbench.parametrize` for multiple configurations of the same benchmark
 
 Sometimes, we are not only interested in the performance of a model for given parameters but want to compare the performance for different configurations. 
 To achieve this, we can turn our single accuracy benchmark in the `benchmarks.py` file into a parametrized benchmark.
@@ -97,18 +101,19 @@ To do this, replace the decorator with `@nnbench.parametrize` and supply the par
 ```python
 # benchmarks.py
 import nnbench
-from training import prepare_data, train_rf, accuracy
+from training import prepare_data, train_rf, accuracy as _accuracy
 
 @nnbench.parametrize(
     ({"n_estimators": 10, "max_depth": 2},
     {"n_estimators": 50, "max_depth": 5},
     {"n_estimators": 100, "max_depth": 10})
 )
-def benchmark_accuracy(n_estimators: int, max_depth: int, random_state: int) -> float:
+def accuracy(n_estimators: int, max_depth: int, random_state: int) -> float:
     X_train, X_test, y_train, y_test = prepare_data()
     rf = train_rf(X_train=X_train, y_train=y_train, n_estimators=n_estimators,
                   max_depth=max_depth, random_state=random_state)
-    acc = accuracy(model=rf, X_test=X_test, y_test=y_test)
+    y_pred = rf.predict(X_test)
+    acc = _accuracy(model=rf, y_test=y_test, y_pred=y_pred)
     return acc
 ```
 
@@ -118,9 +123,10 @@ The unfilled arguments are given in `nnbench.run()` via a dictionary passed as t
 ```python
 # main.py
 import nnbench
+from nnbench.reporter import ConsoleReporter
 
+reporter = ConsoleReporter()
 benchmarks = nnbench.collect("benchmarks.py")
-reporter = nnbench.ConsoleReporter()
 result = nnbench.run(benchmarks, params={"random_state": 42})
 reporter.write(result)
 ```
@@ -128,31 +134,33 @@ reporter.write(result)
 Executing the parametrized benchmark, we get an output similar to this:
 
 ```bash
-python main.py  
+python main.py
 
-
-name                                                 value
-------------------------------------------------  --------
-benchmark_accuracy_n_estimators=10_max_depth=2    0.955556
-benchmark_accuracy_n_estimators=50_max_depth=5    0.866667
-benchmark_accuracy_n_estimators=100_max_depth=10  0.911111
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃ Benchmark                              ┃ Value              ┃ Wall time (ns) ┃ Parameters                                                 ┃
+# ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+# │ accuracy_n_estimators=10_max_depth=2   │ 0.9555555555555556 │ 10600833       │ {'n_estimators': 10, 'max_depth': 2, 'random_state': 42}   │
+# │ accuracy_n_estimators=50_max_depth=5   │ 0.9555555555555556 │ 22033000       │ {'n_estimators': 50, 'max_depth': 5, 'random_state': 42}   │
+# │ accuracy_n_estimators=100_max_depth=10 │ 0.9333333333333333 │ 43839917       │ {'n_estimators': 100, 'max_depth': 10, 'random_state': 42} │
+# └────────────────────────────────────────┴────────────────────┴────────────────┴────────────────────────────────────────────────────────────┘
 ```
 
-## `@nnbench.product` for benchmarks over parameter configuration grids
+## `@nnbench.product` for benchmarks over parameter grids
 
-In case we want to run a benchmark scan for all possible combinations of a set of parameters, we can use the `@nnbench.product` decorator to supply the different values for each parameter.
+In case we want to run a benchmark for all possible combinations of a set of parameters, we can use the `@nnbench.product` decorator to supply the different values for each parameter.
 
 ```python
 # benchmarks.py
 import nnbench
-from training import prepare_data, train_rf, accuracy
+from training import prepare_data, train_rf, accuracy as _accuracy
 
 @nnbench.product(n_estimators=[10, 50, 100], max_depth=[2, 5, 10])
 def benchmark_accuracy_product(n_estimators: int, max_depth: int, random_state: int) -> float:
     X_train, X_test, y_train, y_test = prepare_data()
     rf = train_rf(X_train=X_train, y_train=y_train, n_estimators=n_estimators,
                   max_depth=max_depth, random_state=random_state)
-    acc = accuracy(model=rf, X_test=X_test, y_test=y_test)
+    y_pred = rf.predict(X_test)
+    acc = _accuracy(model=rf, y_test=y_test, y_pred=y_pred)
     return acc
 ```
 
@@ -161,17 +169,19 @@ By executing the benchmark, we get results for all combinations of `n_estimators
 It looks similar to this:
 
 ```bash
-python main.py  
+python main.py
 
-name                                                 value
-------------------------------------------------  --------
-benchmark_accuracy_n_estimators=10_max_depth=2    0.933333
-benchmark_accuracy_n_estimators=10_max_depth=5    0.955556
-benchmark_accuracy_n_estimators=10_max_depth=10   0.977778
-benchmark_accuracy_n_estimators=50_max_depth=2    0.933333
-benchmark_accuracy_n_estimators=50_max_depth=5    0.911111
-benchmark_accuracy_n_estimators=50_max_depth=10   0.977778
-benchmark_accuracy_n_estimators=100_max_depth=2   0.933333
-benchmark_accuracy_n_estimators=100_max_depth=5   0.955556
-benchmark_accuracy_n_estimators=100_max_depth=10  0.955556
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃ Benchmark                              ┃ Value              ┃ Wall time (ns) ┃ Parameters                                                 ┃
+# ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+# │ accuracy_n_estimators=10_max_depth=2   │ 0.9111111111111111 │ 10516875       │ {'n_estimators': 10, 'max_depth': 2, 'random_state': 42}   │
+# │ accuracy_n_estimators=10_max_depth=5   │ 1.0                │ 5783791        │ {'n_estimators': 10, 'max_depth': 5, 'random_state': 42}   │
+# │ accuracy_n_estimators=10_max_depth=10  │ 0.8888888888888888 │ 5350000        │ {'n_estimators': 10, 'max_depth': 10, 'random_state': 42}  │
+# │ accuracy_n_estimators=50_max_depth=2   │ 0.9555555555555556 │ 21473084       │ {'n_estimators': 50, 'max_depth': 2, 'random_state': 42}   │
+# │ accuracy_n_estimators=50_max_depth=5   │ 0.9777777777777777 │ 21978583       │ {'n_estimators': 50, 'max_depth': 5, 'random_state': 42}   │
+# │ accuracy_n_estimators=50_max_depth=10  │ 0.9777777777777777 │ 21687166       │ {'n_estimators': 50, 'max_depth': 10, 'random_state': 42}  │
+# │ accuracy_n_estimators=100_max_depth=2  │ 0.9111111111111111 │ 42262792       │ {'n_estimators': 100, 'max_depth': 2, 'random_state': 42}  │
+# │ accuracy_n_estimators=100_max_depth=5  │ 0.9555555555555556 │ 43785958       │ {'n_estimators': 100, 'max_depth': 5, 'random_state': 42}  │
+# │ accuracy_n_estimators=100_max_depth=10 │ 0.9111111111111111 │ 43720709       │ {'n_estimators': 100, 'max_depth': 10, 'random_state': 42} │
+# └────────────────────────────────────────┴────────────────────┴────────────────┴────────────────────────────────────────────────────────────┘
 ```

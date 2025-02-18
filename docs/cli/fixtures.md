@@ -101,8 +101,9 @@ def data(path: str):
     """Test dataset, to be reused by all benchmarks."""
     return TestDataset.load(path)
 
-# -------------------------------
+# -------------------------
 # benchmarks/nested/conf.py
+# -------------------------
 
 def model():
     """Model, needed only by the nested benchmarks."""
