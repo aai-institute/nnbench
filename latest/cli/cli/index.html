@@ -1370,20 +1370,24 @@ This way of using nnbench is especially useful for integrating into a machine le
 <h2 id="running-benchmark-workloads-on-the-command-line">Running benchmark workloads on the command line<a class="headerlink" href="#running-benchmark-workloads-on-the-command-line" title="Permanent link">&para;</a></h2>
 <p>This is the responsibility of the <code>nnbench run</code> subcommand.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$ nnbench run -h                                                                         
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>usage: nnbench run [-h] [--context &lt;key=value&gt;] [-t &lt;tag&gt;] [-o &lt;file&gt;] [&lt;benchmarks&gt;]
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>usage: nnbench run [-h] [-n &lt;name&gt;] [-j &lt;N&gt;] [--context &lt;key=value&gt;] [-t &lt;tag&gt;] [-o &lt;file&gt;] [--jsonifier &lt;classpath&gt;] [&lt;benchmarks&gt;]
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>positional arguments:
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  &lt;benchmarks&gt;          Python file or directory of files containing benchmarks to run.
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  &lt;benchmarks&gt;          A Python file or directory of files containing benchmarks to run.
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>options:
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  -h, --help            show this help message and exit
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  --context &lt;key=value&gt;
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                        Additional context values giving information about the benchmark run.
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  -t, --tag &lt;tag&gt;       Only run benchmarks marked with one or more given tag(s).
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  -o, --output-file &lt;file&gt;
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                        File or stream to write results to, defaults to stdout.
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  -n, --name &lt;name&gt;     A name to assign to the benchmark run, for example for record keeping in a database.
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  -j &lt;N&gt;                Number of processes to use for running benchmarks in parallel, default: -1 (no parallelism)
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  --context &lt;key=value&gt;
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>                        Additional context values giving information about the benchmark run.
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>  -t, --tag &lt;tag&gt;       Only run benchmarks marked with one or more given tag(s).
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  -o, --output-file &lt;file&gt;
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>                        File or stream to write results to, defaults to stdout.
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>  --jsonifier &lt;classpath&gt;
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>                        Function to create a JSON representation of input parameters with, helping make runs reproducible.
 </span></code></pre></div>
-<p>So to run a benchmark workload contained in a single <code>benchmarks.py</code> file, you would run <code>nnbench run benchmarks.py</code>.
+<p>To run a benchmark workload contained in a single <code>benchmarks.py</code> file, you would run <code>nnbench run benchmarks.py</code>.
 For tips on how to structure and annotate your benchmarks, refer to the <a href="../../guides/organization/">organization</a> guide.</p>
 <p>For injecting context values on the command line, you need to give the key-value pair explicitly by passing the <code>--context</code> switch.
 For example, to look up and persist the <code>pyyaml</code> version in the current environment, you could run the following:</p>
