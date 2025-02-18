@@ -1,8 +1,10 @@
 """Utilities for parsing a ``[tool.nnbench]`` config block out of a pyproject.toml file."""
 
+import importlib
 import logging
 import os
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -17,6 +19,8 @@ else:
 
 logger = logging.getLogger("nnbench.config")
 
+DEFAULT_JSONIFIER = "nnbench.runner.jsonify"
+
 
 @dataclass
 class ContextProviderDef:
@@ -24,6 +28,9 @@ class ContextProviderDef:
     A POD struct representing a custom context provider definition in a
     pyproject.toml table.
     """
+
+    # TODO: Extend this def to a generic typedef, reusable by context
+    #  providers, IOs, and comparisons (with a type enum).
 
     name: str
     """Name under which the provider should be registered by nnbench."""
@@ -42,6 +49,8 @@ class NNBenchConfig:
     """Log level to use for the ``nnbench`` module root logger."""
     context: list[ContextProviderDef]
     """A list of context provider definitions found in pyproject.toml."""
+    # TODO: Move this down one level to [tool.nnbench.run]
+    jsonifier: str | Callable[[dict[str, Any]], dict[str, Any]] = DEFAULT_JSONIFIER
 
     @classmethod
     def from_toml(cls, d: dict[str, Any]) -> Self:
@@ -63,8 +72,9 @@ class NNBenchConfig:
         """
         log_level = d.get("log-level", "NOTSET")
         provider_map = d.get("context", {})
+        jsonifier = d.get("jsonifier", DEFAULT_JSONIFIER)
         context = [ContextProviderDef(**cpd) for cpd in provider_map.values()]
-        return cls(log_level=log_level, context=context)
+        return cls(log_level=log_level, context=context, jsonifier=jsonifier)
 
 
 def locate_pyproject(stop: os.PathLike[str] = Path.home()) -> os.PathLike[str] | None:
@@ -115,3 +125,12 @@ def parse_nnbench_config(pyproject_path: str | os.PathLike[str] | None = None) -
     with open(pyproject_path, "rb") as fp:
         pyproject = tomllib.load(fp)
         return NNBenchConfig.from_toml(pyproject.get("tool", {}).get("nnbench", {}))
+
+
+def import_(resource: str) -> Any:
+    # If the current directory is not on sys.path, insert it in front.
+    if "" not in sys.path and "." not in sys.path:
+        sys.path.insert(0, "")
+    modname, classname = resource.rsplit(".", 1)
+    klass = getattr(importlib.import_module(modname), classname)
+    return klass

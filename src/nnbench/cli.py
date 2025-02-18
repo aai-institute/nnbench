@@ -1,21 +1,21 @@
 """The ``nnbench`` command line interface."""
 
 import argparse
-import importlib
 import logging
 import multiprocessing
 import sys
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from functools import partial
 from os import PathLike
 from pathlib import Path
 from typing import Any
 
 from nnbench import __version__, collect, run
-from nnbench.config import NNBenchConfig, parse_nnbench_config
+from nnbench.config import NNBenchConfig, import_, parse_nnbench_config
 from nnbench.context import Context, ContextProvider
 from nnbench.reporter import FileReporter, get_io_implementation
+from nnbench.runner import jsonify
 from nnbench.types import BenchmarkRecord
 from nnbench.util import all_python_files
 
@@ -86,12 +86,14 @@ def collect_and_run(
     name: str | None = None,
     tags: tuple[str, ...] = (),
     context: Context | Iterable[ContextProvider] = (),
+    jsonifier: Callable = jsonify,
 ) -> BenchmarkRecord:
     benchmarks = collect(path, tags=tags)
     record = run(
         benchmarks,
         name=name,
         context=context,
+        jsonifier=jsonifier,
     )
     return record
 
@@ -162,6 +164,12 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         help="File or stream to write results to, defaults to stdout.",
         default=sys.stdout,
     )
+    run_parser.add_argument(
+        "--jsonifier",
+        metavar="<classpath>",
+        default=config.jsonifier,
+        help="Function to create a JSON representation of input parameters with, helping make runs reproducible.",
+    )
 
     compare_parser = subparsers.add_parser(
         "compare",
@@ -217,13 +225,8 @@ def main(argv: list[str] | None = None) -> int:
 
             context: dict[str, Any] = {}
             for p in config.context:
-                modname, classname = p.classpath.rsplit(".", 1)
-
-                # TODO: (n.junge) Avoid f-string interpolation in logs
                 logger.debug(f"Registering context provider {p.name!r}")
-
-                # TODO: Catch import errors if the module does not exist
-                klass = getattr(importlib.import_module(modname), classname)
+                klass = import_(p.classpath)
                 if isinstance(klass, type):
                     # classes can be instantiated with arguments,
                     # while functions cannot.
@@ -245,12 +248,14 @@ def main(argv: list[str] | None = None) -> int:
                     context[k] = v
 
             n_jobs: int = args.jobs
+            jsonifier = import_(args.jsonifier)
             if n_jobs < 2:
                 record = collect_and_run(
                     args.benchmarks,
                     name=args.name,
                     tags=tuple(args.tags),
                     context=context,
+                    jsonifier=jsonifier,
                 )
             else:
 
@@ -263,6 +268,7 @@ def main(argv: list[str] | None = None) -> int:
                     name=args.name,
                     tags=tuple(args.tags),
                     context=context,
+                    jsonifier=jsonifier,
                 )
                 with multiprocessing.Pool(n_jobs) as p:
                     bm_path = Path(args.benchmarks)

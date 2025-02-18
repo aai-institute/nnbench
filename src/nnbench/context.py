@@ -1,9 +1,12 @@
 """Utilities for collecting context key-value pairs as metadata in benchmark runs."""
 
+import logging
 import platform
 import sys
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 from typing import Any, Literal
+
+logger = logging.getLogger("nnbench.context")
 
 Context = dict[str, Any]
 ContextProvider = Callable[[], Context]
@@ -30,14 +33,14 @@ class PythonInfo:
 
     Parameters
     ----------
-    packages: Sequence[str]
+    packages: Iterable[str]
         Names of the requested packages under which they exist in the current environment.
         For packages installed through ``pip``, this equals the PyPI package name.
     """
 
     key = "python"
 
-    def __init__(self, packages: Sequence[str] = ()):
+    def __init__(self, packages: Iterable[str] = ()):
         self.packages = tuple(packages)
 
     def __call__(self) -> dict[str, Any]:
@@ -86,7 +89,7 @@ class GitEnvironmentInfo:
             else:
                 git = "git"
 
-            return subprocess.run(  # nosec: B603
+            return subprocess.run(
                 [git, *args],
                 capture_output=True,
                 encoding="utf-8",
@@ -214,3 +217,16 @@ builtin_providers: dict[str, ContextProvider] = {
     "git": GitEnvironmentInfo(),
     "python": PythonInfo(),
 }
+
+
+def register_context_provider(
+    name: str, typ: type[ContextProvider] | ContextProvider, kwargs: Any
+) -> None:
+    logger.debug(f"Registering context provider {name!r}")
+
+    if isinstance(typ, type):
+        # classes can be instantiated with arguments,
+        # while functions cannot.
+        builtin_providers[name] = typ(**kwargs)
+    else:
+        builtin_providers[name] = typ
