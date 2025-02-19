@@ -4,8 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
 
+from nnbench.reporter.util import get_protocol
 from nnbench.types import BenchmarkRecord
-from nnbench.util import get_protocol
 
 if TYPE_CHECKING:
     from mlflow import ActiveRun as ActiveRun

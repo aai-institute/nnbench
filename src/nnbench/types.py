@@ -218,7 +218,7 @@ class BenchmarkFamily(Iterable[Benchmark]):
         self.params = params
         if isinstance(name, str):
             # if name is a str, we assume it's an f-string that should be
-            # interpolated with ALL the parameters.
+            # interpolated with the necessary parameters.
             self.name = lambda _fn, **kwargs: name.format(**kwargs)
         else:
             self.name = name
@@ -229,7 +229,7 @@ class BenchmarkFamily(Iterable[Benchmark]):
     def __iter__(self):
         """
         Dispatch benchmarks lazily, creating a name from the arguments as dictated
-        by ``self.name``
+        by ``self.name``.
         """
         for p in self.params:
             yield Benchmark(
