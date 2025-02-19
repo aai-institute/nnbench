@@ -1,14 +1,14 @@
 import os
-import re
 from pathlib import Path
 from typing import IO, Any, Literal, Protocol, cast
 
+from nnbench.reporter.util import get_extension, get_protocol
 from nnbench.types import BenchmarkRecord
 
 
 def make_file_descriptor(
     file: str | os.PathLike[str] | IO,
-    mode: Literal["r", "w", "rb", "wb"],  # TODO: Extend this to append/x modes
+    mode: Literal["r", "w", "a", "x", "rb", "wb", "ab", "xb"],
     **open_kwargs: Any,
 ) -> IO:
     if hasattr(file, "read") or hasattr(file, "write"):
@@ -23,8 +23,7 @@ def make_file_descriptor(
                 import fsspec
             except ImportError:
                 raise RuntimeError("non-local URIs require the fsspec package")
-            fs = fsspec.filesystem(protocol)  # fs: AbstractFileSystem
-            # NB(njunge): I sure hope this is standardized by fsspec
+            fs = fsspec.filesystem(protocol)
             fd = fs.open(file, mode, **open_kwargs)
         return fd
     raise TypeError("filename must be a str, bytes, file or PathLike object")
@@ -152,25 +151,6 @@ class ParquetFileIO(BenchmarkFileIO):
 
         table = Table.from_pylist(record.to_list())
         self.pyarrow_parquet.write_table(table, str(fp), **options)
-
-
-def get_extension(f: str | os.PathLike[str] | IO) -> str:
-    """
-    Given a path or file-like object, returns file extension
-    (can be the empty string, if the file has no extension).
-    """
-    if isinstance(f, str | os.PathLike):
-        return Path(f).suffix
-    else:
-        return Path(f.name).suffix
-
-
-def get_protocol(url: str | os.PathLike[str]) -> str:
-    url = str(url)
-    parts = re.split(r"(::|://)", url, maxsplit=1)
-    if len(parts) > 1:
-        return parts[0]
-    return "file"
 
 
 _file_io_mapping: dict[str, type[BenchmarkFileIO]] = {

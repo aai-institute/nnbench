@@ -5,7 +5,6 @@ files, databases, or web services.
 
 import os
 
-from ..util import get_protocol
 from .console import ConsoleReporter
 from .file import BenchmarkFileIO, FileReporter
 from .service import BenchmarkServiceIO, MLFlowIO
@@ -28,6 +27,8 @@ def get_io_implementation(uri: str | os.PathLike[str]) -> BenchmarkFileIO | Benc
     if uri is sys.stdout:
         proto = "stdout"
     else:
+        from .util import get_protocol
+
         proto = get_protocol(uri)
     try:
         return _io_implementations[proto]()
