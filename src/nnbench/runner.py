@@ -6,10 +6,10 @@ import logging
 import os
 import platform
 import sys
+import time
 import uuid
 from collections.abc import Callable, Iterable
 from dataclasses import asdict
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -234,7 +234,7 @@ def run(
             "name": benchmark.name,
             "function": qualname(benchmark.fn),
             "description": benchmark.fn.__doc__ or "",
-            "date": datetime.now().isoformat(timespec="seconds"),
+            "timestamp": int(time.time()),
             "error_occurred": False,
             "error_message": "",
             "parameters": jsonifier(bmparams),

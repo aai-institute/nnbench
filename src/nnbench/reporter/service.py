@@ -1,6 +1,5 @@
 import os
 from contextlib import ExitStack
-from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
 
@@ -67,7 +66,7 @@ class MLFlowIO(BenchmarkServiceIO):
         self.mlflow.log_dict(record.context, "context.json", run_id=run.info.run_id)
         for bm in record.benchmarks:
             name, value = bm["name"], bm["value"]
-            timestamp = int(datetime.fromisoformat(bm["date"]).timestamp())
+            timestamp = bm["timestamp"]
             self.mlflow.log_metric(name, value, timestamp=timestamp, run_id=run.info.run_id)
 
 
