@@ -182,8 +182,13 @@ def register_file_io_class(name: str, klass: type[BenchmarkFileIO], clobber: boo
 
 
 class FileReporter:
+    @staticmethod
+    def filter_open_kwds(kwargs: dict[str, Any]) -> dict[str, Any]:
+        _OPEN_KWDS = ("buffering", "encoding", "errors", "newline", "closefd", "opener")
+        return {k: v for k, v in kwargs.items() if k in _OPEN_KWDS}
+
+    @staticmethod
     def read(
-        self,
         file: str | os.PathLike[str],
         options: dict[str, Any] | None = None,
     ) -> BenchmarkRecord:
@@ -213,8 +218,8 @@ class FileReporter:
         file_io = get_file_io_class(file)
         return file_io.read(file, options or {})
 
+    @staticmethod
     def write(
-        self,
         record: BenchmarkRecord,
         file: str | os.PathLike[str],
         options: dict[str, Any] | None = None,

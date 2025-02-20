@@ -13,18 +13,6 @@ ContextProvider = Callable[[], Context]
 """A function providing a dictionary of context values."""
 
 
-def system() -> dict[str, str]:
-    return {"system": platform.system()}
-
-
-def cpuarch() -> dict[str, str]:
-    return {"cpuarch": platform.machine()}
-
-
-def python_version() -> dict[str, str]:
-    return {"python_version": platform.python_version()}
-
-
 class PythonInfo:
     """
     A context helper returning version info for requested installed packages.
