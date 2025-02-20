@@ -100,7 +100,7 @@ Supposing we have the following records from previous runs, for a benchmark `add
       "name": "add",
       "function": "add",
       "description": "",
-      "date": "2024-12-02T17:41:16",
+      "timestamp": 1733157676,
       "error_occurred": false,
       "error_message": "",
       "parameters": {
@@ -128,7 +128,7 @@ and
       "name": "add",
       "function": "add",
       "description": "",
-      "date": "2024-12-02T17:42:04",
+      "timestamp": 1733157724,
       "error_occurred": false,
       "error_message": "",
       "parameters": {
