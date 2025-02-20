@@ -14,7 +14,7 @@ from typing import Any
 from nnbench import __version__, collect, run
 from nnbench.config import NNBenchConfig, import_, parse_nnbench_config
 from nnbench.context import Context, ContextProvider
-from nnbench.reporter import FileReporter, get_io_implementation
+from nnbench.reporter import get_reporter_implementation
 from nnbench.runner import jsonify
 from nnbench.types import BenchmarkRecord
 from nnbench.util import all_python_files
@@ -226,8 +226,8 @@ def main(argv: list[str] | None = None) -> int:
 
             context: dict[str, Any] = {}
             for p in config.context:
-                logger.debug(f"Registering context provider {p.name!r}")
                 klass = import_(p.classpath)
+                # TODO: Move registration to nnbench config parsing
                 register_context_provider(p.name, klass, p.arguments)
 
             for val in args.context:
@@ -262,11 +262,12 @@ def main(argv: list[str] | None = None) -> int:
                     bm_path = Path(args.benchmarks)
                     # unroll paths in case a directory is passed.
                     if bm_path.is_dir():
-                        benchmarks = all_python_files(bm_path)
+                        bm_files = all_python_files(bm_path)
                     else:
-                        benchmarks = [bm_path]
-                    res: list[BenchmarkRecord] = p.map(compute_fn, benchmarks)
-                    benchmarks = sum([r.benchmarks for r in res], start=list())
+                        bm_files = [bm_path]
+                    res: list[BenchmarkRecord] = p.map(compute_fn, bm_files)
+                    start: list[dict[str, Any]] = list()
+                    benchmarks = sum([r.benchmarks for r in res], start=start)
                     # Assumes the context and run name to be consistent across workers.
                     record = BenchmarkRecord(
                         run=res[0].run,
@@ -275,13 +276,15 @@ def main(argv: list[str] | None = None) -> int:
                     )
 
             outfile = args.outfile
-            io = get_io_implementation(outfile)
-            io.write(record, outfile, {})
+            reporter = get_reporter_implementation(outfile)
+            reporter.write(record, outfile, {})
         elif args.command == "compare":
             from nnbench.compare import compare
 
-            f = FileReporter()
-            records = [f.read(file) for file in args.records]
+            records: list[BenchmarkRecord] = []
+            for file in args.records:
+                reporter = get_reporter_implementation(file)
+                records.append(reporter.read(file, {}))  # TODO: Support options
             compare(
                 records=records,
                 parameters=args.parameters,
