@@ -43,10 +43,10 @@ Any arguments needed to instantiate a context provider class can be given under 
 !!! Warning
     If you register a context provider *function*, you **must** leave the `arguments` key out of the above TOML table, since by definition, context providers do not take any arguments in their `__call__()` signature.
 
-Now we can use said provider in a benchmark run by passing the special `"provider"` key:
+Now we can use said provider in a benchmark run by passing just the provider name:
 
 ```commandline
-$ nnbench run benchmarks.py --context=provider=myctx
+$ nnbench run benchmarks.py --context=myctx
 Context values:
 {
     "python": {

@@ -222,31 +222,23 @@ def main(argv: list[str] | None = None) -> int:
             parser.print_help()
             return 1
         elif args.command == "run":
-            from nnbench.context import builtin_providers
+            from nnbench.context import builtin_providers, register_context_provider
 
             context: dict[str, Any] = {}
             for p in config.context:
                 logger.debug(f"Registering context provider {p.name!r}")
                 klass = import_(p.classpath)
-                if isinstance(klass, type):
-                    # classes can be instantiated with arguments,
-                    # while functions cannot.
-                    builtin_providers[p.name] = klass(**p.arguments)
-                else:
-                    builtin_providers[p.name] = klass
+                register_context_provider(p.name, klass, p.arguments)
 
             for val in args.context:
-                try:
-                    k, v = val.split("=", 1)
-                except ValueError:
-                    raise ValueError("context values need to be of the form <key>=<value>")
-                if k == "provider":
-                    try:
-                        context.update(builtin_providers[v]())
-                    except KeyError:
-                        raise KeyError(f"unknown context provider {v!r}") from None
+                if val in builtin_providers:
+                    context.update(builtin_providers[val]())
                 else:
-                    context[k] = v
+                    try:
+                        k, v = val.split("=", 1)
+                        context[k] = v
+                    except ValueError:
+                        raise ValueError("context values need to be of the form <key>=<value>")
 
             n_jobs: int = args.jobs
             jsonifier = import_(args.jsonifier)
@@ -259,11 +251,6 @@ def main(argv: list[str] | None = None) -> int:
                     jsonifier=jsonifier,
                 )
             else:
-
-                def flatten(lists):
-                    for _l in lists:
-                        yield from _l
-
                 compute_fn = partial(
                     collect_and_run,
                     name=args.name,
@@ -278,11 +265,13 @@ def main(argv: list[str] | None = None) -> int:
                         benchmarks = all_python_files(bm_path)
                     else:
                         benchmarks = [bm_path]
-                    res = p.map(compute_fn, benchmarks)
+                    res: list[BenchmarkRecord] = p.map(compute_fn, benchmarks)
+                    benchmarks = sum([r.benchmarks for r in res], start=list())
+                    # Assumes the context and run name to be consistent across workers.
                     record = BenchmarkRecord(
                         run=res[0].run,
                         context=res[0].context,
-                        benchmarks=list(flatten(r.benchmarks for r in res)),
+                        benchmarks=benchmarks,
                     )
 
             outfile = args.outfile
