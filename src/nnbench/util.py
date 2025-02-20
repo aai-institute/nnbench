@@ -1,14 +1,26 @@
 """Various utilities related to benchmark collection, filtering, and more."""
 
+import contextlib
 import importlib.util
 import itertools
 import os
 import sys
-from collections.abc import Generator
+import time
+from collections.abc import Callable, Generator, Iterable
 from importlib.machinery import ModuleSpec
 from pathlib import Path
 from types import ModuleType
-from typing import Any
+from typing import Any, TypeVar
+
+T = TypeVar("T")
+
+
+def collapse(_its: Iterable[T | Iterable[T]]) -> Generator[T, None, None]:
+    for _it in _its:
+        if isinstance(_it, Iterable):
+            yield from _it
+        else:
+            yield _it
 
 
 def flatten(d: dict[str, Any], sep: str = ".", prefix: str = "") -> dict:
@@ -181,3 +193,19 @@ def all_python_files(_dir: str | os.PathLike[str]) -> Generator[Path, None, None
             fp = proot / file
             if fp.suffix == ".py":
                 yield fp
+
+
+def qualname(fn: Callable) -> str:
+    if fn.__name__ == fn.__qualname__:
+        return fn.__name__
+    return f"{fn.__qualname__}.{fn.__name__}"
+
+
+@contextlib.contextmanager
+def timer(bm: dict[str, Any]) -> Generator[None, None, None]:
+    start = time.perf_counter_ns()
+    try:
+        yield
+    finally:
+        end = time.perf_counter_ns()
+        bm["time_ns"] = end - start

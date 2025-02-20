@@ -1,15 +1,13 @@
 """The abstract benchmark runner interface, which can be overridden for custom benchmark workloads."""
 
 import collections
-import contextlib
 import inspect
 import logging
 import os
 import platform
 import sys
-import time
 import uuid
-from collections.abc import Callable, Generator, Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -18,27 +16,18 @@ from typing import Any
 from nnbench.context import Context, ContextProvider
 from nnbench.fixtures import FixtureManager
 from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters, State
-from nnbench.util import all_python_files, exists_module, import_file_as_module
+from nnbench.util import (
+    all_python_files,
+    collapse,
+    exists_module,
+    import_file_as_module,
+    qualname,
+    timer,
+)
 
 Benchmarkable = Benchmark | BenchmarkFamily
 
 logger = logging.getLogger("nnbench.runner")
-
-
-def qualname(fn: Callable) -> str:
-    if fn.__name__ == fn.__qualname__:
-        return fn.__name__
-    return f"{fn.__qualname__}.{fn.__name__}"
-
-
-@contextlib.contextmanager
-def timer(bm: dict[str, Any]) -> Generator[None, None, None]:
-    start = time.perf_counter_ns()
-    try:
-        yield
-    finally:
-        end = time.perf_counter_ns()
-        bm["time_ns"] = end - start
 
 
 def jsonify(
@@ -184,15 +173,6 @@ def run(
         and "benchmarks", holding an array with the benchmark results.
     """
 
-    def benchmark_iterator(
-        _bm: Iterable[Benchmark | BenchmarkFamily],
-    ) -> Generator[Benchmark, None, None]:
-        for _b in _bm:
-            if isinstance(_b, Benchmark):
-                yield _b
-            else:
-                yield from _b
-
     _run = name or "nnbench-" + platform.node() + "-" + uuid.uuid1().hex[:8]
 
     family_sizes: dict[str, Any] = collections.defaultdict(int)
@@ -220,7 +200,7 @@ def run(
 
     results: list[dict[str, Any]] = []
 
-    for benchmark in benchmark_iterator(benchmarks):
+    for benchmark in collapse(benchmarks):
         bm_family = benchmark.interface.funcname
         state = State(
             name=benchmark.name,

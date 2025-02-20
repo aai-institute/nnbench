@@ -131,6 +131,9 @@ def import_(resource: str) -> Any:
     # If the current directory is not on sys.path, insert it in front.
     if "" not in sys.path and "." not in sys.path:
         sys.path.insert(0, "")
+
+    # NB: This assumes that every resource is a top-level member of the
+    # target module, and not nested in a class or other construct.
     modname, classname = resource.rsplit(".", 1)
     klass = getattr(importlib.import_module(modname), classname)
     return klass
