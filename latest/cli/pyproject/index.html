@@ -1361,8 +1361,8 @@ Any arguments needed to instantiate a context provider class can be given under 
 <p class="admonition-title">Warning</p>
 <p>If you register a context provider <em>function</em>, you <strong>must</strong> leave the <code>arguments</code> key out of the above TOML table, since by definition, context providers do not take any arguments in their <code>__call__()</code> signature.</p>
 </div>
-<p>Now we can use said provider in a benchmark run by passing the special <code>"provider"</code> key:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$ nnbench run benchmarks.py --context=provider=myctx
+<p>Now we can use said provider in a benchmark run by passing just the provider name:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$ nnbench run benchmarks.py --context=myctx
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Context values:
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>{
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    &quot;python&quot;: {
