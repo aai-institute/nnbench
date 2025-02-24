@@ -1,7 +1,9 @@
 """Contains machinery to compare multiple benchmark records side by side."""
 
 import copy
+import operator
 from collections.abc import Sequence
+from typing import Any
 
 from rich.console import Console
 from rich.table import Table
@@ -115,3 +117,10 @@ def compare(
 
     c = Console()
     c.print(t)
+
+
+class Comparison:
+    # TODO: Maybe use operators instead?
+    @staticmethod
+    def gt(val1: Any, val2: Any) -> bool:
+        return operator.gt(val1, val2)
