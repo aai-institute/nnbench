@@ -9,7 +9,7 @@ from .console import ConsoleReporter
 from .file import BenchmarkFileIO, FileReporter
 from .service import BenchmarkServiceIO, MLFlowIO
 
-_io_implementations = {
+_known_reporters = {
     "stdout": ConsoleReporter,
     "s3": FileReporter,
     "gs": FileReporter,
@@ -21,7 +21,9 @@ _io_implementations = {
 }
 
 
-def get_io_implementation(uri: str | os.PathLike[str]) -> BenchmarkFileIO | BenchmarkServiceIO:
+def get_reporter_implementation(
+    uri: str | os.PathLike[str],
+) -> BenchmarkFileIO | BenchmarkServiceIO:
     import sys
 
     if uri is sys.stdout:
@@ -31,18 +33,18 @@ def get_io_implementation(uri: str | os.PathLike[str]) -> BenchmarkFileIO | Benc
 
         proto = get_protocol(uri)
     try:
-        return _io_implementations[proto]()
+        return _known_reporters[proto]()
     except KeyError:
         raise ValueError(f"unsupported benchmark IO protocol {proto!r}") from None
 
 
 def register_io_implementation(name: str, klass: type, clobber: bool = False) -> None:
-    if name in _io_implementations and not clobber:
+    if name in _known_reporters and not clobber:
         raise RuntimeError(
             f"benchmark IO {name!r} is already registered "
             f"(to force registration, rerun with clobber=True)"
         )
-    _io_implementations[name] = klass
+    _known_reporters[name] = klass
 
 
 del os
