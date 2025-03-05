@@ -56,7 +56,7 @@ def get_value_by_name(record: BenchmarkRecord, name: str, missing: str) -> Any:
     res = record.benchmarks[metric_names.index(name)]
     if res.get("error_occurred", False):
         errmsg = res.get("error_message", "<unknown>")
-        return "[red]ERROR: [/red]" + errmsg
+        return f"[red]ERROR: {errmsg} [/red]"
     return res.get("value", missing)
 
 
@@ -71,21 +71,22 @@ class Comparison:
             A placeholder string to show in the event of a missing metric.
         """
         self.placeholder = placeholder
+        self.comparisons: list[dict[str, Any]] = []
 
     def compare2(self, metric_name: str, val1: Any, val2: Any) -> bool:
         """
         Compare two values of a metric across runs.
 
-        A comparison here is a function taking two values and returning a
-        boolean indicating whether val2 compares favorably (the ``True`` case)
-        or unfavorably (the ``False`` case).
+        A comparison is a function taking two values and returning a boolean
+        indicating whether val2 compares favorably (the ``True`` case)
+        or unfavorably to val1 (the ``False`` case).
 
         This method should generally be overwritten by child classes.
 
         Parameters
         ----------
         metric_name: str
-            Name of the metric to compare
+            Name of the metric to compare.
         val1: Any
             Value of the metric in the first benchmark record.
         val2: Any
@@ -97,6 +98,8 @@ class Comparison:
             The comparison between the two values.
         """
         # TODO: Make this abstract for the library user to implement
+        if any(v == self.placeholder for v in (val1, val2)):
+            return False
         _name = metric_name.lower()
         if "accuracy" in _name:
             return operator.le(val1, val2)
@@ -110,12 +113,7 @@ class Comparison:
         else:
             return "|val1 - val2| ≤ 0.01"
 
-    def render(
-        self,
-        records: Sequence[BenchmarkRecord],
-        parameters: Sequence[str] | None = None,
-        contextvals: Sequence[str] | None = None,
-    ) -> None:
+    def render(self, records: Sequence[BenchmarkRecord]) -> None:
         """
         Compare a series of benchmark records, displaying their results in a table
         side by side.
@@ -124,15 +122,9 @@ class Comparison:
         ----------
         records: Sequence[BenchmarkRecord]
             The benchmark records to compare.
-        parameters: Sequence[str] | None
-            Names of parameters to display as extra columns.
-        contextvals: Sequence[str] | None
-            Names of context values to display as extra columns. Supports nested access
-            via dotted syntax.
         """
-        if len(records) != 2:
-            # TODO: Extend to >2 records
-            raise ValueError("must give two records to compare")
+        if len(records) < 2:
+            raise ValueError("must give at least two records to compare")
 
         t = Table()
 
@@ -145,14 +137,16 @@ class Comparison:
         # or a placeholder if there are any.
         for metric in metrics:
             name, val = metric
+            status = ""
+            comparison = self.get_comparison(name)
             row = [name, str(val)]
             for record in records[1:]:
                 compval = get_value_by_name(record, name, self.placeholder)
-                comparison = self.get_comparison(name)
                 success = self.compare2(name, val, compval)
-                status = "✅" if success else "❌"
-                row += [str(compval), comparison, status]
-                rows.append(row)
+                status += ":white_check_mark:" if success else ":x:"
+                row += [str(compval)]
+            row += [comparison, status]
+            rows.append(row)
 
         for column in columns:
             t.add_column(column)
@@ -161,3 +155,8 @@ class Comparison:
 
         c = Console()
         c.print(t)
+
+    @property
+    def success(self) -> bool:
+        """Indicates if the current comparison was successful."""
+        return True
