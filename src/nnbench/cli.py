@@ -279,13 +279,13 @@ def main(argv: list[str] | None = None) -> int:
             reporter = get_reporter_implementation(outfile)
             reporter.write(record, outfile, {})
         elif args.command == "compare":
-            from nnbench.compare import compare
+            from nnbench.compare import Comparison
 
             records: list[BenchmarkRecord] = []
             for file in args.records:
                 reporter = get_reporter_implementation(file)
                 records.append(reporter.read(file, {}))  # TODO: Support options
-            compare(
+            Comparison().render(
                 records=records,
                 parameters=args.parameters,
                 contextvals=args.contextvals,
