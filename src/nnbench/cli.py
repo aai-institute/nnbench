@@ -285,11 +285,7 @@ def main(argv: list[str] | None = None) -> int:
             for file in args.records:
                 reporter = get_reporter_implementation(file)
                 records.append(reporter.read(file, {}))  # TODO: Support options
-            Comparison().render(
-                records=records,
-                parameters=args.parameters,
-                contextvals=args.contextvals,
-            )
+            Comparison().render(records)
 
         return 0
     except Exception as e:
