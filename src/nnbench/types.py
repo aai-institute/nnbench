@@ -36,7 +36,7 @@ def NoOp(state: State, params: Mapping[str, Any] = MappingProxyType({})) -> None
 
 
 @dataclass(frozen=True)
-class BenchmarkRecord:
+class BenchmarkResult:
     """
     A dataclass representing the result of a benchmark run, i.e. the return value
     of a call to ``nnbench.run()``.
@@ -48,6 +48,8 @@ class BenchmarkRecord:
     """A map of key-value pairs describing context information around the benchmark run."""
     benchmarks: list[dict[str, Any]]
     """The list of benchmark results, each given as a Python dictionary."""
+    timestamp: int
+    """A Unix timestamp indicating when the run was started."""
 
     def to_json(self) -> dict[str, Any]:
         """
@@ -60,21 +62,43 @@ class BenchmarkRecord:
         """
         return asdict(self)
 
-    def to_list(self) -> list[dict[str, Any]]:
+    def to_records(self) -> list[dict[str, Any]]:  # TODO: Use typed dict
         """
         Export a benchmark record to a list of individual results,
         each with the benchmark run name and context inlined.
         """
-        results = []
+        records = []
         for b in self.benchmarks:
             bc = copy.deepcopy(b)
             bc["context"] = self.context
             bc["run"] = self.run
-            results.append(bc)
-        return results
+            bc["timestamp"] = self.timestamp
+            records.append(bc)
+        return records
 
     @classmethod
-    def expand(cls, bms: dict[str, Any] | list[dict[str, Any]]) -> Self:
+    def from_json(cls, struct: dict[str, Any]) -> Self:
+        """
+        Load a benchmark result from its JSON representation.
+
+        Parameters
+        ----------
+        struct: dict[str, Any]
+            The JSON object containing the benchmark data.
+
+        Returns
+        -------
+        Self
+            A BenchmarkResult instance containing the run information.
+        """
+        benchmarks = struct.get("benchmarks", [])
+        context = struct.get("context", {})
+        run = struct.get("run", "")
+        timestamp = struct.get("timestamp", 0)
+        return cls(run=run, benchmarks=benchmarks, context=context, timestamp=timestamp)
+
+    @classmethod
+    def from_records(cls, bms: list[dict[str, Any]]) -> Self:
         """
         Expand a list of deserialized JSON-like objects into a benchmark record.
         This is equivalent to extracting the context given by the method it was
@@ -82,35 +106,27 @@ class BenchmarkRecord:
 
         Parameters
         ----------
-        bms: dict[str, Any] | list[dict[str, Any]]
-            The deserialized benchmark record or list of records to expand into a record.
+        bms: list[dict[str, Any]]
+            The deserialized benchmark record or list of records to from_records into a record.
 
         Returns
         -------
-        BenchmarkRecord
+        BenchmarkResult
             The resulting record, with the context and run name extracted.
         """
         context: dict[str, Any]
-        if isinstance(bms, dict):
-            if "benchmarks" not in bms.keys():
-                raise ValueError(f"no benchmark data found in struct {bms}")
-
-            benchmarks = bms["benchmarks"]
-            context = bms.get("context", {})
-            run = bms.get("run", "")
-        else:
-            run = ""
-            context = {}
-            benchmarks = bms
-            for b in benchmarks:
-                # TODO(nicholasjng): This does not do the right thing if the list contains
-                #  data from multiple benchmark runs, e.g. from a DB query.
-                if "run" in b:
-                    run = b.pop("run")
-                if "context" in b:
-                    # TODO: Log context key/value disagreements
-                    context |= b.pop("context", {})
-        return cls(run=run, benchmarks=benchmarks, context=context)
+        run = ""
+        context = {}
+        benchmarks = bms
+        timestamp = 0
+        for b in benchmarks:
+            if "run" in b:
+                run = b.pop("run")
+            if "context" in b:
+                context |= b.pop("context", {})
+            if "timestamp" in b:
+                timestamp = b.pop("timestamp")
+        return cls(run=run, benchmarks=benchmarks, context=context, timestamp=timestamp)
 
 
 @dataclass(init=False, frozen=True)

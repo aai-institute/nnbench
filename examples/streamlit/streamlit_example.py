@@ -41,12 +41,12 @@ async def run_bms(params: dict[str, Any]) -> str:
 def get_bm_artifacts(storage_key: str) -> None:
     blob_path = LOCAL_PREFECT_PERSISTENCE_FOLDER / storage_key
     blob = PersistedResultBlob.parse_raw(blob_path.read_bytes())
-    bm_records: tuple[nnbench.BenchmarkRecord, ...] = pickle.loads(base64.b64decode(blob.data))
+    bm_results: tuple[nnbench.BenchmarkResult, ...] = pickle.loads(base64.b64decode(blob.data))
 
-    bms = [pd.DataFrame(record.benchmarks) for record in bm_records]
+    bms = [pd.DataFrame(result.benchmarks) for result in bm_results]
     for df in bms:
         df["value"] = df["value"].apply(lambda x: f"{x:.2e}")
-    cxs = [pd.DataFrame([record.context.data]) for record in bm_records]
+    cxs = [pd.DataFrame([result.context.data]) for result in bm_results]
 
     display_data = [bms + [cxs[0]]]  # Only need context once
     st.session_state["benchmarks"].extend(display_data)

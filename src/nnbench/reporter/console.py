@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.table import Table
 
 from nnbench.reporter.file import BenchmarkFileIO
-from nnbench.types import BenchmarkRecord
+from nnbench.types import BenchmarkResult
 
 _MISSING = "-----"
 
@@ -40,28 +40,28 @@ class ConsoleReporter(BenchmarkFileIO):
         # TODO: Add context manager to register live console prints
         self.console = Console(**kwargs)
 
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         raise NotImplementedError
 
     def write(
         self,
-        record: BenchmarkRecord,
+        result: BenchmarkResult,
         outfile: str | os.PathLike[str] = None,
         options: dict[str, Any] | None = None,
     ) -> None:
         """
-        Display a benchmark record in the console as a rich-text table.
+        Display a benchmark result in the console as a rich-text table.
 
         Gives a summary of all present context values directly above the table,
-        as a pretty-printed JSON record.
+        as a pretty-printed JSON result.
 
         By default, displays only the benchmark name, value, execution wall time,
         and parameters.
 
         Parameters
         ----------
-        record: BenchmarkRecord
-            The benchmark record to display.
+        result: BenchmarkResult
+            The benchmark result to display.
         outfile: str | os.PathLike[str]
             For compatibility with the `BenchmarkFileIO` interface, unused.
         options: dict[str, Any]
@@ -75,9 +75,9 @@ class ConsoleReporter(BenchmarkFileIO):
 
         # print context values
         print("Context values:")
-        print(json.dumps(record.context, indent=4))
+        print(json.dumps(result.context, indent=4))
 
-        for bm in record.benchmarks:
+        for bm in result.benchmarks:
             row = [bm["name"], get_value_by_name(bm), str(bm["time_ns"]), str(bm["parameters"])]
             rows.append(row)
 

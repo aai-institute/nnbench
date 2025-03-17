@@ -71,10 +71,10 @@ To create a comparison table between multiple benchmark runs, use the `nnbench c
 
 ```commandline
 $ nnbench compare -h                                            
-usage: nnbench compare [-h] [-P <name>] [-C <name>] [-E <name>] records [records ...]
+usage: nnbench compare [-h] [-P <name>] [-C <name>] [-E <name>] results [results ...]
 
 positional arguments:
-  records               Records to compare results for. Can be given as local files or remote URIs.
+  results               Results to compare. Can be given as local files or remote URIs.
 
 options:
   -h, --help            show this help message and exit
@@ -83,13 +83,13 @@ options:
   -C, --include-context <name>
                         Context values to display in the comparison table. Use dotted syntax for nested context values.
   -E, --extra-column <name>
-                        Additional record data to display in the comparison table.
+                        Additional result data to display in the comparison table.
 ```
 
-Supposing we have the following records from previous runs, for a benchmark `add(a,b)` that adds two integers:
+Supposing we have the following results from previous runs, for a benchmark `add(a,b)` that adds two integers:
 
 ```json
-// Pretty-printed JSON, obtained as <record1.json | jq
+// Pretty-printed JSON, obtained as <result1.json | jq
 {
   "run": "nnbench-3ff188b4",
   "context": {
@@ -117,7 +117,7 @@ Supposing we have the following records from previous runs, for a benchmark `add
 and
 
 ```json
-// <record2.json | jq
+// <result2.json | jq
 {
   "run": "nnbench-5cbb85f8",
   "context": {
@@ -142,10 +142,10 @@ and
 },
 ```
 
-we can compare them in a table view by running `nnnbench compare record1.json record2.json`:
+we can compare them in a table view by running `nnnbench compare result1.json result2.json`:
 
 ```commandline
-$ nnbench compare record1.json record2.json
+$ nnbench compare result1.json result2.json
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━┓
 ┃ Benchmark run    ┃ add ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━┩
@@ -158,7 +158,7 @@ To include benchmark parameter values in the table, use the `-P` switch (you can
 For example, to see which values were used for `a` and `b` in our `add(a, b)` benchmark above, we supply `-P a` and `-P b`:
 
 ```commandline
-$ nnbench compare record1.json record2.json -P a -P b
+$ nnbench compare result1.json result2.json -P a -P b
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Benchmark run    ┃ add ┃ Params->a ┃ Params->b ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━┩
@@ -170,7 +170,7 @@ $ nnbench compare record1.json record2.json -P a -P b
 To include context values in the table - in our case, we might want to display the `foo` value - use the `-C` switch (this is also appending, same as `-P`):
 
 ```commandline
-$ nnbench compare record1.json record2.json -P a -P b -C foo
+$ nnbench compare result1.json result2.json -P a -P b -C foo
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━┓
 ┃ Benchmark run    ┃ add ┃ Params->a ┃ Params->b ┃ foo ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━┩

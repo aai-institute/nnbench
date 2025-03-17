@@ -15,7 +15,7 @@ from typing import Any
 
 from nnbench.context import Context, ContextProvider
 from nnbench.fixtures import FixtureManager
-from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkRecord, Parameters, State
+from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkResult, Parameters, State
 from nnbench.util import (
     all_python_files,
     collapse,
@@ -36,7 +36,7 @@ def jsonify(
     """
     Construct a JSON representation of benchmark parameters.
 
-    This is necessary to break reference cycles from the parameters to the records,
+    This is necessary to break reference cycles from the parameters to the results,
     which prevent garbage collection of memory-intensive values.
 
     Parameters
@@ -143,7 +143,7 @@ def run(
     params: dict[str, Any] | Parameters | None = None,
     context: Context | Iterable[ContextProvider] = (),
     jsonifier: Callable[[dict[str, Any]], dict[str, Any]] = jsonify,
-) -> BenchmarkRecord:
+) -> BenchmarkResult:
     """
     Run a previously collected benchmark workload.
 
@@ -157,7 +157,7 @@ def run(
         Parameters to use for the benchmark run. Names have to match positional and keyword
         argument names of the benchmark functions.
     context: Iterable[ContextProvider]
-        Additional context to log with the benchmarks in the output JSON record. Useful for
+        Additional context to log with the benchmarks in the output JSON result. Useful for
         obtaining environment information and configuration, like CPU/GPU hardware info,
         ML model metadata, and more.
     jsonifier: Callable[[dict[str, Any], dict[str, Any]]]
@@ -167,7 +167,7 @@ def run(
 
     Returns
     -------
-    BenchmarkRecord
+    BenchmarkResult
         A JSON output representing the benchmark results. Has three top-level keys,
         "name" giving the benchmark run name, "context" holding the context information,
         and "benchmarks", holding an array with the benchmark results.
@@ -199,6 +199,7 @@ def run(
         dparams = params or {}
 
     results: list[dict[str, Any]] = []
+    timestamp = int(time.time())
 
     for benchmark in collapse(benchmarks):
         bm_family = benchmark.interface.funcname
@@ -234,7 +235,6 @@ def run(
             "name": benchmark.name,
             "function": qualname(benchmark.fn),
             "description": benchmark.fn.__doc__ or "",
-            "timestamp": int(time.time()),
             "error_occurred": False,
             "error_message": "",
             "parameters": jsonifier(bmparams),
@@ -250,8 +250,9 @@ def run(
             benchmark.tearDown(state, bmparams)
             results.append(res)
 
-    return BenchmarkRecord(
+    return BenchmarkResult(
         run=_run,
         context=ctx,
         benchmarks=results,
+        timestamp=timestamp,
     )

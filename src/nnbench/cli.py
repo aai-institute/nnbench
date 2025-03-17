@@ -16,7 +16,7 @@ from nnbench.config import NNBenchConfig, import_, parse_nnbench_config
 from nnbench.context import Context, ContextProvider
 from nnbench.reporter import get_reporter_implementation
 from nnbench.runner import jsonify
-from nnbench.types import BenchmarkRecord
+from nnbench.types import BenchmarkResult
 from nnbench.util import all_python_files
 
 _VERSION = f"%(prog)s version {__version__}"
@@ -87,15 +87,15 @@ def collect_and_run(
     tags: tuple[str, ...] = (),
     context: Context | Iterable[ContextProvider] = (),
     jsonifier: Callable = jsonify,
-) -> BenchmarkRecord:
+) -> BenchmarkResult:
     benchmarks = collect(path, tags=tags)
-    record = run(
+    result = run(
         benchmarks,
         name=name,
         context=context,
         jsonifier=jsonifier,
     )
-    return record
+    return result
 
 
 def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
@@ -178,9 +178,9 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         formatter_class=CustomFormatter,
     )
     compare_parser.add_argument(
-        "records",
+        "results",
         nargs="+",
-        help="Records to compare results for. Can be given as local files or remote URIs.",
+        help="Results to compare. Can be given as local files or remote URIs.",
     )
     compare_parser.add_argument(
         "--comparison-file",
@@ -214,7 +214,7 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         metavar="<name>",
         dest="extra_cols",
         default=list(),
-        help="Additional record data to display in the comparison table.",
+        help="Additional result data to display in the comparison table.",
     )
     return parser
 
@@ -250,7 +250,7 @@ def main(argv: list[str] | None = None) -> int:
             n_jobs: int = args.jobs
             jsonifier = import_(args.jsonifier)
             if n_jobs < 2:
-                record = collect_and_run(
+                result = collect_and_run(
                     args.benchmarks,
                     name=args.name,
                     tags=tuple(args.tags),
@@ -272,26 +272,27 @@ def main(argv: list[str] | None = None) -> int:
                         bm_files = all_python_files(bm_path)
                     else:
                         bm_files = [bm_path]
-                    res: list[BenchmarkRecord] = p.map(compute_fn, bm_files)
+                    res: list[BenchmarkResult] = p.map(compute_fn, bm_files)
                     start: list[dict[str, Any]] = list()
                     benchmarks = sum([r.benchmarks for r in res], start=start)
                     # Assumes the context and run name to be consistent across workers.
-                    record = BenchmarkRecord(
+                    result = BenchmarkResult(
                         run=res[0].run,
                         context=res[0].context,
                         benchmarks=benchmarks,
+                        timestamp=res[0].timestamp,
                     )
 
             outfile = args.outfile
             reporter = get_reporter_implementation(outfile)
-            reporter.write(record, outfile, {})
+            reporter.write(result, outfile, {})
         elif args.command == "compare":
             from nnbench.compare import TabularComparison
 
-            records: list[BenchmarkRecord] = []
-            for file in args.records:
+            results: list[BenchmarkResult] = []
+            for file in args.results:
                 reporter = get_reporter_implementation(file)
-                records.append(reporter.read(file, {}))
+                results.append(reporter.read(file, {}))
 
             comparison_file = args.comparison_file
             comparators = {}
@@ -303,7 +304,7 @@ def main(argv: list[str] | None = None) -> int:
                     klass, kwargs = import_(v["function"]), v.get("kwargs", {})
                     comparators[k] = klass(**kwargs)
 
-            comp = TabularComparison(records, comparators)
+            comp = TabularComparison(results, comparators)
             comp.render()
             return int(not comp.success)
 

@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from nnbench.reporter.file import get_file_io_class
-from nnbench.types import BenchmarkRecord
+from nnbench.types import BenchmarkResult
 
 
 @pytest.mark.parametrize(
@@ -13,12 +13,13 @@ from nnbench.types import BenchmarkRecord
 def test_fileio_writes_no_compression_inline(tmp_path: Path, ext: str) -> None:
     """Tests data integrity for file IO roundtrips with both context modes."""
 
-    rec = BenchmarkRecord(
+    rec = BenchmarkResult(
         run="my-run",
         context={"a": "b", "s": 1, "b.c": 1.0},
         benchmarks=[{"name": "foo", "value": 1}, {"name": "bar", "value": 2}],
+        timestamp=0,
     )
-    file = tmp_path / f"record.{ext}"
+    file = tmp_path / f"result.{ext}"
     f = get_file_io_class(file)
     f.write(rec, file, {})
     rec2 = f.read(file, {})
