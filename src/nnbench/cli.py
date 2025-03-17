@@ -183,6 +183,13 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         help="Records to compare results for. Can be given as local files or remote URIs.",
     )
     compare_parser.add_argument(
+        "--comparison-file",
+        metavar="<JSON>",
+        default=None,
+        type=argparse.FileType("r"),
+        help="A file containing comparison functions to run on benchmarking metrics.",
+    )
+    compare_parser.add_argument(
         "-P",
         "--include-parameter",
         action="append",
@@ -279,17 +286,26 @@ def main(argv: list[str] | None = None) -> int:
             reporter = get_reporter_implementation(outfile)
             reporter.write(record, outfile, {})
         elif args.command == "compare":
-            from nnbench.compare import compare
+            from nnbench.compare import TabularComparison
 
             records: list[BenchmarkRecord] = []
             for file in args.records:
                 reporter = get_reporter_implementation(file)
-                records.append(reporter.read(file, {}))  # TODO: Support options
-            compare(
-                records=records,
-                parameters=args.parameters,
-                contextvals=args.contextvals,
-            )
+                records.append(reporter.read(file, {}))
+
+            comparison_file = args.comparison_file
+            comparators = {}
+            if comparison_file is not None:
+                import json
+
+                comparison_json = json.load(comparison_file)
+                for k, v in comparison_json.items():
+                    klass, kwargs = import_(v["function"]), v.get("kwargs", {})
+                    comparators[k] = klass(**kwargs)
+
+            comp = TabularComparison(records, comparators)
+            comp.render()
+            return int(not comp.success)
 
         return 0
     except Exception as e:
