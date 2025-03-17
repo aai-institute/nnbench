@@ -1,4 +1,4 @@
-"""Contains machinery to compare multiple benchmark records side by side."""
+"""Contains machinery to compare multiple benchmark results side by side."""
 
 import operator
 from collections.abc import Iterable
@@ -7,7 +7,7 @@ from typing import Any, Protocol
 from rich.console import Console
 from rich.table import Table
 
-from nnbench.types import BenchmarkRecord
+from nnbench.types import BenchmarkResult
 
 _MISSING = "N/A"
 _STATUS_KEY = "Status"
@@ -44,10 +44,10 @@ class AbsDiffLessEqual(Comparator):
         return f"|x - y| <= {self.thresh:.2%}"
 
 
-def make_row(record: BenchmarkRecord) -> dict[str, Any]:
+def make_row(result: BenchmarkResult) -> dict[str, Any]:
     d = dict()
-    d["run"] = record.run
-    for bm in record.benchmarks:
+    d["run"] = result.run
+    for bm in result.benchmarks:
         # TODO: Guard against key errors from database queries
         name, value = bm["function"], bm["value"]
         d[name] = value
@@ -55,10 +55,10 @@ def make_row(record: BenchmarkRecord) -> dict[str, Any]:
     return d
 
 
-def get_value_by_name(record: BenchmarkRecord, name: str, missing: str) -> Any:
+def get_value_by_name(result: BenchmarkResult, name: str, missing: str) -> Any:
     """
-    Get the value of a metric by name from a benchmark record, or a placeholder
-    if the metric name is not present in the record.
+    Get the value of a metric by name from a benchmark result, or a placeholder
+    if the metric name is not present in the result.
 
     If the name is found, but the benchmark did not complete successfully
     (i.e. the ``error_occurred`` value is set to ``True``), the returned value
@@ -66,8 +66,8 @@ def get_value_by_name(record: BenchmarkRecord, name: str, missing: str) -> Any:
 
     Parameters
     ----------
-    record: BenchmarkRecord
-        The benchmark record to extract a metric value from.
+    result: BenchmarkResult
+        The benchmark result to extract a metric value from.
     name: str
         The name of the target metric.
     missing: str
@@ -80,11 +80,11 @@ def get_value_by_name(record: BenchmarkRecord, name: str, missing: str) -> Any:
         as rich text.
 
     """
-    metric_names = [b["function"] for b in record.benchmarks]
+    metric_names = [b["function"] for b in result.benchmarks]
     if name not in metric_names:
         return missing
 
-    res = record.benchmarks[metric_names.index(name)]
+    res = result.benchmarks[metric_names.index(name)]
     if res.get("error_occurred", False):
         errmsg = res.get("error_message", "<unknown>")
         return f"[red]ERROR: {errmsg} [/red]"
@@ -112,7 +112,7 @@ class AbstractComparison:
 class TabularComparison(AbstractComparison):
     def __init__(
         self,
-        records: Iterable[BenchmarkRecord],
+        results: Iterable[BenchmarkResult],
         comparators: dict[str, Comparator] | None = None,
         placeholder: str = _MISSING,
     ):
@@ -121,8 +121,8 @@ class TabularComparison(AbstractComparison):
 
         Parameters
         ----------
-        records: Sequence[BenchmarkRecord]
-            The benchmark records to compare.
+        results: Sequence[BenchmarkResult]
+            The benchmark results to compare.
         comparators: dict[str, Comparator]
             A mapping from benchmark functions to comparators, i.e. a function
             comparing two results and returning a boolean indicating a favourable or
@@ -133,14 +133,14 @@ class TabularComparison(AbstractComparison):
         self.placeholder = placeholder
         self.comparators = comparators or {}
 
-        self.records: list[BenchmarkRecord] = list(records)
-        self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.records]
+        self.results: list[BenchmarkResult] = list(results)
+        self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
         self._success: bool = False
 
         self.display_names: dict[str, str] = {}
-        for rec in self.records:
-            for bm in rec.benchmarks:
+        for res in self.results:
+            for bm in res.benchmarks:
                 name, func = bm["name"], bm["function"]
                 if func not in self.display_names:
                     self.display_names[func] = name
@@ -148,7 +148,7 @@ class TabularComparison(AbstractComparison):
                     self.metrics.append(func)
 
         if len(self.data) < 2:
-            raise ValueError("must give at least two records to compare")
+            raise ValueError("must give at least two results to compare")
 
     def compare2(self, name: str, val1: Any, val2: Any) -> bool:
         """
@@ -165,9 +165,9 @@ class TabularComparison(AbstractComparison):
         name: str
             Name of the metric to compare.
         val1: Any
-            Value of the metric in the first benchmark record.
+            Value of the metric in the first benchmark result.
         val2: Any
-            Value of the metric in the second benchmark record.
+            Value of the metric in the second benchmark result.
 
         Returns
         -------
@@ -187,10 +187,6 @@ class TabularComparison(AbstractComparison):
             return f"{val:.2f}"
 
     def render(self) -> None:
-        """
-        Compare a series of benchmark records, displaying their results in a table
-        side by side.
-        """
         c = Console()
         t = Table()
 
@@ -233,5 +229,4 @@ class TabularComparison(AbstractComparison):
 
     @property
     def success(self) -> bool:
-        """Indicates if the current comparison was successful."""
         return self._success

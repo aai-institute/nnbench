@@ -48,8 +48,8 @@ from nnbench.reporter import ConsoleReporter
 benchmarks = nnbench.collect("__main__")
 reporter = ConsoleReporter()
 # To collect in the current file, pass "__main__" as module name.
-record = nnbench.run(benchmarks, params={"model": model, "X_test": X_test, "y_test": y_test})
-reporter.write(record)
+result = nnbench.run(benchmarks, params={"model": model, "X_test": X_test, "y_test": y_test})
+reporter.write(result)
 ```
 
 The resulting output might look like this:

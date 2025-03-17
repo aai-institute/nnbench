@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import IO, Any, Literal, Protocol, cast
 
 from nnbench.reporter.util import get_extension, get_protocol
-from nnbench.types import BenchmarkRecord
+from nnbench.types import BenchmarkResult
 
 
 def make_file_descriptor(
@@ -30,10 +30,10 @@ def make_file_descriptor(
 
 
 class BenchmarkFileIO(Protocol):
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord: ...
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult: ...
 
     def write(
-        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None: ...
 
 
@@ -48,17 +48,17 @@ class YAMLFileIO(BenchmarkFileIO):
         except ImportError:
             raise ModuleNotFoundError("`pyyaml` is not installed")
 
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         del options
         with make_file_descriptor(fp, mode="r") as fd:
             bms = self.yaml.safe_load(fd)
-        return BenchmarkRecord.expand(bms)
+        return BenchmarkResult.from_records(bms)
 
     def write(
-        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
         with make_file_descriptor(fp, mode="w") as fd:
-            self.yaml.safe_dump(record.to_json(), fd, **options)
+            self.yaml.safe_dump(result.to_records(), fd, **options)
 
 
 class JSONFileIO(BenchmarkFileIO):
@@ -69,26 +69,27 @@ class JSONFileIO(BenchmarkFileIO):
 
         self.json = json
 
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         newline_delimited = Path(fp).suffix == ".ndjson"
         benchmarks: list[dict[str, Any]]
         with make_file_descriptor(fp, mode="r") as fd:
             if newline_delimited:
                 benchmarks = [self.json.loads(line, **options) for line in fd]
+                return BenchmarkResult.from_records(benchmarks)
             else:
                 benchmarks = self.json.load(fd, **options)
-            return BenchmarkRecord.expand(benchmarks)
+                return BenchmarkResult.from_json(benchmarks)
 
     def write(
-        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
         newline_delimited = Path(fp).suffix == ".ndjson"
         with make_file_descriptor(fp, mode="w") as fd:
             if newline_delimited:
-                bms = record.to_list()
+                bms = result.to_records()
                 fd.write("\n".join([self.json.dumps(b, **options) for b in bms]))
             else:
-                self.json.dump(record.to_json(), fd, **options)
+                self.json.dump(result.to_json(), fd, **options)
 
 
 class CSVFileIO(BenchmarkFileIO):
@@ -99,7 +100,7 @@ class CSVFileIO(BenchmarkFileIO):
 
         self.csv = csv
 
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         import json
 
         with make_file_descriptor(fp, mode="r") as fd:
@@ -117,12 +118,12 @@ class CSVFileIO(BenchmarkFileIO):
                     # TODO: This does not play nicely with doublequote, maybe re.sub?
                     strctx = strctx.replace("'", '"')
                     bm["context"] = json.loads(strctx)
-            return BenchmarkRecord.expand(benchmarks)
+            return BenchmarkResult.from_records(benchmarks)
 
     def write(
-        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
-        bm = record.to_list()
+        bm = result.to_records()
         with make_file_descriptor(fp, mode="w") as fd:
             writer = self.csv.DictWriter(fd, fieldnames=bm[0].keys(), **options)
             writer.writeheader()
@@ -139,17 +140,17 @@ class ParquetFileIO(BenchmarkFileIO):
 
         self.pyarrow_parquet = pq
 
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkRecord:
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         table = self.pyarrow_parquet.read_table(str(fp), **options)
         benchmarks: list[dict[str, Any]] = table.to_pylist()
-        return BenchmarkRecord.expand(benchmarks)
+        return BenchmarkResult.from_records(benchmarks)
 
     def write(
-        self, record: BenchmarkRecord, fp: str | os.PathLike[str], options: dict[str, Any]
+        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
         from pyarrow import Table
 
-        table = Table.from_pylist(record.to_list())
+        table = Table.from_pylist(result.to_records())
         self.pyarrow_parquet.write_table(table, str(fp), **options)
 
 
@@ -191,7 +192,7 @@ class FileReporter:
     def read(
         file: str | os.PathLike[str],
         options: dict[str, Any] | None = None,
-    ) -> BenchmarkRecord:
+    ) -> BenchmarkResult:
         """
         Reads a benchmark record from the given file path.
 
@@ -206,7 +207,7 @@ class FileReporter:
 
         Returns
         -------
-        BenchmarkRecord
+        BenchmarkResult
             The benchmark record contained in the file.
 
         Raises
@@ -220,7 +221,7 @@ class FileReporter:
 
     @staticmethod
     def write(
-        record: BenchmarkRecord,
+        result: BenchmarkResult,
         file: str | os.PathLike[str],
         options: dict[str, Any] | None = None,
     ) -> None:
@@ -231,7 +232,7 @@ class FileReporter:
 
         Parameters
         ----------
-        record: BenchmarkRecord
+        result: BenchmarkResult
             The record to write to the database.
         file: str | os.PathLike[str]
             The file name, or object, to write to.
@@ -244,4 +245,4 @@ class FileReporter:
             If the extension of the given file is not supported.
         """
         file_io = get_file_io_class(file)
-        file_io.write(record, file, options or {})
+        file_io.write(result, file, options or {})

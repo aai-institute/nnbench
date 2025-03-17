@@ -3,7 +3,7 @@ from contextlib import ExitStack
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
 
-from nnbench.types import BenchmarkRecord
+from nnbench.types import BenchmarkResult
 
 if TYPE_CHECKING:
     from mlflow import ActiveRun as ActiveRun
@@ -12,10 +12,10 @@ if TYPE_CHECKING:
 class BenchmarkServiceIO(Protocol):
     def read(
         self, uri: str | os.PathLike[str], query: str | None, options: dict[str, Any]
-    ) -> BenchmarkRecord: ...
+    ) -> BenchmarkResult: ...
 
     def write(
-        self, record: BenchmarkRecord, uri: str | os.PathLike[str], options: dict[str, Any]
+        self, record: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
     ) -> None: ...
 
 
@@ -45,11 +45,11 @@ class MLFlowIO(BenchmarkServiceIO):
 
     def read(
         self, uri: str | os.PathLike[str], query: str | None, options: dict[str, Any]
-    ) -> BenchmarkRecord:
+    ) -> BenchmarkResult:
         raise NotImplementedError
 
     def write(
-        self, record: BenchmarkRecord, uri: str | os.PathLike[str], options: dict[str, Any]
+        self, record: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
         uri = self.strip_protocol(uri)
         try:
