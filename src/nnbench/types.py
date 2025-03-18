@@ -2,11 +2,14 @@
 
 import copy
 import inspect
+import json
+import os
 import sys
+from collections import defaultdict
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import asdict, dataclass, field
 from types import MappingProxyType
-from typing import Any, TypeVar
+from typing import Any, Protocol, TypeVar
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -62,18 +65,17 @@ class BenchmarkResult:
         """
         return asdict(self)
 
-    def to_records(self) -> list[dict[str, Any]]:  # TODO: Use typed dict
+    def to_records(self) -> list[dict[str, Any]]:
         """
         Export a benchmark record to a list of individual results,
-        each with the benchmark run name and context inlined.
+        each with the benchmark run, context, and timestamp inlined.
         """
         records = []
-        for b in self.benchmarks:
-            bc = copy.deepcopy(b)
-            bc["context"] = self.context
-            bc["run"] = self.run
-            bc["timestamp"] = self.timestamp
-            records.append(bc)
+        data = {"run": self.run, "context": json.dumps(self.context), "timestamp": self.timestamp}
+        for bm in self.benchmarks:
+            d = copy.deepcopy(data)
+            d["benchmark"] = json.dumps(bm)
+            records.append(d)
         return records
 
     @classmethod
@@ -98,7 +100,7 @@ class BenchmarkResult:
         return cls(run=run, benchmarks=benchmarks, context=context, timestamp=timestamp)
 
     @classmethod
-    def from_records(cls, bms: list[dict[str, Any]]) -> Self:
+    def from_records(cls, records: list[dict[str, Any]]) -> list[Self]:
         """
         Expand a list of deserialized JSON-like objects into a benchmark record.
         This is equivalent to extracting the context given by the method it was
@@ -106,27 +108,40 @@ class BenchmarkResult:
 
         Parameters
         ----------
-        bms: list[dict[str, Any]]
-            The deserialized benchmark record or list of records to from_records into a record.
+        records: list[dict[str, Any]]
+            The deserialized benchmark records (i.e. database rows) to form into a
+            benchmark result.
 
         Returns
         -------
         BenchmarkResult
-            The resulting record, with the context and run name extracted.
+            The result representation, with the context and run name extracted.
         """
-        context: dict[str, Any]
-        run = ""
-        context = {}
-        benchmarks = bms
-        timestamp = 0
-        for b in benchmarks:
-            if "run" in b:
-                run = b.pop("run")
-            if "context" in b:
-                context |= b.pop("context", {})
-            if "timestamp" in b:
-                timestamp = b.pop("timestamp")
-        return cls(run=run, benchmarks=benchmarks, context=context, timestamp=timestamp)
+        ret: list[Self] = []
+        benchmark_map = defaultdict(list)
+        run_map: dict[str, Any] = {}
+        for r in records:
+            res = {}
+            run = r.pop("run", "")
+            # The following 3 values don't change across a run
+            res["run"] = run
+            res["context"] = json.loads(r.pop("context", "{}"))
+            res["timestamp"] = r.pop("timestamp", 0)
+            run_map[run] = res
+            benchmark_map[run].append(json.loads(r.pop("benchmark", "{}")))
+
+        for run, res in run_map.items():
+            res["benchmarks"] = benchmark_map[run]
+            ret.append(cls(**res))
+        return ret
+
+
+class BenchmarkReporter(Protocol):
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult: ...
+
+    def write(
+        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
+    ) -> None: ...
 
 
 @dataclass(init=False, frozen=True)

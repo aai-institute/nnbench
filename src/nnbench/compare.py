@@ -133,7 +133,7 @@ class TabularComparison(AbstractComparison):
         self.placeholder = placeholder
         self.comparators = comparators or {}
 
-        self.results: list[BenchmarkResult] = list(results)
+        self.results: list[BenchmarkResult] = list(*results)
         self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
         self._success: bool = False
@@ -190,15 +190,18 @@ class TabularComparison(AbstractComparison):
         c = Console()
         t = Table()
 
-        if self.comparators:
+        has_comparable_metrics = set(self.metrics) & self.comparators.keys()
+        if has_comparable_metrics:
             c.print("Comparison strategy: All vs. first")
             c.print("Comparisons:")
             for k, v in self.comparators.items():
                 c.print(f"    {k}: {v}")
+        else:
+            print(f"warning: no comparators found for metrics {', '.join(self.metrics)}")
 
         rows: list[list[str]] = []
         columns: list[str] = ["Run Name"] + list(self.display_names.values())
-        if set(self.metrics) | self.comparators.keys():
+        if has_comparable_metrics:
             columns += ["Status"]
 
         for i, d in enumerate(self.data):

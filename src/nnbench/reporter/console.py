@@ -5,8 +5,7 @@ from typing import Any
 from rich.console import Console
 from rich.table import Table
 
-from nnbench.reporter.file import BenchmarkFileIO
-from nnbench.types import BenchmarkResult
+from nnbench.types import BenchmarkReporter, BenchmarkResult
 
 _MISSING = "-----"
 
@@ -18,7 +17,7 @@ def get_value_by_name(result: dict[str, Any]) -> str:
     return str(result.get("value", _MISSING))
 
 
-class ConsoleReporter(BenchmarkFileIO):
+class ConsoleReporter(BenchmarkReporter):
     """
     The base interface for a console reporter class.
 
