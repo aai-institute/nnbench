@@ -1,25 +1,15 @@
 import os
 from contextlib import ExitStack
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Protocol
+from typing import TYPE_CHECKING, Any
 
-from nnbench.types import BenchmarkResult
+from nnbench.types import BenchmarkReporter, BenchmarkResult
 
 if TYPE_CHECKING:
     from mlflow import ActiveRun as ActiveRun
 
 
-class BenchmarkServiceIO(Protocol):
-    def read(
-        self, uri: str | os.PathLike[str], query: str | None, options: dict[str, Any]
-    ) -> BenchmarkResult: ...
-
-    def write(
-        self, record: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
-    ) -> None: ...
-
-
-class MLFlowIO(BenchmarkServiceIO):
+class MLFlowReporter(BenchmarkReporter):
     def __init__(self):
         import mlflow
 
@@ -43,13 +33,11 @@ class MLFlowIO(BenchmarkServiceIO):
         else:
             return self.mlflow.start_run(run_name=run_name, nested=nested)
 
-    def read(
-        self, uri: str | os.PathLike[str], query: str | None, options: dict[str, Any]
-    ) -> BenchmarkResult:
+    def read(self, uri: str | os.PathLike[str], queryoptions: dict[str, Any]) -> BenchmarkResult:
         raise NotImplementedError
 
     def write(
-        self, record: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
+        self, result: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
         uri = self.strip_protocol(uri)
         try:
@@ -67,8 +55,8 @@ class MLFlowIO(BenchmarkServiceIO):
             run = self.stack.enter_context(self.get_or_create_run(run_name=s, nested=True))
 
         run_id = run.info.run_id
-        self.mlflow.log_dict(record.context, "context.json", run_id=run_id)
-        for bm in record.benchmarks:
+        self.mlflow.log_dict(result.context, "context.json", run_id=run_id)
+        for bm in result.benchmarks:
             name, value = bm["name"], bm["value"]
             timestamp = bm["timestamp"]
             self.mlflow.log_metric(name, value, timestamp=timestamp, run_id=run_id)

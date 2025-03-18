@@ -23,10 +23,11 @@ def test_fileio_writes_no_compression_inline(tmp_path: Path, ext: str) -> None:
     f = get_file_io_class(file)
     f.write(rec, file, {})
     rec2 = f.read(file, {})
-    # Python stdlib csv coerces everything to string.
+    if isinstance(rec2, list):
+        rec2 = rec2[0]
     if ext == "csv":
         for bm1, bm2 in zip(rec.benchmarks, rec2.benchmarks):
             assert bm1.keys() == bm2.keys()
-            assert set(map(str, bm1.values())) == set(bm2.values())
+            assert set(bm1.values()) == set(bm2.values())
     else:
         assert rec2 == rec

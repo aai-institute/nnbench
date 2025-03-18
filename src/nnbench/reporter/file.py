@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
-from typing import IO, Any, Literal, Protocol, cast
+from typing import IO, Any, Literal, cast
 
+from nnbench.reporter import BenchmarkReporter
 from nnbench.reporter.util import get_extension, get_protocol
 from nnbench.types import BenchmarkResult
 
@@ -29,82 +30,64 @@ def make_file_descriptor(
     raise TypeError("filename must be a str, bytes, file or PathLike object")
 
 
-class BenchmarkFileIO(Protocol):
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult: ...
-
-    def write(
-        self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
-    ) -> None: ...
-
-
-class YAMLFileIO(BenchmarkFileIO):
+class YAMLFileIO(BenchmarkReporter):
     extensions = (".yaml", ".yml")
 
-    def __init__(self):
-        try:
-            import yaml
-
-            self.yaml = yaml
-        except ImportError:
-            raise ModuleNotFoundError("`pyyaml` is not installed")
-
     def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
+        import yaml
+
         del options
         with make_file_descriptor(fp, mode="r") as fd:
-            bms = self.yaml.safe_load(fd)
+            bms = yaml.safe_load(fd)
         return BenchmarkResult.from_records(bms)
 
     def write(
         self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
+        import yaml
+
         with make_file_descriptor(fp, mode="w") as fd:
-            self.yaml.safe_dump(result.to_records(), fd, **options)
+            yaml.safe_dump(result.to_records(), fd, **options)
 
 
-class JSONFileIO(BenchmarkFileIO):
+class JSONFileIO(BenchmarkReporter):
     extensions = (".json", ".ndjson")
 
-    def __init__(self):
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         import json
 
-        self.json = json
-
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         newline_delimited = Path(fp).suffix == ".ndjson"
         benchmarks: list[dict[str, Any]]
         with make_file_descriptor(fp, mode="r") as fd:
             if newline_delimited:
-                benchmarks = [self.json.loads(line, **options) for line in fd]
+                benchmarks = [json.loads(line, **options) for line in fd]
                 return BenchmarkResult.from_records(benchmarks)
             else:
-                benchmarks = self.json.load(fd, **options)
+                benchmarks = json.load(fd, **options)
                 return BenchmarkResult.from_json(benchmarks)
 
     def write(
         self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
+        import json
+
         newline_delimited = Path(fp).suffix == ".ndjson"
         with make_file_descriptor(fp, mode="w") as fd:
             if newline_delimited:
                 bms = result.to_records()
-                fd.write("\n".join([self.json.dumps(b, **options) for b in bms]))
+                fd.write("\n".join([json.dumps(b, **options) for b in bms]))
             else:
-                self.json.dump(result.to_json(), fd, **options)
+                json.dump(result.to_json(), fd, **options)
 
 
-class CSVFileIO(BenchmarkFileIO):
+class CSVFileIO(BenchmarkReporter):
     extensions = (".csv",)
 
-    def __init__(self):
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         import csv
 
-        self.csv = csv
-
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
-        import json
-
         with make_file_descriptor(fp, mode="r") as fd:
-            reader = self.csv.DictReader(fd, **options)
+            reader = csv.DictReader(fd, **options)
             benchmarks: list[dict[str, Any]] = []
             # csv.DictReader has no appropriate type hint for __next__,
             # so we supply one ourselves.
@@ -117,44 +100,44 @@ class CSVFileIO(BenchmarkFileIO):
                     strctx: str = bm["context"]
                     # TODO: This does not play nicely with doublequote, maybe re.sub?
                     strctx = strctx.replace("'", '"')
-                    bm["context"] = json.loads(strctx)
+                    bm["context"] = strctx
             return BenchmarkResult.from_records(benchmarks)
 
     def write(
         self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
+        import csv
+
         bm = result.to_records()
         with make_file_descriptor(fp, mode="w") as fd:
-            writer = self.csv.DictWriter(fd, fieldnames=bm[0].keys(), **options)
+            writer = csv.DictWriter(fd, fieldnames=bm[0].keys(), **options)
             writer.writeheader()
 
             for b in bm:
                 writer.writerow(b)
 
 
-class ParquetFileIO(BenchmarkFileIO):
+class ParquetFileIO(BenchmarkReporter):
     extensions = (".parquet", ".pq")
 
-    def __init__(self):
+    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
         import pyarrow.parquet as pq
 
-        self.pyarrow_parquet = pq
-
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
-        table = self.pyarrow_parquet.read_table(str(fp), **options)
+        table = pq.read_table(str(fp), **options)
         benchmarks: list[dict[str, Any]] = table.to_pylist()
         return BenchmarkResult.from_records(benchmarks)
 
     def write(
         self, result: BenchmarkResult, fp: str | os.PathLike[str], options: dict[str, Any]
     ) -> None:
+        import pyarrow.parquet as pq
         from pyarrow import Table
 
         table = Table.from_pylist(result.to_records())
-        self.pyarrow_parquet.write_table(table, str(fp), **options)
+        pq.write_table(table, str(fp), **options)
 
 
-_file_io_mapping: dict[str, type[BenchmarkFileIO]] = {
+_file_io_mapping: dict[str, type[BenchmarkReporter]] = {
     ".yaml": YAMLFileIO,
     ".yml": YAMLFileIO,
     ".json": JSONFileIO,
@@ -165,7 +148,7 @@ _file_io_mapping: dict[str, type[BenchmarkFileIO]] = {
 }
 
 
-def get_file_io_class(file: str | os.PathLike[str]) -> BenchmarkFileIO:
+def get_file_io_class(file: str | os.PathLike[str]) -> BenchmarkReporter:
     ext = get_extension(file)
     try:
         return _file_io_mapping[ext]()
@@ -173,7 +156,9 @@ def get_file_io_class(file: str | os.PathLike[str]) -> BenchmarkFileIO:
         raise ValueError(f"unsupported benchmark file format {ext!r}") from None
 
 
-def register_file_io_class(name: str, klass: type[BenchmarkFileIO], clobber: bool = False) -> None:
+def register_file_io_class(
+    name: str, klass: type[BenchmarkReporter], clobber: bool = False
+) -> None:
     if name in _file_io_mapping and not clobber:
         raise RuntimeError(
             f"driver {name!r} is already registered "

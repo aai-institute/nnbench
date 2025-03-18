@@ -5,11 +5,14 @@ files, databases, or web services.
 
 import os
 
-from .console import ConsoleReporter
-from .file import BenchmarkFileIO, FileReporter
-from .service import BenchmarkServiceIO, MLFlowIO
+from nnbench.types import BenchmarkReporter
 
-_known_reporters = {
+from .console import ConsoleReporter
+from .file import FileReporter
+from .mlflow import MLFlowReporter
+from .sqlite import SQLiteReporter
+
+_known_reporters: dict[str, type[BenchmarkReporter]] = {
     "stdout": ConsoleReporter,
     "s3": FileReporter,
     "gs": FileReporter,
@@ -17,13 +20,12 @@ _known_reporters = {
     "az": FileReporter,
     "lakefs": FileReporter,
     "file": FileReporter,
-    "mlflow": MLFlowIO,
+    "mlflow": MLFlowReporter,
+    "sqlite": SQLiteReporter,
 }
 
 
-def get_reporter_implementation(
-    uri: str | os.PathLike[str],
-) -> BenchmarkFileIO | BenchmarkServiceIO:
+def get_reporter_implementation(uri: str | os.PathLike[str]) -> BenchmarkReporter:
     import sys
 
     if uri is sys.stdout:
@@ -35,13 +37,15 @@ def get_reporter_implementation(
     try:
         return _known_reporters[proto]()
     except KeyError:
-        raise ValueError(f"unsupported benchmark IO protocol {proto!r}") from None
+        raise ValueError(f"no benchmark reporter registered for format {proto!r}") from None
 
 
-def register_io_implementation(name: str, klass: type, clobber: bool = False) -> None:
+def register_reporter_implementation(
+    name: str, klass: type[BenchmarkReporter], clobber: bool = False
+) -> None:
     if name in _known_reporters and not clobber:
         raise RuntimeError(
-            f"benchmark IO {name!r} is already registered "
+            f"benchmark reporter {name!r} is already registered "
             f"(to force registration, rerun with clobber=True)"
         )
     _known_reporters[name] = klass
