@@ -50,6 +50,6 @@ class SQLiteReporter(BenchmarkReporter):
         # TODO: Guard by exists_ok state
         cursor.execute(_DEFAULT_CREATION_QUERY)
 
-        records = result.to_records()
+        records = result.to_records(stringify=True)
         cursor.executemany(query, records)
         conn.commit()

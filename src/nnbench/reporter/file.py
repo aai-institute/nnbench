@@ -96,11 +96,9 @@ class CSVFileIO(BenchmarkReporter):
                 benchmarks.append(bm)
                 # it can happen that the context is inlined as a stringified JSON object
                 # (e.g. in CSV), so we optionally JSON-load the context.
-                if "context" in bm:
-                    strctx: str = bm["context"]
-                    # TODO: This does not play nicely with doublequote, maybe re.sub?
-                    strctx = strctx.replace("'", '"')
-                    bm["context"] = strctx
+                for key in ("context", "benchmark"):
+                    bm[key] = bm[key].replace("'", '"')
+
             return BenchmarkResult.from_records(benchmarks)
 
     def write(

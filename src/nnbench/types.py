@@ -65,16 +65,25 @@ class BenchmarkResult:
         """
         return asdict(self)
 
-    def to_records(self) -> list[dict[str, Any]]:
+    def to_records(self, stringify: bool = False) -> list[dict[str, Any]]:
         """
         Export a benchmark record to a list of individual results,
         each with the benchmark run, context, and timestamp inlined.
+
+        Parameters
+        ----------
+        stringify: bool
+            Whether to dump struct values (context, benchmark result value) into a
+            JSON string. This is useful when streaming structs to databases, which
+            generally expect JSON data as strings.
         """
         records = []
-        data = {"run": self.run, "context": json.dumps(self.context), "timestamp": self.timestamp}
+        context = json.dumps(self.context) if stringify else self.context
+
+        data = {"run": self.run, "context": context, "timestamp": self.timestamp}
         for bm in self.benchmarks:
             d = copy.deepcopy(data)
-            d["benchmark"] = json.dumps(bm)
+            d["benchmark"] = json.dumps(bm) if stringify else bm
             records.append(d)
         return records
 
@@ -117,18 +126,26 @@ class BenchmarkResult:
         BenchmarkResult
             The result representation, with the context and run name extracted.
         """
+        def _maybe_load_json(val):
+            if isinstance(val, str):
+                return json.loads(val)
+            return val
+
         ret: list[Self] = []
         benchmark_map = defaultdict(list)
         run_map: dict[str, Any] = {}
         for r in records:
             res = {}
             run = r.pop("run", "")
-            # The following 3 values don't change across a run
+            # Context, timestamp, and run name don't change across a run
             res["run"] = run
-            res["context"] = json.loads(r.pop("context", "{}"))
+            context = r.pop("context", {})
+            res["context"] = _maybe_load_json(context)
             res["timestamp"] = r.pop("timestamp", 0)
             run_map[run] = res
-            benchmark_map[run].append(json.loads(r.pop("benchmark", "{}")))
+            bm_value = r.pop("benchmark", {})
+            if bm_value:
+                benchmark_map[run].append(_maybe_load_json(bm_value))
 
         for run, res in run_map.items():
             res["benchmarks"] = benchmark_map[run]
