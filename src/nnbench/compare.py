@@ -124,7 +124,7 @@ class TabularComparison(AbstractComparison):
         ----------
         results: Iterable[BenchmarkResult]
             The benchmark results to compare.
-        comparators: dict[str, Comparator]
+        comparators: dict[str, Comparator] | None
             A mapping from benchmark functions to comparators, i.e. a function
             comparing two results and returning a boolean indicating a favourable or
             unfavourable comparison.
@@ -136,7 +136,7 @@ class TabularComparison(AbstractComparison):
         self.results: tuple[BenchmarkResult, ...] = tuple(collapse(results))
         self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
-        self._success: bool = False
+        self._success: bool = True
 
         self.display_names: dict[str, str] = {}
         for res in self.results:
