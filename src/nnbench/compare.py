@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from nnbench.types import BenchmarkResult
+from nnbench.util import collapse
 
 _MISSING = "N/A"
 _STATUS_KEY = "Status"
@@ -121,7 +122,7 @@ class TabularComparison(AbstractComparison):
 
         Parameters
         ----------
-        results: Sequence[BenchmarkResult]
+        results: Iterable[BenchmarkResult]
             The benchmark results to compare.
         comparators: dict[str, Comparator]
             A mapping from benchmark functions to comparators, i.e. a function
@@ -132,8 +133,7 @@ class TabularComparison(AbstractComparison):
         """
         self.placeholder = placeholder
         self.comparators = comparators or {}
-
-        self.results: list[BenchmarkResult] = list(*results)
+        self.results: tuple[BenchmarkResult, ...] = tuple(collapse(results))
         self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
         self._success: bool = False
@@ -215,7 +215,7 @@ class TabularComparison(AbstractComparison):
                     cd = self.data[0]
                     compval = cd.get(metric, self.placeholder)
                     success = self.compare2(metric, val, compval)
-                    self._success |= success
+                    self._success &= success
                     status += ":white_check_mark:" if success else ":x:"
                     sval += " (vs. " + self.format_value(metric, compval) + ")"
                 row += [sval]
