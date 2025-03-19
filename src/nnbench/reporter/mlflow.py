@@ -55,8 +55,8 @@ class MLFlowReporter(BenchmarkReporter):
             run = self.stack.enter_context(self.get_or_create_run(run_name=s, nested=True))
 
         run_id = run.info.run_id
+        timestamp = result.timestamp
         self.mlflow.log_dict(result.context, "context.json", run_id=run_id)
         for bm in result.benchmarks:
             name, value = bm["name"], bm["value"]
-            timestamp = bm["timestamp"]
             self.mlflow.log_metric(name, value, timestamp=timestamp, run_id=run_id)
