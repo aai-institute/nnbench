@@ -6,6 +6,8 @@
 #     "flax",
 #     "zenml",
 #     "nnbench @ /Users/nicholasjunge/Workspaces/python/nnbench",
+#     "requests",
+#     "aiohttp",
 # ]
 # ///
 
