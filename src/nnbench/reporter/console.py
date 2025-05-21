@@ -39,14 +39,14 @@ class ConsoleReporter(BenchmarkReporter):
         # TODO: Add context manager to register live console prints
         self.console = Console(**kwargs)
 
-    def read(self, fp: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
+    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         raise NotImplementedError
 
     def write(
         self,
         result: BenchmarkResult,
         outfile: str | os.PathLike[str] = None,
-        options: dict[str, Any] | None = None,
+        **options: Any,
     ) -> None:
         """
         Display a benchmark result in the console as a rich-text table.
@@ -63,7 +63,7 @@ class ConsoleReporter(BenchmarkReporter):
             The benchmark result to display.
         outfile: str | os.PathLike[str]
             For compatibility with the `BenchmarkFileIO` interface, unused.
-        options: dict[str, Any]
+        options: Any
             Display options used to format the resulting table.
         """
         del outfile
