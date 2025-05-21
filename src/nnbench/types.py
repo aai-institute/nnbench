@@ -139,7 +139,9 @@ class BenchmarkResult:
 class BenchmarkReporter(Protocol):
     def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]: ...
 
-    def write(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None: ...
+    def write(
+        self, results: Iterable[BenchmarkResult], fp: str | os.PathLike[str], **kwargs: Any
+    ) -> None: ...
 
 
 @dataclass(init=False, frozen=True)

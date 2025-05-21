@@ -1,5 +1,6 @@
 import json
 import os
+from collections.abc import Iterable
 from typing import Any
 
 from rich.console import Console
@@ -44,7 +45,7 @@ class ConsoleReporter(BenchmarkReporter):
 
     def write(
         self,
-        result: BenchmarkResult,
+        results: Iterable[BenchmarkResult],
         outfile: str | os.PathLike[str] = None,
         **options: Any,
     ) -> None:
@@ -72,17 +73,18 @@ class ConsoleReporter(BenchmarkReporter):
         rows: list[list[str]] = []
         columns: list[str] = ["Benchmark", "Value", "Wall time (ns)", "Parameters"]
 
-        # print context values
-        print("Context values:")
-        print(json.dumps(result.context, indent=4))
+        for res in results:
+            # print context values
+            print("Context values:")
+            print(json.dumps(res.context, indent=4))
 
-        for bm in result.benchmarks:
-            row = [bm["name"], get_value_by_name(bm), str(bm["time_ns"]), str(bm["parameters"])]
-            rows.append(row)
+            for bm in res.benchmarks:
+                row = [bm["name"], get_value_by_name(bm), str(bm["time_ns"]), str(bm["parameters"])]
+                rows.append(row)
 
-        for column in columns:
-            t.add_column(column)
-        for row in rows:
-            t.add_row(*row)
+            for column in columns:
+                t.add_column(column)
+            for row in rows:
+                t.add_row(*row)
 
-        self.console.print(t, overflow="ellipsis")
+            self.console.print(t, overflow="ellipsis")

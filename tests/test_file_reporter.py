@@ -21,10 +21,8 @@ def test_file_reporter_roundtrip(tmp_path: Path, ext: str) -> None:
     )
     file = tmp_path / f"result.{ext}"
     f = FileReporter()
-    f.write(res, file)
-    res2 = f.read(file)
-    if isinstance(res2, list):
-        res2 = res2[0]
+    f.write([res], file)
+    (res2,) = f.read(file)
 
     if ext == "csv":
         for bm1, bm2 in zip(res.benchmarks, res2.benchmarks):
