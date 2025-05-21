@@ -60,7 +60,7 @@ class ConsoleReporter(BenchmarkReporter):
 
         Parameters
         ----------
-        result: BenchmarkResult
+        results: Iterable[BenchmarkResult]
             The benchmark result to display.
         outfile: str | os.PathLike[str]
             For compatibility with the `BenchmarkFileIO` interface, unused.
