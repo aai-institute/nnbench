@@ -189,6 +189,14 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
         type=argparse.FileType("r"),
         help="A file containing comparison functions to run on benchmarking metrics.",
     )
+    # compare_parser.add_argument(
+    #     "--read-option",
+    #     action="append",
+    #     default=list(),
+    #     metavar="<opt>",
+    #     dest="read_options",
+    #     help="A file containing comparison functions to run on benchmarking metrics.",
+    # )
     compare_parser.add_argument(
         "-P",
         "--include-parameter",
@@ -285,14 +293,18 @@ def main(argv: list[str] | None = None) -> int:
 
             outfile = args.outfile
             reporter = get_reporter_implementation(outfile)
-            reporter.write(result, outfile, {})
+            reporter.write([result], outfile)
         elif args.command == "compare":
             from nnbench.compare import TabularComparison
 
             results: list[BenchmarkResult] = []
+            # read_options = {}
+            # for stropt in args.read_options:
+            #     k, v = stropt.split("=")
+            #     read_options[k] = v
             for file in args.results:
                 reporter = get_reporter_implementation(file)
-                results.append(reporter.read(file, {}))
+                results.extend(reporter.read(file))
 
             comparison_file = args.comparison_file
             comparators = {}
