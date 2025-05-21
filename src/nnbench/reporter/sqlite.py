@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from collections.abc import Iterable
 from typing import Any
 
 from nnbench import BenchmarkResult
@@ -40,7 +41,9 @@ class SQLiteReporter(BenchmarkReporter):
         conn.close()
         return BenchmarkResult.from_records(records)
 
-    def write(self, result: BenchmarkResult, uri: str | os.PathLike[str], **kwargs: Any) -> None:
+    def write(
+        self, results: Iterable[BenchmarkResult], uri: str | os.PathLike[str], **kwargs: Any
+    ) -> None:
         uri = self.strip_protocol(uri)
         query: str | None = kwargs.pop("query", _DEFAULT_INSERT_QUERY)
         if query is None:
@@ -52,6 +55,8 @@ class SQLiteReporter(BenchmarkReporter):
         # TODO: Guard by exists_ok state
         cursor.execute(_DEFAULT_CREATION_QUERY)
 
-        records = result.to_records()
+        records = []
+        for res in results:
+            records.extend(res.to_records())
         cursor.executemany(query, records)
         conn.commit()

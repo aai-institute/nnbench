@@ -1,4 +1,5 @@
 import os
+from collections.abc import Iterable
 from pathlib import Path
 from typing import IO, Any, Literal, cast
 
@@ -176,18 +177,23 @@ class FileReporter:
                 return BenchmarkResult.from_records(benchmarks)
             else:
                 benchmarks = json.load(fd, **kwargs)
-                return BenchmarkResult.from_json(benchmarks)
+                return [BenchmarkResult.from_json(bm) for bm in benchmarks]
 
-    def to_json(self, result: BenchmarkResult, file: str | os.PathLike[str], **kwargs: Any) -> None:
+    def to_json(
+        self, results: Iterable[BenchmarkResult], file: str | os.PathLike[str], **kwargs: Any
+    ) -> None:
         import json
 
         newline_delimited = Path(file).suffix == ".ndjson"
+        result_list = []
         with make_file_descriptor(file, mode="w") as fd:
             if newline_delimited:
-                bms = result.to_records()
-                fd.write("\n".join([json.dumps(b, **kwargs) for b in bms]))
+                for r in results:
+                    result_list += r.to_records()
+                fd.write("\n".join([json.dumps(r, **kwargs) for r in result_list]))
             else:
-                json.dump(result.to_json(), fd, **kwargs)
+                result_list = [r.to_json() for r in results]
+                json.dump(result_list, fd, **kwargs)
 
     def from_yaml(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         import yaml
@@ -197,11 +203,16 @@ class FileReporter:
             bms = yaml.safe_load(fd)
         return BenchmarkResult.from_records(bms)
 
-    def to_yaml(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None:
+    def to_yaml(
+        self, results: Iterable[BenchmarkResult], fp: str | os.PathLike[str], **kwargs: Any
+    ) -> None:
         import yaml
 
+        result_list = []
+        for r in results:
+            result_list.extend(r.to_records())
         with make_file_descriptor(fp, mode="w") as fd:
-            yaml.safe_dump(result.to_records(), fd, **kwargs)
+            yaml.safe_dump(result_list, fd, **kwargs)
 
     def from_parquet(self, file: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         import pyarrow.parquet as pq
@@ -211,15 +222,18 @@ class FileReporter:
         return BenchmarkResult.from_records(benchmarks)
 
     def to_parquet(
-        self, result: BenchmarkResult, file: str | os.PathLike[str], **kwargs: Any
+        self, results: Iterable[BenchmarkResult], file: str | os.PathLike[str], **kwargs: Any
     ) -> None:
         import pyarrow.parquet as pq
         from pyarrow import Table
 
-        table = Table.from_pylist(result.to_records())
+        result_list = []
+        for r in results:
+            result_list.extend(r.to_records())
+        table = Table.from_pylist(result_list)
         pq.write_table(table, str(file), **kwargs)
 
-    def read(self, file: str | os.PathLike[str], **kwargs: Any) -> BenchmarkResult:
+    def read(self, file: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         """
         Reads a benchmark record from the given file path.
 
@@ -237,8 +251,8 @@ class FileReporter:
 
         Returns
         -------
-        BenchmarkResult
-            The benchmark record contained in the file.
+        list[BenchmarkResult]
+            The benchmark results contained in the file.
 
         Raises
         ------
@@ -260,12 +274,12 @@ class FileReporter:
 
     def write(
         self,
-        result: BenchmarkResult,
+        results: Iterable[BenchmarkResult],
         file: str | os.PathLike[str],
         **kwargs: Any,
     ) -> None:
         """
-        Writes a benchmark record to the given file path.
+        Writes multiple benchmark results to the given file path.
 
         The writing is chosen based on the extension found on the ``file`` path.
 
@@ -274,8 +288,8 @@ class FileReporter:
 
         Parameters
         ----------
-        result: BenchmarkResult
-            The record to write to the database.
+        results: Iterable[BenchmarkResult]
+            The benchmark results to write to the database.
         file: str | os.PathLike[str]
             The file name, or object, to write to.
         **kwargs: Any | None
@@ -290,10 +304,10 @@ class FileReporter:
 
         # TODO: Filter open keywords (in methods?)
         if ext in (".json", ".ndjson"):
-            return self.to_json(result, file, **kwargs)
+            return self.to_json(results, file, **kwargs)
         elif ext in (".yml", ".yaml"):
-            return self.to_yaml(result, file, **kwargs)
+            return self.to_yaml(results, file, **kwargs)
         elif ext in (".parquet", ".pq"):
-            return self.to_parquet(result, file, **kwargs)
+            return self.to_parquet(results, file, **kwargs)
         else:
             raise ValueError(f"unsupported benchmark file format {ext!r}")

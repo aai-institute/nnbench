@@ -1,4 +1,5 @@
 import os
+from collections.abc import Iterable
 from contextlib import ExitStack
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -11,9 +12,6 @@ if TYPE_CHECKING:
 
 class MLFlowReporter(BenchmarkReporter):
     def __init__(self):
-        import mlflow
-
-        self.mlflow = mlflow
         self.stack = ExitStack()
 
     @staticmethod
@@ -24,19 +22,25 @@ class MLFlowReporter(BenchmarkReporter):
         return s
 
     def get_or_create_run(self, run_name: str, nested: bool = False) -> "ActiveRun":
-        existing_runs = self.mlflow.search_runs(
+        import mlflow
+
+        existing_runs = mlflow.search_runs(
             filter_string=f"attributes.`run_name`={run_name!r}", output_format="list"
         )
         if existing_runs:
             run_id = existing_runs[0].info.run_id
-            return self.mlflow.start_run(run_id=run_id, nested=nested)
+            return mlflow.start_run(run_id=run_id, nested=nested)
         else:
-            return self.mlflow.start_run(run_name=run_name, nested=nested)
+            return mlflow.start_run(run_name=run_name, nested=nested)
 
-    def read(self, uri: str | os.PathLike[str], **kwargs: Any) -> BenchmarkResult:
+    def read(self, uri: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         raise NotImplementedError
 
-    def write(self, result: BenchmarkResult, uri: str | os.PathLike[str], **kwargs: Any) -> None:
+    def write(
+        self, results: Iterable[BenchmarkResult], uri: str | os.PathLike[str], **kwargs: Any
+    ) -> None:
+        import mlflow
+
         uri = self.strip_protocol(uri)
         try:
             experiment, run_name, *subruns = Path(uri).parts
@@ -45,7 +49,7 @@ class MLFlowReporter(BenchmarkReporter):
 
         # setting experiment removes the need for passing the `experiment_id` kwarg
         # in the subsequent API calls.
-        self.mlflow.set_experiment(experiment)
+        mlflow.set_experiment(experiment)
 
         run = self.stack.enter_context(self.get_or_create_run(run_name=run_name))
         for s in subruns:
@@ -53,8 +57,9 @@ class MLFlowReporter(BenchmarkReporter):
             run = self.stack.enter_context(self.get_or_create_run(run_name=s, nested=True))
 
         run_id = run.info.run_id
-        timestamp = result.timestamp
-        self.mlflow.log_dict(result.context, "context.json", run_id=run_id)
-        for bm in result.benchmarks:
-            name, value = bm["name"], bm["value"]
-            self.mlflow.log_metric(name, value, timestamp=timestamp, run_id=run_id)
+        for res in results:
+            timestamp = res.timestamp
+            mlflow.log_dict(res.context, f"context-{res.run}.json", run_id=run_id)
+            for bm in res.benchmarks:
+                name, value = bm["name"], bm["value"]
+                mlflow.log_metric(name, value, timestamp=timestamp, run_id=run_id)
