@@ -20,11 +20,16 @@ class SQLiteReporter(BenchmarkReporter):
             return s[9:]
         return s
 
-    def read(self, uri: str | os.PathLike[str], options: dict[str, Any]) -> BenchmarkResult:
+    def read(
+        self,
+        uri: str | os.PathLike[str],
+        query: str | None = None,
+        **kwargs: Any,
+    ) -> list[BenchmarkResult]:
         uri = self.strip_protocol(uri)
-        query: str | None = options.pop("query", _DEFAULT_READ_QUERY)
+        # query: str | None = options.pop("query", _DEFAULT_READ_QUERY)
         if query is None:
-            raise ValueError(f"need a query to read from SQLite Database {uri!r}")
+            raise ValueError(f"need a query to read from SQLite database {uri!r}")
 
         db = f"file:{uri}?mode=ro"  # open DB in read-only mode
         conn = sqlite3.connect(db, uri=True)
@@ -33,14 +38,11 @@ class SQLiteReporter(BenchmarkReporter):
         cursor.execute(query)
         records = [dict(r) for r in cursor.fetchall()]
         conn.close()
-        # TODO: Partition list on run ID, make record for each of them
         return BenchmarkResult.from_records(records)
 
-    def write(
-        self, result: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
-    ) -> None:
+    def write(self, result: BenchmarkResult, uri: str | os.PathLike[str], **kwargs: Any) -> None:
         uri = self.strip_protocol(uri)
-        query: str | None = options.pop("query", _DEFAULT_INSERT_QUERY)
+        query: str | None = kwargs.pop("query", _DEFAULT_INSERT_QUERY)
         if query is None:
             raise ValueError(f"need a query to write to SQLite Database {uri!r}")
 

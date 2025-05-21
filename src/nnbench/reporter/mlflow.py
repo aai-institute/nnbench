@@ -33,12 +33,10 @@ class MLFlowReporter(BenchmarkReporter):
         else:
             return self.mlflow.start_run(run_name=run_name, nested=nested)
 
-    def read(self, uri: str | os.PathLike[str], queryoptions: dict[str, Any]) -> BenchmarkResult:
+    def read(self, uri: str | os.PathLike[str], **kwargs: Any) -> BenchmarkResult:
         raise NotImplementedError
 
-    def write(
-        self, result: BenchmarkResult, uri: str | os.PathLike[str], options: dict[str, Any]
-    ) -> None:
+    def write(self, result: BenchmarkResult, uri: str | os.PathLike[str], **kwargs: Any) -> None:
         uri = self.strip_protocol(uri)
         try:
             experiment, run_name, *subruns = Path(uri).parts
