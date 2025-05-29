@@ -22,15 +22,16 @@ Source: https://github.com/google/flax/blob/main/examples/mnist
 import random
 from collections.abc import Mapping
 from dataclasses import dataclass
+from functools import partial
 from pathlib import Path
 
-import flax.linen as nn
 import fsspec
 import jax
 import jax.numpy as jnp
 import jax.random as jr
 import numpy as np
 import optax
+from flax import nnx  # The Flax NNX API.
 from flax.training.train_state import TrainState
 from zenml import log_metadata, pipeline, step
 
@@ -53,50 +54,46 @@ class MNISTTestParameters(nnbench.Parameters):
     params: Mapping[str, jax.Array]
     data: ArrayMapping
 
+class CNN(nnx.Module):
+  """A simple CNN model."""
 
-class ConvNet(nn.Module):
-    @nn.compact
-    def __call__(self, x):
-        x = nn.Conv(features=32, kernel_size=(3, 3))(x)
-        x = nn.relu(x)
-        x = nn.avg_pool(x, window_shape=(2, 2), strides=(2, 2))
-        x = nn.Conv(features=64, kernel_size=(3, 3))(x)
-        x = nn.relu(x)
-        x = nn.avg_pool(x, window_shape=(2, 2), strides=(2, 2))
-        x = x.reshape(x.shape[0], -1)  # flatten
-        x = nn.Dense(features=256)(x)
-        x = nn.relu(x)
-        x = nn.Dense(features=NUM_CLASSES)(x)
-        return x
+  def __init__(self, *, rngs: nnx.Rngs):
+    self.conv1 = nnx.Conv(1, 32, kernel_size=(3, 3), rngs=rngs)
+    self.conv2 = nnx.Conv(32, 64, kernel_size=(3, 3), rngs=rngs)
+    self.avg_pool = partial(nnx.avg_pool, window_shape=(2, 2), strides=(2, 2))
+    self.linear1 = nnx.Linear(3136, 256, rngs=rngs)
+    self.linear2 = nnx.Linear(256, 10, rngs=rngs)
 
-
-@jax.jit
-def apply_model(state, images, labels):
-    """Computes gradients, loss and accuracy for a single batch."""
-
-    def loss_fn(params):
-        logits = state.apply_fn({"params": params}, images)
-        one_hot = jax.nn.one_hot(labels, 10)
-        loss = jnp.mean(optax.softmax_cross_entropy(logits=logits, labels=one_hot))
-        return loss, logits
-
-    grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
-    (loss, logits), grads = grad_fn(state.params)
-    accuracy = jnp.mean(jnp.argmax(logits, -1) == labels)
-    return grads, loss, accuracy
+  def __call__(self, x):
+    x = self.avg_pool(nnx.relu(self.conv1(x)))
+    x = self.avg_pool(nnx.relu(self.conv2(x)))
+    x = x.reshape(x.shape[0], -1)  # flatten
+    x = nnx.relu(self.linear1(x))
+    x = self.linear2(x)
+    return x
 
 
-@jax.jit
-def update_model(state, grads):
-    return state.apply_gradients(grads=grads)
+def loss_fn(model: CNN, batch):
+  logits = model(batch['image'])
+  loss = optax.softmax_cross_entropy_with_integer_labels(
+    logits=logits, labels=batch['label']
+  ).mean()
+  return loss, logits
 
 
-def create_train_state(rng):
-    """Creates initial `TrainState`."""
-    convnet = ConvNet()
-    params = convnet.init(rng, jnp.ones([1, *INPUT_SHAPE]))["params"]
-    tx = optax.sgd(learning_rate=LEARNING_RATE, momentum=MOMENTUM)
-    return TrainState.create(apply_fn=convnet.apply, params=params, tx=tx)
+@nnx.jit
+def train_step(model: CNN, optimizer: nnx.Optimizer, metrics: nnx.MultiMetric, batch):
+  """Train for a single step."""
+  grad_fn = nnx.value_and_grad(loss_fn, has_aux=True)
+  (loss, logits), grads = grad_fn(model, batch)
+  metrics.update(loss=loss, logits=logits, labels=batch['label'])  # In-place updates.
+  optimizer.update(grads)  # In-place updates.
+
+
+@nnx.jit
+def eval_step(model: CNN, metrics: nnx.MultiMetric, batch):
+  loss, logits = loss_fn(model, batch)
+  metrics.update(loss=loss, logits=logits, labels=batch['label'])  # In-place updates.
 
 
 @step
@@ -208,8 +205,14 @@ def train(data: ArrayMapping) -> tuple[TrainState, ArrayMapping]:
     test_data, test_labels = x_test[test_perm, ...], y_test[test_perm, ...]
 
     rng = jr.PRNGKey(random.randint(0, 1000))
-    rng, init_rng = jr.split(rng)
-    state = create_train_state(init_rng)
+
+    # Instantiate the model.
+    model = CNN(rngs=nnx.Rngs(0))
+    optimizer = nnx.Optimizer(model, optax.adamw(LEARNING_RATE, MOMENTUM))
+    metrics = nnx.MultiMetric(
+    accuracy=nnx.metrics.Accuracy(),
+    loss=nnx.metrics.Average('loss'),
+    )
 
     for epoch in range(EPOCHS):
         rng, input_rng = jax.random.split(rng)
@@ -228,7 +231,7 @@ def train(data: ArrayMapping) -> tuple[TrainState, ArrayMapping]:
 
 
 @step
-def evaluate_model(state: TrainState, data: ArrayMapping) -> None:
+def benchmark_model(state: TrainState, data: ArrayMapping) -> None:
     """Evaluate the model and log metrics in nnbench."""
 
     # the nnbench portion.
@@ -242,11 +245,11 @@ def evaluate_model(state: TrainState, data: ArrayMapping) -> None:
 
 @pipeline
 def mnist_jax():
-    """Load MNIST data, train, and evaluate a simple ConvNet model."""
+    """Load MNIST data, train, and benchmark a simple ConvNet model."""
     mnist = load_mnist()
     mnist = preprocess(mnist)
     state, data = train(mnist)
-    evaluate_model(state, data)
+    benchmark_model(state, data)
 
 
 if __name__ == "__main__":
