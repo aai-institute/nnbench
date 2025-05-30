@@ -1,6 +1,5 @@
 import json
 import os
-from collections.abc import Iterable
 from typing import Any
 
 from rich.console import Console
@@ -40,12 +39,14 @@ class ConsoleReporter(BenchmarkReporter):
         # TODO: Add context manager to register live console prints
         self.console = Console(**kwargs)
 
-    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
+    def read(
+        self, fp: str | os.PathLike[str], **kwargs: Any
+    ) -> BenchmarkResult | list[BenchmarkResult]:
         raise NotImplementedError
 
     def write(
         self,
-        results: Iterable[BenchmarkResult],
+        result: BenchmarkResult,
         outfile: str | os.PathLike[str] = None,
         **options: Any,
     ) -> None:
@@ -60,10 +61,10 @@ class ConsoleReporter(BenchmarkReporter):
 
         Parameters
         ----------
-        results: Iterable[BenchmarkResult]
+        result: BenchmarkResult
             The benchmark result to display.
         outfile: str | os.PathLike[str]
-            For compatibility with the `BenchmarkFileIO` interface, unused.
+            For compatibility with the `BenchmarkReporter` protocol, unused.
         options: Any
             Display options used to format the resulting table.
         """
@@ -73,18 +74,17 @@ class ConsoleReporter(BenchmarkReporter):
         rows: list[list[str]] = []
         columns: list[str] = ["Benchmark", "Value", "Wall time (ns)", "Parameters"]
 
-        for res in results:
-            # print context values
-            print("Context values:")
-            print(json.dumps(res.context, indent=4))
+        # print context values
+        print("Context values:")
+        print(json.dumps(result.context, indent=4))
 
-            for bm in res.benchmarks:
-                row = [bm["name"], get_value_by_name(bm), str(bm["time_ns"]), str(bm["parameters"])]
-                rows.append(row)
+        for bm in result.benchmarks:
+            row = [bm["name"], get_value_by_name(bm), str(bm["time_ns"]), str(bm["parameters"])]
+            rows.append(row)
 
-            for column in columns:
-                t.add_column(column)
-            for row in rows:
-                t.add_row(*row)
+        for column in columns:
+            t.add_column(column)
+        for row in rows:
+            t.add_row(*row)
 
-            self.console.print(t, overflow="ellipsis")
+        self.console.print(t, overflow="ellipsis")

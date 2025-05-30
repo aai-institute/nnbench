@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from nnbench.types import BenchmarkResult
-from nnbench.util import collapse
+from nnbench.util import collate
 
 _MISSING = "N/A"
 _STATUS_KEY = "Status"
@@ -133,7 +133,7 @@ class TabularComparison(AbstractComparison):
         """
         self.placeholder = placeholder
         self.comparators = comparators or {}
-        self.results: tuple[BenchmarkResult, ...] = tuple(collapse(results))
+        self.results: tuple[BenchmarkResult, ...] = tuple(collate(results))
         self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
         self._success: bool = True

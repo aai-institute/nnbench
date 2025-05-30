@@ -137,10 +137,12 @@ class BenchmarkResult:
 
 
 class BenchmarkReporter(Protocol):
-    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]: ...
+    def read(
+        self, fp: str | os.PathLike[str], **kwargs: Any
+    ) -> BenchmarkResult | list[BenchmarkResult]: ...
 
     def write(
-        self, results: Iterable[BenchmarkResult], fp: str | os.PathLike[str], **kwargs: Any
+        self, results: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any
     ) -> None: ...
 
 

@@ -293,7 +293,7 @@ def main(argv: list[str] | None = None) -> int:
 
             outfile = args.outfile
             reporter = get_reporter_implementation(outfile)
-            reporter.write([result], outfile)
+            reporter.write(result, outfile)
         elif args.command == "compare":
             from nnbench.compare import TabularComparison
 

@@ -15,7 +15,7 @@ from typing import Any, TypeVar
 T = TypeVar("T")
 
 
-def collapse(_its: Iterable[T | Iterable[T]]) -> Generator[T, None, None]:
+def collate(_its: Iterable[T | Iterable[T]]) -> Generator[T, None, None]:
     for _it in _its:
         if isinstance(_it, Iterable):
             yield from _it

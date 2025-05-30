@@ -1,10 +1,8 @@
 import os
 import sqlite3
-from collections.abc import Iterable
 from typing import Any
 
-from nnbench import BenchmarkResult
-from nnbench.types import BenchmarkReporter
+from nnbench.types import BenchmarkReporter, BenchmarkResult
 
 # TODO: Add tablename state (f-string)
 _DEFAULT_COLS = ("run", "benchmark", "context", "timestamp")
@@ -24,7 +22,7 @@ class SQLiteReporter(BenchmarkReporter):
     def read(
         self,
         uri: str | os.PathLike[str],
-        query: str | None = None,
+        query: str = _DEFAULT_READ_QUERY,
         **kwargs: Any,
     ) -> list[BenchmarkResult]:
         uri = self.strip_protocol(uri)
@@ -42,21 +40,18 @@ class SQLiteReporter(BenchmarkReporter):
         return BenchmarkResult.from_records(records)
 
     def write(
-        self, results: Iterable[BenchmarkResult], uri: str | os.PathLike[str], **kwargs: Any
+        self,
+        result: BenchmarkResult,
+        uri: str | os.PathLike[str],
+        query: str = _DEFAULT_INSERT_QUERY,
+        **kwargs: Any,
     ) -> None:
         uri = self.strip_protocol(uri)
-        query: str | None = kwargs.pop("query", _DEFAULT_INSERT_QUERY)
-        if query is None:
-            raise ValueError(f"need a query to write to SQLite Database {uri!r}")
 
         conn = sqlite3.connect(uri)
         cursor = conn.cursor()
 
         # TODO: Guard by exists_ok state
         cursor.execute(_DEFAULT_CREATION_QUERY)
-
-        records = []
-        for res in results:
-            records.extend(res.to_records())
-        cursor.executemany(query, records)
+        cursor.executemany(query, result.to_records())
         conn.commit()

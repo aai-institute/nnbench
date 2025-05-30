@@ -1,5 +1,4 @@
 import os
-from collections.abc import Iterable
 from contextlib import ExitStack
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -37,7 +36,10 @@ class MLFlowReporter(BenchmarkReporter):
         raise NotImplementedError
 
     def write(
-        self, results: Iterable[BenchmarkResult], uri: str | os.PathLike[str], **kwargs: Any
+        self,
+        result: BenchmarkResult,
+        uri: str | os.PathLike[str],
+        **kwargs: Any,
     ) -> None:
         import mlflow
 
@@ -57,7 +59,7 @@ class MLFlowReporter(BenchmarkReporter):
             run = self.stack.enter_context(self.get_or_create_run(run_name=s, nested=True))
 
         run_id = run.info.run_id
-        for res in results:
+        for res in result:
             timestamp = res.timestamp
             mlflow.log_dict(res.context, f"context-{res.run}.json", run_id=run_id)
             for bm in res.benchmarks:
