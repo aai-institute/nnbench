@@ -18,7 +18,7 @@ from nnbench.fixtures import FixtureManager
 from nnbench.types import Benchmark, BenchmarkFamily, BenchmarkResult, Parameters, State
 from nnbench.util import (
     all_python_files,
-    collapse,
+    collate,
     exists_module,
     import_file_as_module,
     qualname,
@@ -201,7 +201,7 @@ def run(
     results: list[dict[str, Any]] = []
     timestamp = int(time.time())
 
-    for benchmark in collapse(benchmarks):
+    for benchmark in collate(benchmarks):
         bm_family = benchmark.interface.funcname
         state = State(
             name=benchmark.name,

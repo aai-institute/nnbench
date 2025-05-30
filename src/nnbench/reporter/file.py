@@ -1,11 +1,9 @@
 import os
-from collections.abc import Iterable
 from pathlib import Path
 from typing import IO, Any, Literal, cast
 
-from nnbench.reporter import BenchmarkReporter
 from nnbench.reporter.util import get_extension, get_protocol
-from nnbench.types import BenchmarkResult
+from nnbench.types import BenchmarkReporter, BenchmarkResult
 
 
 def make_file_descriptor(
@@ -31,136 +29,7 @@ def make_file_descriptor(
     raise TypeError("filename must be a str, bytes, file or PathLike object")
 
 
-class YAMLFileIO(BenchmarkReporter):
-    extensions = (".yaml", ".yml")
-
-    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
-        import yaml
-
-        del kwargs
-        with make_file_descriptor(fp, mode="r") as fd:
-            bms = yaml.safe_load(fd)
-        return BenchmarkResult.from_records(bms)
-
-    def write(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None:
-        import yaml
-
-        with make_file_descriptor(fp, mode="w") as fd:
-            yaml.safe_dump(result.to_records(), fd, **kwargs)
-
-
-class JSONFileIO(BenchmarkReporter):
-    extensions = (".json", ".ndjson")
-
-    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> BenchmarkResult:
-        import json
-
-        newline_delimited = Path(fp).suffix == ".ndjson"
-        benchmarks: list[dict[str, Any]]
-        with make_file_descriptor(fp, mode="r") as fd:
-            if newline_delimited:
-                benchmarks = [json.loads(line, **kwargs) for line in fd]
-                return BenchmarkResult.from_records(benchmarks)
-            else:
-                benchmarks = json.load(fd, **kwargs)
-                return BenchmarkResult.from_json(benchmarks)
-
-    def write(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None:
-        import json
-
-        newline_delimited = Path(fp).suffix == ".ndjson"
-        with make_file_descriptor(fp, mode="w") as fd:
-            if newline_delimited:
-                bms = result.to_records()
-                fd.write("\n".join([json.dumps(b, **kwargs) for b in bms]))
-            else:
-                json.dump(result.to_json(), fd, **kwargs)
-
-
-class CSVFileIO(BenchmarkReporter):
-    extensions = (".csv",)
-
-    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> BenchmarkResult:
-        import csv
-
-        with make_file_descriptor(fp, mode="r") as fd:
-            reader = csv.DictReader(fd, **kwargs)
-            benchmarks: list[dict[str, Any]] = []
-            # csv.DictReader has no appropriate type hint for __next__,
-            # so we supply one ourselves.
-            bm: dict[str, Any]
-            for bm in reader:
-                benchmarks.append(bm)
-                # it can happen that the context is inlined as a stringified JSON object
-                # (e.g. in CSV), so we optionally JSON-load the context.
-                if "context" in bm:
-                    strctx: str = bm["context"]
-                    # TODO: This does not play nicely with doublequote, maybe re.sub?
-                    strctx = strctx.replace("'", '"')
-                    bm["context"] = strctx
-            return BenchmarkResult.from_records(benchmarks)
-
-    def write(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None:
-        import csv
-
-        bm = result.to_records()
-        with make_file_descriptor(fp, mode="w") as fd:
-            writer = csv.DictWriter(fd, fieldnames=bm[0].keys(), **kwargs)
-            writer.writeheader()
-
-            for b in bm:
-                writer.writerow(b)
-
-
-class ParquetFileIO(BenchmarkReporter):
-    extensions = (".parquet", ".pq")
-
-    def read(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
-        import pyarrow.parquet as pq
-
-        table = pq.read_table(str(fp), **kwargs)
-        benchmarks: list[dict[str, Any]] = table.to_pylist()
-        return BenchmarkResult.from_records(benchmarks)
-
-    def write(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None:
-        import pyarrow.parquet as pq
-        from pyarrow import Table
-
-        table = Table.from_pylist(result.to_records())
-        pq.write_table(table, str(fp), **kwargs)
-
-
-_file_io_mapping: dict[str, type[BenchmarkReporter]] = {
-    ".yaml": YAMLFileIO,
-    ".yml": YAMLFileIO,
-    ".json": JSONFileIO,
-    ".ndjson": JSONFileIO,
-    ".csv": CSVFileIO,
-    ".parquet": ParquetFileIO,
-    ".pq": ParquetFileIO,
-}
-
-
-def get_file_io_class(file: str | os.PathLike[str]) -> BenchmarkReporter:
-    ext = get_extension(file)
-    try:
-        return _file_io_mapping[ext]()
-    except KeyError:
-        raise ValueError(f"unsupported benchmark file format {ext!r}") from None
-
-
-def register_file_io_class(
-    name: str, klass: type[BenchmarkReporter], clobber: bool = False
-) -> None:
-    if name in _file_io_mapping and not clobber:
-        raise RuntimeError(
-            f"driver {name!r} is already registered "
-            f"(to force registration, rerun with clobber=True)"
-        )
-    _file_io_mapping[name] = klass
-
-
-class FileReporter:
+class FileReporter(BenchmarkReporter):
     @staticmethod
     def filter_open_kwds(kwargs: dict[str, Any]) -> dict[str, Any]:
         _OPEN_KWDS = ("buffering", "encoding", "errors", "newline", "closefd", "opener")
@@ -177,23 +46,22 @@ class FileReporter:
                 return BenchmarkResult.from_records(benchmarks)
             else:
                 benchmarks = json.load(fd, **kwargs)
-                return [BenchmarkResult.from_json(bm) for bm in benchmarks]
+                return [BenchmarkResult.from_json(benchmarks)]
 
     def to_json(
-        self, results: Iterable[BenchmarkResult], file: str | os.PathLike[str], **kwargs: Any
+        self,
+        result: BenchmarkResult,
+        file: str | os.PathLike[str],
+        **kwargs: Any,
     ) -> None:
         import json
 
         newline_delimited = Path(file).suffix == ".ndjson"
-        result_list = []
         with make_file_descriptor(file, mode="w") as fd:
             if newline_delimited:
-                for r in results:
-                    result_list += r.to_records()
-                fd.write("\n".join([json.dumps(r, **kwargs) for r in result_list]))
+                fd.write("\n".join([json.dumps(r, **kwargs) for r in result.to_records()]))
             else:
-                result_list = [r.to_json() for r in results]
-                json.dump(result_list, fd, **kwargs)
+                json.dump(result.to_json(), fd, **kwargs)
 
     def from_yaml(self, fp: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         import yaml
@@ -203,16 +71,11 @@ class FileReporter:
             bms = yaml.safe_load(fd)
         return BenchmarkResult.from_records(bms)
 
-    def to_yaml(
-        self, results: Iterable[BenchmarkResult], fp: str | os.PathLike[str], **kwargs: Any
-    ) -> None:
+    def to_yaml(self, result: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any) -> None:
         import yaml
 
-        result_list = []
-        for r in results:
-            result_list.extend(r.to_records())
         with make_file_descriptor(fp, mode="w") as fd:
-            yaml.safe_dump(result_list, fd, **kwargs)
+            yaml.safe_dump(result.to_records(), fd, **kwargs)
 
     def from_parquet(self, file: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         import pyarrow.parquet as pq
@@ -222,15 +85,12 @@ class FileReporter:
         return BenchmarkResult.from_records(benchmarks)
 
     def to_parquet(
-        self, results: Iterable[BenchmarkResult], file: str | os.PathLike[str], **kwargs: Any
+        self, result: BenchmarkResult, file: str | os.PathLike[str], **kwargs: Any
     ) -> None:
         import pyarrow.parquet as pq
         from pyarrow import Table
 
-        result_list = []
-        for r in results:
-            result_list.extend(r.to_records())
-        table = Table.from_pylist(result_list)
+        table = Table.from_pylist(result.to_records())
         pq.write_table(table, str(file), **kwargs)
 
     def read(self, file: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
@@ -257,7 +117,7 @@ class FileReporter:
         Raises
         ------
         ValueError
-            If the extension of the given file is not supported.
+            If the extension of the given filename is not supported.
         """
 
         ext = get_extension(file)
@@ -272,12 +132,7 @@ class FileReporter:
         else:
             raise ValueError(f"unsupported benchmark file format {ext!r}")
 
-    def write(
-        self,
-        results: Iterable[BenchmarkResult],
-        file: str | os.PathLike[str],
-        **kwargs: Any,
-    ) -> None:
+    def write(self, result: BenchmarkResult, file: str | os.PathLike[str], **kwargs: Any) -> None:
         """
         Writes multiple benchmark results to the given file path.
 
@@ -288,8 +143,8 @@ class FileReporter:
 
         Parameters
         ----------
-        results: Iterable[BenchmarkResult]
-            The benchmark results to write to the database.
+        result: BenchmarkResult
+            The benchmark result to write to a file.
         file: str | os.PathLike[str]
             The file name, or object, to write to.
         **kwargs: Any | None
@@ -298,16 +153,16 @@ class FileReporter:
         Raises
         ------
         ValueError
-            If the extension of the given file is not supported.
+            If the extension of the given filename is not supported.
         """
         ext = get_extension(file)
 
         # TODO: Filter open keywords (in methods?)
         if ext in (".json", ".ndjson"):
-            return self.to_json(results, file, **kwargs)
+            return self.to_json(result, file, **kwargs)
         elif ext in (".yml", ".yaml"):
-            return self.to_yaml(results, file, **kwargs)
+            return self.to_yaml(result, file, **kwargs)
         elif ext in (".parquet", ".pq"):
-            return self.to_parquet(results, file, **kwargs)
+            return self.to_parquet(result, file, **kwargs)
         else:
             raise ValueError(f"unsupported benchmark file format {ext!r}")
