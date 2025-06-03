@@ -8,6 +8,7 @@ from rich.table import Table
 from nnbench.types import BenchmarkReporter, BenchmarkResult
 
 _MISSING = "-----"
+_STDOUT = "-"
 
 
 def get_value_by_name(result: dict[str, Any]) -> str:
@@ -40,14 +41,14 @@ class ConsoleReporter(BenchmarkReporter):
         self.console = Console(**kwargs)
 
     def read(
-        self, fp: str | os.PathLike[str], **kwargs: Any
+        self, path: str | os.PathLike[str], **kwargs: Any
     ) -> BenchmarkResult | list[BenchmarkResult]:
         raise NotImplementedError
 
     def write(
         self,
         result: BenchmarkResult,
-        outfile: str | os.PathLike[str] = None,
+        path: str | os.PathLike[str] = _STDOUT,
         **options: Any,
     ) -> None:
         """
@@ -63,12 +64,12 @@ class ConsoleReporter(BenchmarkReporter):
         ----------
         result: BenchmarkResult
             The benchmark result to display.
-        outfile: str | os.PathLike[str]
+        path: str | os.PathLike[str]
             For compatibility with the `BenchmarkReporter` protocol, unused.
         options: Any
             Display options used to format the resulting table.
         """
-        del outfile
+        del path
         t = Table()
 
         rows: list[list[str]] = []

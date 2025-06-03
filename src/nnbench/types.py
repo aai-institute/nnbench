@@ -138,11 +138,11 @@ class BenchmarkResult:
 
 class BenchmarkReporter(Protocol):
     def read(
-        self, fp: str | os.PathLike[str], **kwargs: Any
+        self, path: str | os.PathLike[str], **kwargs: Any
     ) -> BenchmarkResult | list[BenchmarkResult]: ...
 
     def write(
-        self, results: BenchmarkResult, fp: str | os.PathLike[str], **kwargs: Any
+        self, result: BenchmarkResult, path: str | os.PathLike[str], **kwargs: Any
     ) -> None: ...
 
 
