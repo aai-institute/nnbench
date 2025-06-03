@@ -32,18 +32,18 @@ class MLFlowReporter(BenchmarkReporter):
         else:
             return mlflow.start_run(run_name=run_name, nested=nested)
 
-    def read(self, uri: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
+    def read(self, path: str | os.PathLike[str], **kwargs: Any) -> list[BenchmarkResult]:
         raise NotImplementedError
 
     def write(
         self,
         result: BenchmarkResult,
-        uri: str | os.PathLike[str],
+        path: str | os.PathLike[str],
         **kwargs: Any,
     ) -> None:
         import mlflow
 
-        uri = self.strip_protocol(uri)
+        uri = self.strip_protocol(path)
         try:
             experiment, run_name, *subruns = Path(uri).parts
         except ValueError:
@@ -59,9 +59,8 @@ class MLFlowReporter(BenchmarkReporter):
             run = self.stack.enter_context(self.get_or_create_run(run_name=s, nested=True))
 
         run_id = run.info.run_id
-        for res in result:
-            timestamp = res.timestamp
-            mlflow.log_dict(res.context, f"context-{res.run}.json", run_id=run_id)
-            for bm in res.benchmarks:
-                name, value = bm["name"], bm["value"]
-                mlflow.log_metric(name, value, timestamp=timestamp, run_id=run_id)
+        timestamp = result.timestamp
+        mlflow.log_dict(result.context, f"context-{result.run}.json", run_id=run_id)
+        for bm in result.benchmarks:
+            name, value = bm["name"], bm["value"]
+            mlflow.log_metric(name, value, timestamp=timestamp, run_id=run_id)

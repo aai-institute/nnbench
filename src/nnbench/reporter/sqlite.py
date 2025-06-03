@@ -21,16 +21,16 @@ class SQLiteReporter(BenchmarkReporter):
 
     def read(
         self,
-        uri: str | os.PathLike[str],
+        path: str | os.PathLike[str],
         query: str = _DEFAULT_READ_QUERY,
         **kwargs: Any,
     ) -> list[BenchmarkResult]:
-        uri = self.strip_protocol(uri)
+        path = self.strip_protocol(path)
         # query: str | None = options.pop("query", _DEFAULT_READ_QUERY)
         if query is None:
-            raise ValueError(f"need a query to read from SQLite database {uri!r}")
+            raise ValueError(f"need a query to read from SQLite database {path!r}")
 
-        db = f"file:{uri}?mode=ro"  # open DB in read-only mode
+        db = f"file:{path}?mode=ro"  # open DB in read-only mode
         conn = sqlite3.connect(db, uri=True)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -42,13 +42,13 @@ class SQLiteReporter(BenchmarkReporter):
     def write(
         self,
         result: BenchmarkResult,
-        uri: str | os.PathLike[str],
+        path: str | os.PathLike[str],
         query: str = _DEFAULT_INSERT_QUERY,
         **kwargs: Any,
     ) -> None:
-        uri = self.strip_protocol(uri)
+        path = self.strip_protocol(path)
 
-        conn = sqlite3.connect(uri)
+        conn = sqlite3.connect(path)
         cursor = conn.cursor()
 
         # TODO: Guard by exists_ok state
