@@ -135,6 +135,7 @@ public/
 *.parquet
 *.csv
 *.ndjson
+*.db
 
 # Zed
 .ropeproject
