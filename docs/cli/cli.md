@@ -70,14 +70,16 @@ nnbench run .sandbox/example.py --context=pyyaml=`python3 -c "from importlib.met
 To create a comparison table between multiple benchmark runs, use the `nnbench compare` command.
 
 ```commandline
-$ nnbench compare -h                                            
-usage: nnbench compare [-h] [-P <name>] [-C <name>] [-E <name>] results [results ...]
+$ nnbench compare -h
+usage: nnbench compare [-h] [--comparison-file <JSON>] [-P <name>] [-C <name>] [-E <name>] results [results ...]
 
 positional arguments:
   results               Results to compare. Can be given as local files or remote URIs.
 
 options:
   -h, --help            show this help message and exit
+  --comparison-file <JSON>
+                        A file containing comparison functions to run on benchmarking metrics.
   -P, --include-parameter <name>
                         Names of input parameters to display in the comparison table.
   -C, --include-context <name>
@@ -178,3 +180,5 @@ $ nnbench compare result1.json result2.json -P a -P b -C foo
 │ nnbench-5cbb85f8 │ 300 │ 200       │ 100       │ baz │
 └──────────────────┴─────┴───────────┴───────────┴─────┘
 ```
+
+To learn how to define per-metric comparisons and use comparisons in a continuous training pipeline, refer to the [comparison documentation](comparisons.md).

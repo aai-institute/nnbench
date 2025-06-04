@@ -67,7 +67,7 @@ The structure itself is simple: The contents map the metric names (`"add"` and `
 Each comparison is encoded by the class name, given as a fully qualified Python module path that can be imported via `importlib`, and a `kwargs` dictionary, which will be passed to the chosen class on construction (i.e. to its `__init__()`) method.
 
 !!! Note
-    The user is responsible for only passing keyword arguments that are expected by the chosen comparison class.
+    You are responsible for only passing keyword arguments that are expected by the chosen comparison class.
 
 
 Now, running `nnbench compare <records> --comparison-file=comparisons.json` will produce a table like the following (with an sqlite database holding the two results as an example):
