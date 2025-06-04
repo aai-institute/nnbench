@@ -1491,7 +1491,7 @@ An introductory example can be found in the <a href="../pyproject/">nnbench CLI 
 <h2 id="comparing-results-across-multiple-benchmark-runs">Comparing results across multiple benchmark runs<a class="headerlink" href="#comparing-results-across-multiple-benchmark-runs" title="Permanent link">&para;</a></h2>
 <p>To create a comparison table between multiple benchmark runs, use the <code>nnbench compare</code> command.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$ nnbench compare -h
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>usage: nnbench compare [-h] [--comparison-file &lt;JSON&gt;] [-P &lt;name&gt;] [-C &lt;name&gt;] [-E &lt;name&gt;] results [results ...]
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>usage: nnbench compare [-h] [--comparison-file &lt;JSON&gt;] [-C &lt;name&gt;] [-E &lt;name&gt;] results [results ...]
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>positional arguments:
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  results               Results to compare. Can be given as local files or remote URIs.
@@ -1500,12 +1500,10 @@ An introductory example can be found in the <a href="../pyproject/">nnbench CLI 
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  -h, --help            show this help message and exit
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>  --comparison-file &lt;JSON&gt;
 </span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>                        A file containing comparison functions to run on benchmarking metrics.
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  -P, --include-parameter &lt;name&gt;
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>                        Names of input parameters to display in the comparison table.
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>  -C, --include-context &lt;name&gt;
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>                        Context values to display in the comparison table. Use dotted syntax for nested context values.
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>  -E, --extra-column &lt;name&gt;
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>                        Additional result data to display in the comparison table.
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  -C, --include-context &lt;name&gt;
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>                        Context values to display in the comparison table. Use dotted syntax for nested context values.
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>  -E, --extra-column &lt;name&gt;
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>                        Additional result data to display in the comparison table.
 </span></code></pre></div>
 <p>Supposing we have the following results from previous runs, for a benchmark <code>add(a,b)</code> that adds two integers:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Pretty-printed JSON, obtained as &lt;result1.json | jq</span>
@@ -1566,24 +1564,14 @@ An introductory example can be found in the <a href="../pyproject/">nnbench CLI 
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│ nnbench-5cbb85f8 │ 300 │
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>└──────────────────┴─────┘
 </span></code></pre></div>
-<p>To include benchmark parameter values in the table, use the <code>-P</code> switch (you can supply this multiple times to include multiple parameters).
-For example, to see which values were used for <code>a</code> and <code>b</code> in our <code>add(a, b)</code> benchmark above, we supply <code>-P a</code> and <code>-P b</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$ nnbench compare result1.json result2.json -P a -P b
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>┃ Benchmark run    ┃ add ┃ Params-&gt;a ┃ Params-&gt;b ┃
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━┩
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>│ nnbench-3ff188b4 │ 300 │ 200       │ 100       │
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>│ nnbench-5cbb85f8 │ 300 │ 200       │ 100       │
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>└──────────────────┴─────┴───────────┴───────────┘
-</span></code></pre></div>
-<p>To include context values in the table - in our case, we might want to display the <code>foo</code> value - use the <code>-C</code> switch (this is also appending, same as <code>-P</code>):</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>$ nnbench compare result1.json result2.json -P a -P b -C foo
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━┓
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>┃ Benchmark run    ┃ add ┃ Params-&gt;a ┃ Params-&gt;b ┃ foo ┃
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━┩
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>│ nnbench-3ff188b4 │ 300 │ 200       │ 100       │ bar │
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>│ nnbench-5cbb85f8 │ 300 │ 200       │ 100       │ baz │
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>└──────────────────┴─────┴───────────┴───────────┴─────┘
+<p>To include context values in the table - in our case, we might want to display the <code>foo</code> value - use the <code>-C</code> switch (you can use it multiple times to include multiple values):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$ nnbench compare result1.json result2.json -C foo
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━┓
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>┃ Benchmark run    ┃ add ┃ foo ┃
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━┩
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>│ nnbench-3ff188b4 │ 300 │ bar │
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>│ nnbench-5cbb85f8 │ 300 │ baz │
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>└──────────────────┴─────┴─────┘
 </span></code></pre></div>
 <p>To learn how to define per-metric comparisons and use comparisons in a continuous training pipeline, refer to the <a href="../comparisons/">comparison documentation</a>.</p>
 
