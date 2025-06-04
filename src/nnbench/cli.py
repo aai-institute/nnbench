@@ -32,6 +32,8 @@ class CustomFormatter(argparse.RawDescriptionHelpFormatter):
             if len(action.option_strings) == 2:
                 true_opt, false_opt = action.option_strings
                 return "--[no-]" + true_opt[2:]
+            else:
+                raise ValueError("unexpected action format")
         else:
             parts = []
             # if the Optional doesn't take a value, format is:
@@ -304,7 +306,11 @@ def main(argv: list[str] | None = None) -> int:
             #     read_options[k] = v
             for file in args.results:
                 reporter = get_reporter_implementation(file)
-                results.extend(reporter.read(file))
+                _res = reporter.read(file)
+                if isinstance(_res, BenchmarkResult):
+                    results.append(_res)
+                else:
+                    results.extend(_res)
 
             comparison_file = args.comparison_file
             comparators = {}
@@ -313,10 +319,12 @@ def main(argv: list[str] | None = None) -> int:
 
                 comparison_json = json.load(comparison_file)
                 for k, v in comparison_json.items():
-                    klass, kwargs = import_(v["function"]), v.get("kwargs", {})
+                    klass, kwargs = import_(v["class"]), v.get("kwargs", {})
                     comparators[k] = klass(**kwargs)
 
-            comp = TabularComparison(results, comparators)
+            comp = TabularComparison(
+                results, comparators, contextvals=args.contextvals, parameters=args.parameters
+            )
             comp.render()
             return int(not comp.success)
 

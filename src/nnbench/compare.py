@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from nnbench.types import BenchmarkResult
-from nnbench.util import collate
+from nnbench.util import collate, flatten
 
 _MISSING = "N/A"
 _STATUS_KEY = "Status"
@@ -42,7 +42,7 @@ class AbsDiffLessEqual(Comparator):
         return operator.le(operator.abs(val1 - val2), self.thresh)
 
     def __str__(self):
-        return f"|x - y| <= {self.thresh:.2%}"
+        return f"|x - y| <= {self.thresh:.2f}"
 
 
 def make_row(result: BenchmarkResult) -> dict[str, Any]:
@@ -77,9 +77,7 @@ def get_value_by_name(result: BenchmarkResult, name: str, missing: str) -> Any:
     Returns
     -------
     str
-        A string containing the metric value (or error message) formatted
-        as rich text.
-
+        A string containing the metric value (or error message) formatted as rich text.
     """
     metric_names = [b["function"] for b in result.benchmarks]
     if name not in metric_names:
@@ -116,6 +114,8 @@ class TabularComparison(AbstractComparison):
         results: Iterable[BenchmarkResult],
         comparators: dict[str, Comparator] | None = None,
         placeholder: str = _MISSING,
+        contextvals: list[str] | None = None,
+        parameters: list[str] | None = None,
     ):
         """
         Initialize a tabular comparison class, rendering the result to a rich table.
@@ -133,6 +133,8 @@ class TabularComparison(AbstractComparison):
         """
         self.placeholder = placeholder
         self.comparators = comparators or {}
+        self.contextvals = contextvals or []
+        self.parameters = parameters or []
         self.results: tuple[BenchmarkResult, ...] = tuple(collate(results))
         self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
@@ -199,10 +201,13 @@ class TabularComparison(AbstractComparison):
         else:
             print(f"warning: no comparators found for metrics {', '.join(self.metrics)}")
 
+        # TODO: Support parameter prints
         rows: list[list[str]] = []
         columns: list[str] = ["Run Name"] + list(self.display_names.values())
+        columns += self.parameters
+        columns += self.contextvals
         if has_comparable_metrics:
-            columns += ["Status"]
+            columns += [_STATUS_KEY]
 
         for i, d in enumerate(self.data):
             row = [d["run"]]
@@ -219,7 +224,12 @@ class TabularComparison(AbstractComparison):
                     status += ":white_check_mark:" if success else ":x:"
                     sval += " (vs. " + self.format_value(metric, compval) + ")"
                 row += [sval]
-            if "Status" in columns:
+
+            ctx = flatten(self.results[i].context)
+            for cval in self.contextvals:
+                row.append(ctx.get(cval, _MISSING))
+
+            if _STATUS_KEY in columns:
                 row += [status]
             rows.append(row)
 
