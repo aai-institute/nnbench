@@ -200,15 +200,6 @@ def construct_parser(config: NNBenchConfig) -> argparse.ArgumentParser:
     #     help="A file containing comparison functions to run on benchmarking metrics.",
     # )
     compare_parser.add_argument(
-        "-P",
-        "--include-parameter",
-        action="append",
-        metavar="<name>",
-        dest="parameters",
-        default=list(),
-        help="Names of input parameters to display in the comparison table.",
-    )
-    compare_parser.add_argument(
         "-C",
         "--include-context",
         action="append",
@@ -322,9 +313,7 @@ def main(argv: list[str] | None = None) -> int:
                     klass, kwargs = import_(v["class"]), v.get("kwargs", {})
                     comparators[k] = klass(**kwargs)
 
-            comp = TabularComparison(
-                results, comparators, contextvals=args.contextvals, parameters=args.parameters
-            )
+            comp = TabularComparison(results, comparators, contextvals=args.contextvals)
             comp.render()
             return int(not comp.success)
 

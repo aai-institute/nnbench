@@ -71,7 +71,7 @@ To create a comparison table between multiple benchmark runs, use the `nnbench c
 
 ```commandline
 $ nnbench compare -h
-usage: nnbench compare [-h] [--comparison-file <JSON>] [-P <name>] [-C <name>] [-E <name>] results [results ...]
+usage: nnbench compare [-h] [--comparison-file <JSON>] [-C <name>] [-E <name>] results [results ...]
 
 positional arguments:
   results               Results to compare. Can be given as local files or remote URIs.
@@ -80,8 +80,6 @@ options:
   -h, --help            show this help message and exit
   --comparison-file <JSON>
                         A file containing comparison functions to run on benchmarking metrics.
-  -P, --include-parameter <name>
-                        Names of input parameters to display in the comparison table.
   -C, --include-context <name>
                         Context values to display in the comparison table. Use dotted syntax for nested context values.
   -E, --extra-column <name>
@@ -156,29 +154,16 @@ $ nnbench compare result1.json result2.json
 └──────────────────┴─────┘
 ```
 
-To include benchmark parameter values in the table, use the `-P` switch (you can supply this multiple times to include multiple parameters).
-For example, to see which values were used for `a` and `b` in our `add(a, b)` benchmark above, we supply `-P a` and `-P b`:
+To include context values in the table - in our case, we might want to display the `foo` value - use the `-C` switch (you can use it multiple times to include multiple values):
 
 ```commandline
-$ nnbench compare result1.json result2.json -P a -P b
-┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
-┃ Benchmark run    ┃ add ┃ Params->a ┃ Params->b ┃
-┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ nnbench-3ff188b4 │ 300 │ 200       │ 100       │
-│ nnbench-5cbb85f8 │ 300 │ 200       │ 100       │
-└──────────────────┴─────┴───────────┴───────────┘
-```
-
-To include context values in the table - in our case, we might want to display the `foo` value - use the `-C` switch (this is also appending, same as `-P`):
-
-```commandline
-$ nnbench compare result1.json result2.json -P a -P b -C foo
-┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━┓
-┃ Benchmark run    ┃ add ┃ Params->a ┃ Params->b ┃ foo ┃
-┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━┩
-│ nnbench-3ff188b4 │ 300 │ 200       │ 100       │ bar │
-│ nnbench-5cbb85f8 │ 300 │ 200       │ 100       │ baz │
-└──────────────────┴─────┴───────────┴───────────┴─────┘
+$ nnbench compare result1.json result2.json -C foo
+┏━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━┓
+┃ Benchmark run    ┃ add ┃ foo ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━┩
+│ nnbench-3ff188b4 │ 300 │ bar │
+│ nnbench-5cbb85f8 │ 300 │ baz │
+└──────────────────┴─────┴─────┘
 ```
 
 To learn how to define per-metric comparisons and use comparisons in a continuous training pipeline, refer to the [comparison documentation](comparisons.md).

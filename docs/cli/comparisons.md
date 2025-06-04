@@ -6,8 +6,7 @@ To compare benchmark results across different runs, you can use the `nnbench com
 $ nnbench compare -h
 usage: nnbench compare [-h]
                        [--comparison-file <JSON>]
-                       [-P <name>] [-C <name>]
-                       [-E <name>]
+                       [-C <name>] [-E <name>]
                        results [results ...]
 
 positional arguments:
@@ -17,8 +16,6 @@ options:
   -h, --help            show this help message and exit
   --comparison-file <JSON>
                         A file containing comparison functions to run on benchmarking metrics.
-  -P, --include-parameter <name>
-                        Names of input parameters to display in the comparison table.
   -C, --include-context <name>
                         Context values to display in the comparison table.
                         Use dotted syntax for nested context values.
