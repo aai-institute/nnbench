@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://aai-institute.github.io/nnbench/latest/reference/nnbench/reporter/">
+        <link rel="canonical" href="https://aai-institute.github.io/nnbench/latest/cli/comparisons/">
       
       
         <link rel="prev" href="../fixtures/">
       
       
-        <link rel="next" href="console/">
+        <link rel="next" href="../../guides/">
       
       
-      <link rel="icon" href="../../../_images/aai-favicon.png">
+      <link rel="icon" href="../../_images/aai-favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>reporter - nnbench</title>
+        <title>Comparing different benchmark runs with nnbench compare - nnbench</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -43,20 +43,20 @@
         
         
         
-        <link rel="stylesheet" href="../../../assets/external/fonts.googleapis.com/css.38e079b2.css">
+        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.38e079b2.css">
         <style>:root{--md-text-font:"IBM Plex Sans";--md-code-font:"Source Code Pro"}</style>
       
     
     
-      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../../_styles/extra.css">
+      <link rel="stylesheet" href="../../_styles/extra.css">
     
-      <link rel="stylesheet" href="../../../_styles/theme.css">
+      <link rel="stylesheet" href="../../_styles/theme.css">
     
-      <link rel="stylesheet" href="../../../_styles/neoteroi-mkdocs.css">
+      <link rel="stylesheet" href="../../_styles/neoteroi-mkdocs.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nnbench.reporter" class="md-skip">
+        <a href="#comparing-different-benchmark-runs-with-nnbench-compare" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           <div class="md-banner__inner md-grid md-typeset">
             
             You are currently viewing <strong>pre-release</strong> documentation. This may contain features that have not yet been
-released. For the most accurate information, please <strong><a href="../../../..">access the latest
+released. For the most accurate information, please <strong><a href="../../..">access the latest
     release</a></strong>.
           </div>
           
@@ -114,7 +114,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://aai-institute.github.io/nnbench" title="nnbench" class="md-header__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../../../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -131,7 +131,7 @@ released. For the most accurate information, please <strong><a href="../../../..
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              reporter
+              Comparing different benchmark runs with nnbench compare
             
           </span>
         </div>
@@ -249,7 +249,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   <label class="md-nav__title" for="__drawer">
     <a href="https://aai-institute.github.io/nnbench" title="nnbench" class="md-nav__button md-logo" aria-label="nnbench" data-md-component="logo">
       
-  <img src="../../../_images/aai-logo-cropped.png" alt="logo">
+  <img src="../../_images/aai-logo-cropped.png" alt="logo">
 
     </a>
     nnbench
@@ -276,7 +276,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -298,7 +298,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   
@@ -317,22 +317,24 @@ released. For the most accurate information, please <strong><a href="../../../..
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../cli/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -351,7 +353,7 @@ released. For the most accurate information, please <strong><a href="../../../..
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Command-line interface (CLI)
@@ -365,7 +367,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../cli/cli/" class="md-nav__link">
+      <a href="../cli/" class="md-nav__link">
         
   
   
@@ -388,7 +390,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../cli/pyproject/" class="md-nav__link">
+      <a href="../pyproject/" class="md-nav__link">
         
   
   
@@ -411,7 +413,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../cli/fixtures/" class="md-nav__link">
+      <a href="../fixtures/" class="md-nav__link">
         
   
   
@@ -431,10 +433,32 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../cli/comparisons/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Comparing different benchmark runs with nnbench compare
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -445,6 +469,44 @@ released. For the most accurate information, please <strong><a href="../../../..
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-quick-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      A quick example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-comparisons" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extending comparisons
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -476,7 +538,7 @@ released. For the most accurate information, please <strong><a href="../../../..
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../guides/" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   
@@ -509,7 +571,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/benchmarks/" class="md-nav__link">
+      <a href="../../guides/benchmarks/" class="md-nav__link">
         
   
   
@@ -532,7 +594,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/customization/" class="md-nav__link">
+      <a href="../../guides/customization/" class="md-nav__link">
         
   
   
@@ -555,7 +617,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/organization/" class="md-nav__link">
+      <a href="../../guides/organization/" class="md-nav__link">
         
   
   
@@ -578,7 +640,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../guides/runners/" class="md-nav__link">
+      <a href="../../guides/runners/" class="md-nav__link">
         
   
   
@@ -620,7 +682,7 @@ released. For the most accurate information, please <strong><a href="../../../..
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../tutorials/" class="md-nav__link ">
+            <a href="../../tutorials/" class="md-nav__link ">
               
   
   
@@ -653,7 +715,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/huggingface/" class="md-nav__link">
+      <a href="../../tutorials/huggingface/" class="md-nav__link">
         
   
   
@@ -676,7 +738,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/mnist/" class="md-nav__link">
+      <a href="../../tutorials/mnist/" class="md-nav__link">
         
   
   
@@ -699,7 +761,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/prefect/" class="md-nav__link">
+      <a href="../../tutorials/prefect/" class="md-nav__link">
         
   
   
@@ -722,7 +784,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/streamlit/" class="md-nav__link">
+      <a href="../../tutorials/streamlit/" class="md-nav__link">
         
   
   
@@ -745,7 +807,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/bq/" class="md-nav__link">
+      <a href="../../tutorials/bq/" class="md-nav__link">
         
   
   
@@ -768,7 +830,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorials/duckdb/" class="md-nav__link">
+      <a href="../../tutorials/duckdb/" class="md-nav__link">
         
   
   
@@ -795,20 +857,18 @@ released. For the most accurate information, please <strong><a href="../../../..
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
@@ -824,7 +884,7 @@ released. For the most accurate information, please <strong><a href="../../../..
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -835,24 +895,22 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../reference/nnbench/" class="md-nav__link ">
               
   
   
@@ -871,7 +929,7 @@ released. For the most accurate information, please <strong><a href="../../../..
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6_1">
             <span class="md-nav__icon md-icon"></span>
             nnbench
@@ -885,7 +943,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../cli/" class="md-nav__link">
+      <a href="../../reference/nnbench/cli/" class="md-nav__link">
         
   
   
@@ -908,7 +966,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../compare/" class="md-nav__link">
+      <a href="../../reference/nnbench/compare/" class="md-nav__link">
         
   
   
@@ -931,7 +989,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../config/" class="md-nav__link">
+      <a href="../../reference/nnbench/config/" class="md-nav__link">
         
   
   
@@ -954,7 +1012,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../context/" class="md-nav__link">
+      <a href="../../reference/nnbench/context/" class="md-nav__link">
         
   
   
@@ -977,7 +1035,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../core/" class="md-nav__link">
+      <a href="../../reference/nnbench/core/" class="md-nav__link">
         
   
   
@@ -1000,7 +1058,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../fixtures/" class="md-nav__link">
+      <a href="../../reference/nnbench/fixtures/" class="md-nav__link">
         
   
   
@@ -1020,24 +1078,22 @@ released. For the most accurate information, please <strong><a href="../../../..
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1_7" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../../reference/nnbench/reporter/" class="md-nav__link ">
               
   
   
@@ -1050,13 +1106,13 @@ released. For the most accurate information, please <strong><a href="../../../..
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_6_1_7" id="__nav_6_1_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_1_7" id="__nav_6_1_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6_1_7">
             <span class="md-nav__icon md-icon"></span>
             reporter
@@ -1070,7 +1126,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="console/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/console/" class="md-nav__link">
         
   
   
@@ -1093,7 +1149,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="file/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/file/" class="md-nav__link">
         
   
   
@@ -1116,7 +1172,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="mlflow/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/mlflow/" class="md-nav__link">
         
   
   
@@ -1139,7 +1195,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="sqlite/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/sqlite/" class="md-nav__link">
         
   
   
@@ -1162,7 +1218,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="util/" class="md-nav__link">
+      <a href="../../reference/nnbench/reporter/util/" class="md-nav__link">
         
   
   
@@ -1193,7 +1249,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../runner/" class="md-nav__link">
+      <a href="../../reference/nnbench/runner/" class="md-nav__link">
         
   
   
@@ -1216,7 +1272,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../types/" class="md-nav__link">
+      <a href="../../reference/nnbench/types/" class="md-nav__link">
         
   
   
@@ -1239,7 +1295,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../util/" class="md-nav__link">
+      <a href="../../reference/nnbench/util/" class="md-nav__link">
         
   
   
@@ -1277,7 +1333,7 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
         
   
   
@@ -1309,6 +1365,8 @@ released. For the most accurate information, please <strong><a href="../../../..
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1317,27 +1375,18 @@ released. For the most accurate information, please <strong><a href="../../../..
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nnbench.reporter" class="md-nav__link">
+  <a href="#a-quick-example" class="md-nav__link">
     <span class="md-ellipsis">
-      reporter
+      A quick example
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nnbench.reporter.get_reporter_implementation" class="md-nav__link">
+  <a href="#extending-comparisons" class="md-nav__link">
     <span class="md-ellipsis">
-      get_reporter_implementation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nnbench.reporter.register_reporter_implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      register_reporter_implementation
+      Extending comparisons
     </span>
   </a>
   
@@ -1359,7 +1408,7 @@ released. For the most accurate information, please <strong><a href="../../../..
 
 
   
-    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/src/nnbench/reporter/__init__.py" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/aai-institute/nnbench/edit/main/docs/cli/comparisons.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1367,130 +1416,91 @@ released. For the most accurate information, please <strong><a href="../../../..
   
 
 
-  <h1>reporter</h1>
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="nnbench.reporter"></a>
-    <div class="doc doc-contents first">
-
-        <p>An interface for displaying, writing, or streaming benchmark results to
-files, databases, or web services.</p>
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h2 id="nnbench.reporter.get_reporter_implementation" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">get_reporter_implementation</span>
-
-
-<a href="#nnbench.reporter.get_reporter_implementation" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_reporter_implementation</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">|</span> <span class="n"><span title="os.PathLike">PathLike</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="BenchmarkReporter (nnbench.types.BenchmarkReporter)" href="../types/#nnbench.types.BenchmarkReporter">BenchmarkReporter</a></span>
+<h1 id="comparing-different-benchmark-runs-with-nnbench-compare">Comparing different benchmark runs with <code>nnbench compare</code><a class="headerlink" href="#comparing-different-benchmark-runs-with-nnbench-compare" title="Permanent link">&para;</a></h1>
+<p>To compare benchmark results across different runs, you can use the <code>nnbench compare</code> subcommand of the nnbench CLI.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$ nnbench compare -h
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>usage: nnbench compare [-h]
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                       [--comparison-file &lt;JSON&gt;]
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                       [-P &lt;name&gt;] [-C &lt;name&gt;]
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                       [-E &lt;name&gt;]
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                       results [results ...]
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>positional arguments:
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  results               Results to compare. Can be given as local files or remote URIs.
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>options:
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  -h, --help            show this help message and exit
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  --comparison-file &lt;JSON&gt;
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                        A file containing comparison functions to run on benchmarking metrics.
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  -P, --include-parameter &lt;name&gt;
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                        Names of input parameters to display in the comparison table.
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  -C, --include-context &lt;name&gt;
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                        Context values to display in the comparison table.
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                        Use dotted syntax for nested context values.
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  -E, --extra-column &lt;name&gt;
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>                        Additional result data to display in the comparison table.
 </span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-
-            <details class="quote">
-              <summary>Source code in <code>src/nnbench/reporter/__init__.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-28">28</a></span>
-<span class="normal"><a href="#__codelineno-0-29">29</a></span>
-<span class="normal"><a href="#__codelineno-0-30">30</a></span>
-<span class="normal"><a href="#__codelineno-0-31">31</a></span>
-<span class="normal"><a href="#__codelineno-0-32">32</a></span>
-<span class="normal"><a href="#__codelineno-0-33">33</a></span>
-<span class="normal"><a href="#__codelineno-0-34">34</a></span>
-<span class="normal"><a href="#__codelineno-0-35">35</a></span>
-<span class="normal"><a href="#__codelineno-0-36">36</a></span>
-<span class="normal"><a href="#__codelineno-0-37">37</a></span>
-<span class="normal"><a href="#__codelineno-0-38">38</a></span>
-<span class="normal"><a href="#__codelineno-0-39">39</a></span>
-<span class="normal"><a href="#__codelineno-0-40">40</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_reporter_implementation</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BenchmarkReporter</span><span class="p">:</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="k">if</span> <span class="n">uri</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="n">proto</span> <span class="o">=</span> <span class="s2">&quot;stdout&quot;</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_protocol</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a>        <span class="n">proto</span> <span class="o">=</span> <span class="n">get_protocol</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>        <span class="k">return</span> <span class="n">_known_reporters</span><span class="p">[</span><span class="n">proto</span><span class="p">]()</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no benchmark reporter registered for format </span><span class="si">{</span><span class="n">proto</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h2 id="nnbench.reporter.register_reporter_implementation" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">register_reporter_implementation</span>
-
-
-<a href="#nnbench.reporter.register_reporter_implementation" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">register_reporter_implementation</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">name</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">klass</span><span class="p">:</span> <span class="n"><span title="type">type</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="BenchmarkReporter (nnbench.types.BenchmarkReporter)" href="../types/#nnbench.types.BenchmarkReporter">BenchmarkReporter</a></span><span class="p">],</span> <span class="n">clobber</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<h2 id="a-quick-example">A quick example<a class="headerlink" href="#a-quick-example" title="Permanent link">&para;</a></h2>
+<p>Suppose you run the following set of benchmarks:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">nnbench</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nd">@nnbench</span><span class="o">.</span><span class="n">benchmark</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 </span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-
-            <details class="quote">
-              <summary>Source code in <code>src/nnbench/reporter/__init__.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-43">43</a></span>
-<span class="normal"><a href="#__codelineno-0-44">44</a></span>
-<span class="normal"><a href="#__codelineno-0-45">45</a></span>
-<span class="normal"><a href="#__codelineno-0-46">46</a></span>
-<span class="normal"><a href="#__codelineno-0-47">47</a></span>
-<span class="normal"><a href="#__codelineno-0-48">48</a></span>
-<span class="normal"><a href="#__codelineno-0-49">49</a></span>
-<span class="normal"><a href="#__codelineno-0-50">50</a></span>
-<span class="normal"><a href="#__codelineno-0-51">51</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="k">def</span><span class="w"> </span><span class="nf">register_reporter_implementation</span><span class="p">(</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">klass</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BenchmarkReporter</span><span class="p">],</span> <span class="n">clobber</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_known_reporters</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">clobber</span><span class="p">:</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>            <span class="sa">f</span><span class="s2">&quot;benchmark reporter </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is already registered &quot;</span>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a>            <span class="sa">f</span><span class="s2">&quot;(to force registration, rerun with clobber=True)&quot;</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a>        <span class="p">)</span>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="n">_known_reporters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">klass</span>
-</span></code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
+<p>two times, with the parameters <code>a = 1, b = 2</code> and <code>a = 1, b = 3</code>, respectively.
+We will now set up a comparison between the two runs by crafting a <code>comparisons.json</code> file that defines the comparisons we will apply on the respective metrics:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="err">#</span><span class="w"> </span><span class="kc">f</span><span class="err">ile</span><span class="p">:</span><span class="w"> </span><span class="err">compariso</span><span class="kc">ns</span><span class="err">.jso</span><span class="kc">n</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;add&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nnbench.compare.GreaterEqual&quot;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nnbench.compare.AbsDiffLessEqual&quot;</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nt">&quot;kwargs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">            </span><span class="nt">&quot;thresh&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The structure itself is simple: The contents map the metric names (<code>"add"</code> and <code>"sub"</code> in this case) to their respective comparison classes.</p>
+<p>Each comparison is encoded by the class name, given as a fully qualified Python module path that can be imported via <code>importlib</code>, and a <code>kwargs</code> dictionary, which will be passed to the chosen class on construction (i.e. to its <code>__init__()</code>) method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You are responsible for only passing keyword arguments that are expected by the chosen comparison class.</p>
 </div>
-
-
-
-  </div>
-
-    </div>
-
+<p>Now, running <code>nnbench compare &lt;records&gt; --comparison-file=comparisons.json</code> will produce a table like the following (with an sqlite database holding the two results as an example):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$ nnbench compare sqlite://hello.db --comparison-file=comp.json      
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Comparison strategy: All vs. first
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Comparisons:
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    add: x ≥ y
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    sub: |x - y| &lt;= 0.50
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>┃ Run Name                    ┃ add             ┃ sub             ┃ Status ┃
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│ nnbench-1749042461424137000 │ 3.00            │ -1.0            │        │
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│ nnbench-1749042477901108000 │ 4.00 (vs. 3.00) │ -2.0 (vs. -1.0) │ ✅❌    │
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>└─────────────────────────────┴─────────────────┴─────────────────┴────────┘
+</span></code></pre></div>
+<p>The comparison strategy is printed first, listed as "All vs. first" (the only strategy currently supported), meaning that all results are compared against the result of the first given run.
+After that, the comparisons are listed as concise human-readable mathematical expressions.</p>
+<p>In this case, we want to ensure that the candidate results have a greater value for "add" (indicated by the "x ≥ y" formula, where x is the candidate value and y is the value in the first record), and a value for sub that is within <code>0.5</code> compared to the first result.</p>
+<p>As the value for <code>add</code> is greater in the second run, this comparison succeeded, as indicated by the green checkmark, but the <code>sub</code> comparison failed, since both results differ by <code>1.0</code>, which is more than the allowed <code>0.5</code>.</p>
+<h2 id="extending-comparisons">Extending comparisons<a class="headerlink" href="#extending-comparisons" title="Permanent link">&para;</a></h2>
+<p>To craft your own comparison, subclass the <code>nnbench.compare.AbstractComparison</code> class.
+You can also define your own comparison functions, which need to implement the following protocol:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Comparator</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val1</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">val2</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span> <span class="o">...</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One-versus-all metric comparisons and running user-defined comparisons are planned for a future release of <code>nnbench</code>.</p>
 </div>
 
 
@@ -1586,10 +1596,10 @@ files, databases, or web services.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.copy", "content.code.annotate", "content.action.edit"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
     
   </body>
