@@ -115,7 +115,6 @@ class TabularComparison(AbstractComparison):
         comparators: dict[str, Comparator] | None = None,
         placeholder: str = _MISSING,
         contextvals: list[str] | None = None,
-        parameters: list[str] | None = None,
     ):
         """
         Initialize a tabular comparison class, rendering the result to a rich table.
@@ -130,11 +129,13 @@ class TabularComparison(AbstractComparison):
             unfavourable comparison.
         placeholder: str
             A placeholder string to show in the event of a missing metric.
+        contextvals: list[str] | None
+            A list of context values to display in the comparison table.
+            Supply nested context values via dotted syntax.
         """
         self.placeholder = placeholder
         self.comparators = comparators or {}
         self.contextvals = contextvals or []
-        self.parameters = parameters or []
         self.results: tuple[BenchmarkResult, ...] = tuple(collate(results))
         self.data: list[dict[str, Any]] = [make_row(rec) for rec in self.results]
         self.metrics: list[str] = []
@@ -204,7 +205,6 @@ class TabularComparison(AbstractComparison):
         # TODO: Support parameter prints
         rows: list[list[str]] = []
         columns: list[str] = ["Run Name"] + list(self.display_names.values())
-        columns += self.parameters
         columns += self.contextvals
         if has_comparable_metrics:
             columns += [_STATUS_KEY]
