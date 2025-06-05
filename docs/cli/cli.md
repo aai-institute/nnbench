@@ -65,6 +65,30 @@ nnbench run .sandbox/example.py --context=pyyaml=`python3 -c "from importlib.met
     For more complex calculations of context values, it is recommended to register a *custom context provider* in your pyproject.toml file.
     An introductory example can be found in the [nnbench CLI configuration guide](pyproject.md).
 
+### Streaming results to different locations with URIs
+
+Like in the nnbench Python SDK, you can use builtin and custom reporters to write benchmark results to various locations.
+To select a reporter implementation, specify the output file as a URI, with a leading protocol, and suffixed with `://`.
+
+!!! Example
+    The builtin file reporter supports multiple file system protocols of the `fsspec` project.
+    If you have `fsspec` installed, you can stream benchmark results to different cloud storage providers like so:
+
+    ```commandline
+    # Write a result to disk...
+    nnbench run benchmarks.py -o result.json
+    # ...or to an S3 storage bucket...
+    nnbench run benchmarks.py -o s3://my-bucket/result.json
+    # ...or to GCS...
+    nnbench run benchmarks.py -o gs://my-bucket/result.json
+    # ...or lakeFS:
+    nnbench run benchmarks.py -o lakefs://my-repo/my-branch/result.json
+    ```
+
+    For a comprehensive list of supported protocols, see the [fsspec documentation](https://filesystem-spec.readthedocs.io/en/latest/api.html#other-known-implementations).
+
+    If `fsspec` is not installed, only local files can be written (i.e. to the executing machine's filesystem).
+
 ## Comparing results across multiple benchmark runs
 
 To create a comparison table between multiple benchmark runs, use the `nnbench compare` command.
@@ -89,7 +113,7 @@ options:
 Supposing we have the following results from previous runs, for a benchmark `add(a,b)` that adds two integers:
 
 ```json
-// Pretty-printed JSON, obtained as <result1.json | jq
+// Pretty-printed JSON, obtained as jq . result1.json
 {
   "run": "nnbench-3ff188b4",
   "context": {
@@ -117,7 +141,7 @@ Supposing we have the following results from previous runs, for a benchmark `add
 and
 
 ```json
-// <result2.json | jq
+// jq . result2.json
 {
   "run": "nnbench-5cbb85f8",
   "context": {
